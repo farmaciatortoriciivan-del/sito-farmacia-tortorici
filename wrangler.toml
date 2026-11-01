@@ -1,0 +1,13 @@
+# Configurazione Cloudflare Pages
+name = "farmacia-tortorici"
+pages_build_output_dir = "public"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "recensioni-farmacia"
+database_id = "INSERIRE_ID_DATABASE"   # si ottiene con: npx wrangler d1 create recensioni-farmacia
+
+# Segreti da impostare nel pannello Cloudflare (Settings > Variables and Secrets), NON qui:
+#   ADMIN_PASSWORD  -> password della pagina /admin.html
+#   IP_SALT         -> una stringa casuale qualsiasi

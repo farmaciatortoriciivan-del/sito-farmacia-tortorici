@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recensioni · Farmacia Tortorici</title>
+<meta name="description" content="Le recensioni dei clienti della Farmacia Dott. Ivan Tortorici a Trabia (PA).">
+<meta name="theme-color" content="#1f5c45">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="has-sticky">
+<a href="#main" class="skip">Vai al contenuto</a>
+<header class="top" id="top">
+  <div class="wrap nav">
+    <a href="index.html" class="brand" aria-label="Farmacia Tortorici, torna all'inizio">
+      <img class="brand-mark" src="img/logo-croce.png" alt="" width="40" height="40">
+      <span class="brand-name">Farmacia Tortorici<small>Trabia · dal cuore del paese</small></span>
+    </a>
+    <ul class="menu" id="menu">
+      <li><a href="index.html#chi-siamo">Chi siamo</a></li>
+      <li><a href="index.html#servizi">Servizi</a></li>
+      <li><a href="index.html#video">Video</a></li>
+      <li><a href="index.html#novita">Novità</a></li>
+      <li><a href="recensioni.html">Recensioni</a></li>
+      <li><a href="index.html#orari">Contatti</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a class="btn btn-ghost" href="tel:+390918146207">091 814 6207</a>
+      <a class="btn btn-wa" href="https://wa.me/393315250555" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4C2.7 15.6 2.2 13.8 2.2 12 2.2 6.6 6.6 2.2 12 2.2c2.6 0 5.1 1 6.9 2.9 1.8 1.8 2.9 4.3 2.9 6.9 0 5.4-4.4 9.8-9.8 9.8zM20.5 3.5C18.2 1.2 15.2 0 12 0 5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6c1.8 1 3.8 1.5 5.8 1.5 6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.4z"/></svg>
+        <span>WhatsApp</span>
+      </a>
+      <button class="burger" id="burger" aria-label="Apri menu" aria-expanded="false" aria-controls="menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+<section class="page-hero hero">
+  <div class="wrap">
+    <a href="index.html" style="text-decoration:none;font-weight:500">← Torna alla home</a>
+    <h1 style="margin-top:18px">Le vostre <em>parole</em>.</h1>
+    <p class="lead">Grazie a tutti i clienti che hanno lasciato un'opinione sulla nostra farmacia. Qui trovi le recensioni pubblicate su Google, così come sono state scritte.</p>
+  </div>
+</section>
+
+<section style="padding-top:24px">
+  <div class="wrap">
+    <div class="write-review reveal" id="scrivi">
+      <div class="wr-text">
+        <h2>Ti siamo stati utili?</h2>
+        <p>Raccontaci la tua esperienza: aiuta altre famiglie di Trabia a conoscerci. Bastano 30 secondi.</p>
+        <ul class="wr-points">
+          <li>Scegli le stelle e scrivi due parole</li>
+          <li>Lo staff la legge e la pubblica qui sul sito</li>
+        </ul>
+        <a class="wr-google" href="https://www.google.com/maps/search/?api=1&query=Farmacia+Tortorici+Via+Ettore+Maiorana+27+Trabia" target="_blank" rel="noopener">Preferisci Google? Lascia la recensione su Google →</a>
+      </div>
+
+      <form class="wr-form" id="rv-form" novalidate>
+        <fieldset class="rv-stars">
+          <legend>Il tuo voto</legend>
+          <div class="rv-star-row" id="rv-star-row">
+            <input type="radio" name="stelle" id="s1" value="1"><label for="s1" title="1 stella">★</label>
+            <input type="radio" name="stelle" id="s2" value="2"><label for="s2" title="2 stelle">★</label>
+            <input type="radio" name="stelle" id="s3" value="3"><label for="s3" title="3 stelle">★</label>
+            <input type="radio" name="stelle" id="s4" value="4"><label for="s4" title="4 stelle">★</label>
+            <input type="radio" name="stelle" id="s5" value="5"><label for="s5" title="5 stelle">★</label>
+          </div>
+          <div class="rv-star-label" id="rv-star-label" aria-live="polite">Tocca una stella</div>
+        </fieldset>
+
+        <label class="rv-field">
+          <span>Il tuo nome</span>
+          <input type="text" name="nome" id="rv-nome" maxlength="40" autocomplete="given-name" placeholder="Es. Maria R." required>
+        </label>
+
+        <label class="rv-field">
+          <span>La tua recensione</span>
+          <textarea name="testo" id="rv-testo" rows="4" maxlength="600" placeholder="Com'è andata? Cosa ti è piaciuto?" required></textarea>
+          <small class="rv-count" id="rv-count">0 / 600</small>
+        </label>
+
+        <label class="rv-check">
+          <input type="checkbox" id="rv-privacy" required>
+          <span>Acconsento alla pubblicazione del nome e della recensione su questo sito. Non inserire dati sulla tua salute.</span>
+        </label>
+
+        <input type="text" name="sito" id="rv-hp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="rv-error" id="rv-error" role="alert"></p>
+        <button class="btn btn-review rv-submit" type="submit" id="rv-submit">Invia la recensione</button>
+        <p class="rv-off" id="rv-off" hidden></p>
+      </form>
+
+      <div class="wr-done" id="rv-done" hidden>
+        <div class="wr-done-ico" aria-hidden="true">✓</div>
+        <h3>Grazie!</h3>
+        <p>Abbiamo ricevuto la tua recensione. Sarà visibile qui dopo la verifica dello staff.</p>
+      </div>
+    </div>
+
+    <section class="rv-admin" id="rv-admin" hidden aria-label="Recensioni da approvare">
+      <h3>Da approvare <span id="rv-admin-n"></span></h3>
+      <p class="rv-admin-sub">Visibile solo a te. Le recensioni approvate compaiono subito nella pagina.</p>
+      <div id="rv-admin-list"></div>
+    </section>
+
+    <div class="summary reveal">
+      <div>
+        <div class="big" id="r-avg">4,5</div>
+        <div class="stars" id="r-stars" aria-hidden="true"></div>
+        <div style="color:var(--muted);font-size:.92rem;margin-top:6px" id="r-count">su Google</div>
+      </div>
+      <div>
+        <div class="dist" id="r-dist" aria-label="Distribuzione delle valutazioni"></div>
+        <div class="themes" style="margin-top:18px">
+          <span class="chip">Personale gentile e preparato</span>
+          <span class="chip">Tanto assortimento</span>
+          <span class="chip">Consigli su misura</span>
+          <span class="chip">Reparto cosmesi</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="reviews-grid masonry" id="r-list"></div>
+    <p class="r-note" id="r-note"></p>
+
+    <div class="reviews-cta reveal">
+      <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&query=Farmacia+Tortorici+Via+Ettore+Maiorana+27+Trabia" target="_blank" rel="noopener">Leggi tutte le recensioni su Google</a>
+      <a class="btn btn-review" href="#scrivi"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.5 7 .8-5.2 4.8 1.4 7L12 17.6 5.8 21.1l1.4-7L2 9.3l7-.8z"/></svg> Lascia la tua recensione</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="#top" class="brand" style="margin-bottom:14px">
+          <img class="brand-mark" src="img/logo-croce.png" alt="" width="40" height="40">
+          <span class="brand-name">Farmacia Tortorici<small>Trabia</small></span>
+        </a>
+        <p>Farmacia Dott. Ivan Tortorici<br>Via Ettore Maiorana, 27 — 90019 Trabia (PA)</p>
+      </div>
+      <div>
+        <h4>Navigazione</h4>
+        <ul>
+          <li><a href="index.html#chi-siamo">Chi siamo</a></li>
+          <li><a href="index.html#servizi">Servizi</a></li>
+          <li><a href="index.html#video">Video</a></li>
+          <li><a href="recensioni.html">Recensioni</a></li>
+          <li><a href="index.html#orari">Orari e contatti</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contatti</h4>
+        <ul>
+          <li><a href="tel:+390918146207">091 814 6207</a></li>
+          <li><a href="https://wa.me/393315250555">WhatsApp 331 525 0555</a></li>
+          <li><a href="mailto:farmaciatortorici@gmail.com">farmaciatortorici@gmail.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="legal">
+      <span>© <span id="year"></span> Farmacia Dott. Ivan Tortorici · P.IVA 01488560820</span>
+      <span><a href="privacy.html">Privacy policy</a> · <a href="cookie.html">Cookie policy</a> · <button type="button" class="linkbtn" data-cookie-prefs>Preferenze cookie</button></span>
+    </div>
+    <p style="margin-top:14px;font-size:.8rem">Le informazioni presenti in questo sito hanno carattere informativo e non sostituiscono il parere del medico o del farmacista.</p>
+  </div>
+</footer>
+
+<a class="sticky-review" href="#scrivi"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.5 7 .8-5.2 4.8 1.4 7L12 17.6 5.8 21.1l1.4-7L2 9.3l7-.8z"/></svg> Lascia una recensione</a>
+<a class="fab" href="https://wa.me/393315250555" target="_blank" rel="noopener" aria-label="Scrivici su WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4C2.7 15.6 2.2 13.8 2.2 12 2.2 6.6 6.6 2.2 12 2.2c2.6 0 5.1 1 6.9 2.9 1.8 1.8 2.9 4.3 2.9 6.9 0 5.4-4.4 9.8-9.8 9.8zM20.5 3.5C18.2 1.2 15.2 0 12 0 5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6c1.8 1 3.8 1.5 5.8 1.5 6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.4z"/></svg>
+</a>
+
+<script src="reviews-data.js"></script>
+<script>
+(function(){
+  const G = window.REVIEWS || { recensioni: [] };
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const stars = n => "★".repeat(n) + '<span class="off">' + "★".repeat(5-n) + "</span>";
+  const $ = id => document.getElementById(id);
+  let sito = [];   // recensioni approvate scritte sul sito
+
+  /* ---------- elenco + riepilogo ---------- */
+  function render(){
+    const all = [
+      ...sito.map(r => ({ nome: r.nome, stelle: r.stelle, testo: r.testo, anno: new Date(r.data).getFullYear(), fonte: "Sito", ts: r.data })),
+      ...G.recensioni.map(r => ({ ...r, fonte: "Google", ts: 0 }))
+    ];
+    const tot = all.length, media = tot ? all.reduce((a, r) => a + r.stelle, 0) / tot : 0;
+    $("r-avg").textContent = media.toFixed(1).replace(".", ",");
+    $("r-stars").innerHTML = stars(Math.round(media));
+    $("r-count").textContent = `${tot} recensioni` + (sito.length ? ` (${sito.length} dal sito)` : " su Google");
+    const dist = [5,4,3,2,1].map(k => all.filter(r => r.stelle === k).length), max = Math.max(1, ...dist);
+    $("r-dist").innerHTML = [5,4,3,2,1].map((k, i) =>
+      `<div class="drow"><span>${k} ★</span><span class="bar"><i style="width:${dist[i]/max*100}%"></i></span><span>${dist[i]}</span></div>`).join("");
+    const withText = all.filter(r => r.testo).sort((a, b) => b.ts - a.ts);
+    $("r-list").innerHTML = withText.map(r => `
+      <figure class="review in">
+        <div class="rstars" aria-label="${r.stelle} stelle su 5">${stars(r.stelle)}</div>
+        <blockquote>«${esc(r.testo)}»</blockquote>
+        <figcaption><span class="av">${esc((r.nome.trim()[0] || "?").toUpperCase())}</span><span><b>${esc(r.nome)}</b>${r.fonte === "Sito" ? '<span class="src-sito">Recensione dal sito</span>' : "Google"} · ${r.anno}</span></figcaption>
+      </figure>`).join("");
+    const others = tot - withText.length;
+    $("r-note").textContent = others > 0 ? `Altre ${others} persone hanno lasciato solo una valutazione senza commento: sono incluse nella media.` : "";
+  }
+  render();
+
+  /* ---------- modulo: stelle ---------- */
+  const LABELS = ["", "Pessima", "Scarsa", "Nella media", "Buona", "Eccellente"];
+  let voto = 0;
+  document.querySelectorAll('#rv-star-row input').forEach(inp => inp.addEventListener("change", () => {
+    voto = +inp.value;
+    $("rv-star-row").dataset.v = voto;
+    $("rv-star-label").textContent = LABELS[voto];
+    $("rv-error").textContent = "";
+  }));
+  $("rv-testo").addEventListener("input", e => $("rv-count").textContent = `${e.target.value.length} / 600`);
+
+  /* ---------- salvataggio (db dell'artifact) ---------- */
+  const form = $("rv-form");
+  let db = null, me = null, mode = null;   // mode: "api" (sito pubblico) | "artifact" (anteprima claude.ai)
+  function offline(msg){
+    $("rv-off").hidden = false; $("rv-off").innerHTML = msg;
+    $("rv-submit").disabled = true;
+  }
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const nome = $("rv-nome").value.trim(), testo = $("rv-testo").value.trim();
+    const err = !voto ? "Scegli da 1 a 5 stelle." :
+                nome.length < 2 ? "Scrivi il tuo nome (anche solo nome e iniziale del cognome)." :
+                testo.length < 10 ? "Scrivi almeno qualche parola sulla tua esperienza." :
+                !$("rv-privacy").checked ? "Per pubblicarla serve il tuo consenso." : "";
+    if (err){ $("rv-error").textContent = err; return; }
+    if (mode === "api"){
+      $("rv-submit").disabled = true; $("rv-submit").textContent = "Invio…";
+      try {
+        const r = await fetch("/api/recensioni", { method: "POST", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ nome, stelle: voto, testo, consenso: true, sito: $("rv-hp").value }) });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j.errore || "");
+        form.hidden = true; $("rv-done").hidden = false;
+        $("rv-done").scrollIntoView({ behavior: "smooth", block: "center" });
+      } catch (x) {
+        $("rv-submit").disabled = false; $("rv-submit").textContent = "Invia la recensione";
+        $("rv-error").textContent = x.message || "Non siamo riusciti a inviarla. Riprova tra poco.";
+      }
+      return;
+    }
+    if (!db || !me){ offline('Il salvataggio non è disponibile in questa anteprima. Puoi <a href="https://www.google.com/maps/search/?api=1&query=Farmacia+Tortorici+Via+Ettore+Maiorana+27+Trabia" target="_blank" rel="noopener">lasciarla su Google</a>.'); return; }
+    $("rv-submit").disabled = true; $("rv-submit").textContent = "Invio…";
+    try {
+      await db.doc("recensioni/" + me).set({ nome, stelle: voto, testo, data: new Date().toISOString() });
+      form.hidden = true; $("rv-done").hidden = false;
+      $("rv-done").scrollIntoView({ behavior: "smooth", block: "center" });
+    } catch (x) {
+      $("rv-submit").disabled = false; $("rv-submit").textContent = "Invia la recensione";
+      $("rv-error").textContent = "Non siamo riusciti a inviarla. Riprova tra poco.";
+    }
+  });
+
+  (async () => {
+    if (!window.claude || !claude.use){
+      if (!/^https?:$/.test(location.protocol)) return;     // file locale: nessun archivio
+      mode = "api";
+      try {
+        const r = await fetch("/api/recensioni");
+        if (r.ok){ sito = (await r.json()).filter(x => x && x.nome && x.stelle); render(); }
+      } catch (x) {}
+      return;
+    }
+    mode = "artifact";
+    const [d, u] = await Promise.all([claude.use("db"), claude.use("user")]);
+    db = d;
+    if (!db || !u) return;
+    me = await u.id();
+    if ((await u.can("data.write")) === false) offline('Il salvataggio non è disponibile per il tuo accesso. Puoi <a href="https://www.google.com/maps/search/?api=1&query=Farmacia+Tortorici+Via+Ettore+Maiorana+27+Trabia" target="_blank" rel="noopener">lasciarla su Google</a>.');
+
+    // recensioni approvate (visibili a tutti)
+    db.collection("pubblicate").onSnapshot(snap => {
+      sito = snap.docs.map(d => d.data()).filter(r => r && r.nome && r.stelle);
+      render();
+    }, () => {});
+
+    // pannello del titolare
+    if (await u.isOwner()){
+      $("rv-admin").hidden = false;
+      db.collection("recensioni").onSnapshot(snap => {
+        const pend = snap.docs.filter(d => d.exists);
+        $("rv-admin-n").textContent = pend.length ? `(${pend.length})` : "";
+        $("rv-admin-list").innerHTML = pend.length ? pend.map(d => { const r = d.data();
+          return `<div class="rv-pend" data-id="${esc(d.id)}">
+            <div class="rstars">${stars(r.stelle)}</div>
+            <p>«${esc(r.testo)}»</p>
+            <small><b>${esc(r.nome)}</b> · ${new Date(r.data).toLocaleDateString("it-IT")}</small>
+            <div class="rv-pend-act"><button class="btn btn-primary" data-act="ok">Approva</button><button class="btn btn-ghost" data-act="no">Elimina</button></div>
+          </div>`; }).join("") : '<p class="rv-admin-sub">Nessuna recensione in attesa.</p>';
+      }, () => {});
+      $("rv-admin-list").addEventListener("click", async e => {
+        const b = e.target.closest("button[data-act]"); if (!b) return;
+        const card = b.closest(".rv-pend"), id = card.dataset.id;
+        b.disabled = true;
+        try {
+          if (b.dataset.act === "ok"){
+            const snap = await db.doc("recensioni/" + id).get();
+            if (snap.exists) await db.doc("pubblicate/" + id).set(snap.data());
+          }
+          await db.doc("recensioni/" + id).delete();
+        } catch (x) { b.disabled = false; alert("Operazione non riuscita, riprova."); }
+      });
+    }
+  })();
+})();
+const box = document.getElementById("scrivi"), sticky = document.querySelector(".sticky-review");
+if (box && sticky && "IntersectionObserver" in window){
+  new IntersectionObserver(([e]) => sticky.classList.toggle("hide", e.isIntersecting || e.boundingClientRect.top > 0)).observe(box);
+}
+document.getElementById("year").textContent = new Date().getFullYear();
+const hdr = document.getElementById("top");
+addEventListener("scroll", () => hdr.classList.toggle("scrolled", scrollY > 8), {passive:true});
+const burger = document.getElementById("burger"), menu = document.getElementById("menu");
+burger.addEventListener("click", () => { const o = menu.classList.toggle("open"); burger.setAttribute("aria-expanded", o); });
+if ("IntersectionObserver" in window){
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } }), {threshold:.12});
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+} else document.querySelectorAll(".reveal").forEach(el => el.classList.add("in"));
+</script>
+<script src="consent.js"></script>
+</body>
+</html>
