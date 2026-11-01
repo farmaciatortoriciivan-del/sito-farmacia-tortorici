@@ -11,28 +11,22 @@ l'unica spesa è il dominio.
 | `public/` | Il sito pubblicato: `index.html`, `recensioni.html`, `privacy.html`, `cookie.html`, `admin.html`, stili, font, immagini |
 | `public/facebook-data.js` | Post Facebook (generato automaticamente da Metricool, non modificare a mano) |
 | `public/reviews-data.js` | Recensioni Google importate a mano |
-| `functions/api/` | API delle recensioni (Cloudflare Pages Functions) |
+| `worker.js`, `functions/api/` | Worker Cloudflare e API delle recensioni |
 | `schema.sql` | Tabella delle recensioni nel database D1 |
 | `wrangler.toml` | Configurazione Cloudflare |
 | `strumenti/` | Script per aggiornare i post Facebook |
 | `docs/` | Ricerca iniziale sulla farmacia |
 
-## Pubblicazione (una volta sola)
+## Pubblicazione
 
-1. **GitHub**: carica questa cartella in un repository (es. `sito-farmacia-tortorici`, anche privato).
-2. **Cloudflare** → *Workers & Pages* → *Create* → *Pages* → *Connect to Git* → scegli il repository.
-   - Framework preset: **None**
-   - Build command: *(vuoto)*
-   - Build output directory: **public**
-3. **Database recensioni**: Cloudflare → *Storage & Databases* → *D1* → *Create* → nome `recensioni-farmacia`.
-   Apri la console del database e incolla il contenuto di `schema.sql`, poi *Execute*.
-4. Nel progetto Pages → *Settings* → *Bindings* → *Add* → **D1 database**: nome variabile `DB`, database `recensioni-farmacia`.
-5. *Settings* → *Variables and Secrets* → aggiungi come **Secret**:
-   - `ADMIN_PASSWORD` = la password per gestire le recensioni (lunga, da non condividere)
-   - `IP_SALT` = una frase casuale qualsiasi
-6. *Deployments* → *Retry deployment* (per applicare binding e segreti).
-7. **Dominio**: progetto Pages → *Custom domains* → *Set up a domain* → `farmaciatortorici.it` (o quello scelto)
-   e segui le istruzioni (di solito cambiare i nameserver presso il registrar).
+Il progetto è un **Cloudflare Worker** (`worker.js`) che serve i file di `public/` e le API in `functions/api/`.
+È collegato al repository GitHub: ogni push su `main` viene pubblicato da solo.
+
+- Database D1 `recensioni-farmacia` già creato (tabella da `schema.sql`), collegato in `wrangler.toml`.
+- Segreti da impostare una volta in Cloudflare → *Workers & Pages* → `sito-farmacia-tortorici` → *Settings* → *Variables and Secrets*:
+  - `ADMIN_PASSWORD` = password della pagina `/admin.html`
+  - `IP_SALT` = una frase casuale qualsiasi
+- Dominio: *Settings* → *Domains & Routes* → *Add* → *Custom domain*.
 
 ## Uso quotidiano
 
