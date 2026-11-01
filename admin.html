@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Gestione recensioni · Farmacia Tortorici</title>
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="stylesheet" href="style.css">
+<style>
+  .adm{max-width:760px;margin:0 auto;padding:32px 16px 80px}
+  .adm header{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+  .adm header img{width:44px;height:44px}
+  .adm h1{font-size:1.6rem;margin:0}
+  .login{background:var(--card);border-radius:20px;padding:24px;box-shadow:var(--shadow);display:grid;gap:14px}
+  .login input{font:inherit;font-size:16px;padding:14px;border:1.5px solid var(--line);border-radius:12px;background:var(--sand-50);color:var(--ink)}
+  .tabs{display:flex;gap:8px;margin:0 0 18px}
+  .tabs button{flex:1;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);font:inherit;font-weight:600;color:var(--ink);cursor:pointer}
+  .tabs button[aria-pressed="true"]{background:var(--green-700);border-color:var(--green-700);color:#fff}
+  .item{background:var(--card);border-radius:16px;padding:18px;box-shadow:var(--shadow);margin-bottom:12px;display:grid;gap:8px}
+  .item p{margin:0}
+  .item small{color:var(--muted)}
+  .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .acts .btn{flex:1;justify-content:center;padding:12px}
+  .btn-danger{border:1.5px solid #c0392b;color:#c0392b;background:transparent}
+  .empty{color:var(--muted);text-align:center;padding:30px 0}
+  .msg{color:#c0392b;margin:0}
+</style>
+</head>
+<body>
+<main class="adm">
+  <header><img src="img/logo-croce.png" alt=""><div><h1>Gestione recensioni</h1><small style="color:var(--muted)">Farmacia Dott. Ivan Tortorici</small></div></header>
+
+  <form class="login" id="login">
+    <label for="pw"><strong>Password</strong></label>
+    <input type="password" id="pw" autocomplete="current-password" required>
+    <p class="msg" id="msg"></p>
+    <button class="btn btn-primary" style="justify-content:center;padding:14px">Entra</button>
+  </form>
+
+  <section id="app" hidden>
+    <div class="tabs">
+      <button type="button" data-tab="in_attesa" aria-pressed="true">Da approvare <span id="n1"></span></button>
+      <button type="button" data-tab="pubblicata" aria-pressed="false">Pubblicate <span id="n2"></span></button>
+    </div>
+    <div id="list"></div>
+    <p style="text-align:center;margin-top:24px"><button type="button" class="linkbtn" id="esci" style="color:var(--muted)">Esci</button></p>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let pw = sessionStorage.getItem("ft-admin") || "", tab = "in_attesa", rows = [];
+
+async function api(method, body){
+  const r = await fetch("/api/admin/recensioni", { method, headers: { "authorization": "Bearer " + pw, "content-type": "application/json" }, body: body && JSON.stringify(body) });
+  if (r.status === 401) throw new Error("Password errata.");
+  if (!r.ok) throw new Error("Errore del server, riprova.");
+  return r.json();
+}
+async function carica(){
+  rows = await api("GET");
+  $("login").hidden = true; $("app").hidden = false;
+  render();
+}
+function render(){
+  const pend = rows.filter(r => r.stato === "in_attesa"), pub = rows.filter(r => r.stato === "pubblicata");
+  $("n1").textContent = `(${pend.length})`; $("n2").textContent = `(${pub.length})`;
+  const list = tab === "in_attesa" ? pend : pub;
+  $("list").innerHTML = list.length ? list.map(r => `
+    <div class="item" data-id="${r.id}">
+      <div class="rstars">${"★".repeat(r.stelle)}<span class="off">${"★".repeat(5 - r.stelle)}</span></div>
+      <p>«${esc(r.testo)}»</p>
+      <small><b>${esc(r.nome)}</b> · ${new Date(r.data).toLocaleString("it-IT")}</small>
+      <div class="acts">${tab === "in_attesa"
+        ? '<button class="btn btn-primary" data-a="approva">Approva</button><button class="btn btn-danger" data-a="elimina">Elimina</button>'
+        : '<button class="btn btn-ghost" data-a="nascondi">Nascondi</button><button class="btn btn-danger" data-a="elimina">Elimina</button>'}</div>
+    </div>`).join("") : `<p class="empty">${tab === "in_attesa" ? "Nessuna recensione da approvare." : "Nessuna recensione pubblicata dal sito."}</p>`;
+}
+$("login").addEventListener("submit", async e => {
+  e.preventDefault(); pw = $("pw").value; $("msg").textContent = "";
+  try { await carica(); sessionStorage.setItem("ft-admin", pw); } catch (x) { $("msg").textContent = x.message; }
+});
+document.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => {
+  tab = b.dataset.tab;
+  document.querySelectorAll("[data-tab]").forEach(x => x.setAttribute("aria-pressed", x === b));
+  render();
+});
+$("list").addEventListener("click", async e => {
+  const b = e.target.closest("button[data-a]"); if (!b) return;
+  if (b.dataset.a === "elimina" && !confirm("Eliminare definitivamente questa recensione?")) return;
+  b.disabled = true;
+  try { await api("POST", { id: +b.closest(".item").dataset.id, azione: b.dataset.a }); await carica(); }
+  catch (x) { alert(x.message); b.disabled = false; }
+});
+$("esci").onclick = () => { sessionStorage.removeItem("ft-admin"); location.reload(); };
+if (pw) carica().catch(() => sessionStorage.removeItem("ft-admin"));
+</script>
+</body>
+</html>
