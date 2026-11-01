@@ -43,6 +43,5 @@ l'unica spesa è il dominio.
 
 ## Da completare
 
-- [ ] Numero di iscrizione all'Ordine dei Farmacisti (da aggiungere nel piè di pagina).
 - [ ] Link diretto "scrivi recensione" di Google Business Profile (quando recuperi le credenziali).
 - [ ] Far rileggere `privacy.html` e `cookie.html` a un consulente privacy.
