@@ -6,7 +6,7 @@ compatibility_date = "2025-01-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "recensioni-farmacia"
-database_id = "INSERIRE_ID_DATABASE"   # si ottiene con: npx wrangler d1 create recensioni-farmacia
+database_id = "a4622bd3-6b64-4d9c-b469-f83480fe683b"
 
 # Segreti da impostare nel pannello Cloudflare (Settings > Variables and Secrets), NON qui:
 #   ADMIN_PASSWORD  -> password della pagina /admin.html
