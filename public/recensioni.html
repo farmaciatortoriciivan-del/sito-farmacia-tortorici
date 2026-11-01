@@ -272,10 +272,13 @@
     if (!window.claude || !claude.use){
       if (!/^https?:$/.test(location.protocol)) return;     // file locale: nessun archivio
       mode = "api";
+      const noApi = () => { mode = null; offline('Puoi lasciare la tua recensione su <a href="https://www.google.com/maps/search/?api=1&query=Farmacia+Tortorici+Via+Ettore+Maiorana+27+Trabia" target="_blank" rel="noopener">Google</a>.'); };
       try {
         const r = await fetch("/api/recensioni");
-        if (r.ok){ sito = (await r.json()).filter(x => x && x.nome && x.stelle); render(); }
-      } catch (x) {}
+        const ok = r.ok && (r.headers.get("content-type") || "").includes("json");
+        if (ok){ sito = (await r.json()).filter(x => x && x.nome && x.stelle); render(); }
+        else noApi();
+      } catch (x) { noApi(); }
       return;
     }
     mode = "artifact";
