@@ -98,20 +98,21 @@
       </div>
     </div>
 
-    <div class="hero-card-wrap reveal">
-    <aside class="hero-card" aria-label="Orario di oggi">
-      <img class="seal" src="img/logo-sigillo.jpg" alt="Logo Farmacia Dott. Ivan Tortorici, Trabia">
-      <h2>Siamo qui per te</h2>
-      <p>Hai una ricetta da preparare o un dubbio su un farmaco? Passa in farmacia o scrivici: ti rispondiamo noi.</p>
-      <div class="today">
-        <div class="today-label" id="today-label">Oggi</div>
-        <div class="today-hours" id="today-hours">—</div>
+    <div class="hero-visual reveal">
+      <div class="hv-bg" aria-hidden="true"></div>
+      <picture>
+        <source srcset="img/team.webp" type="image/webp">
+        <img class="hv-photo" src="img/team.jpg" width="768" height="1024" alt="Lo staff della Farmacia Tortorici di Trabia, illustrato in stile animazione" fetchpriority="high">
+      </picture>
+      <div class="hv-today" aria-label="Orario di oggi">
+        <span class="hv-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+        <span><span class="today-label" id="today-label">Oggi</span><span class="today-hours" id="today-hours">—</span></span>
       </div>
-    </aside>
-    <a class="rating-chip" href="recensioni.html">
-      <span class="score">4,5</span>
-      <span><span class="stars" aria-hidden="true">★★★★★</span><small id="chip-count">Recensioni Google</small></span>
-    </a>
+      <a class="rating-chip" href="recensioni.html">
+        <span class="score">4,5</span>
+        <span><span class="stars" aria-hidden="true">★★★★★</span><small id="chip-count">Recensioni Google</small></span>
+      </a>
+      <div class="hv-team"><img src="img/logo-croce.png" alt="" width="28" height="28"><span>Il nostro team, sempre al tuo fianco</span></div>
     </div>
   </div>
 </section>
