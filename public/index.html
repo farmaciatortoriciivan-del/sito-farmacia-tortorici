@@ -243,8 +243,8 @@
   <div class="wrap fb-grid">
     <div class="reveal">
       <span class="eyebrow">Novità e video</span>
-      <h2>In diretta dalla nostra pagina Facebook</h2>
-      <p class="lead">Giornate della salute, promozioni, avvisi e i nostri video: qui trovi sempre gli ultimi post, aggiornati in automatico appena li pubblichiamo.</p>
+      <h2>Dalla nostra pagina Facebook</h2>
+      <p class="lead">Giornate della salute, promozioni, avvisi e i nostri video: qui trovi sempre gli ultimi post della nostra pagina, aggiornati in automatico.</p>
       <ul class="fb-points">
         <li>Video animati con i consigli del farmacista</li>
         <li>Giornate di prevenzione e screening</li>
@@ -252,20 +252,7 @@
       </ul>
       <a class="btn btn-ghost" href="https://www.facebook.com/farmatortorici/" target="_blank" rel="noopener">Seguici su Facebook</a>
     </div>
-    <div class="fb-box reveal">
-      <iframe title="Ultimi post della pagina Facebook della Farmacia Tortorici" loading="lazy"
-        data-consent-src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2F252631991826090&tabs=timeline&width=500&height=720&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false"
-        allow="encrypted-media; picture-in-picture; fullscreen; clipboard-write" hidden></iframe>
-      <div class="map-ph fb-ph">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v8h4v-8h3l1-4h-4V8.5c0-.3.2-.5.5-.5z"/></svg>
-        <strong>Gli ultimi post della farmacia</strong>
-        <div class="map-ph-actions">
-          <button type="button" class="btn btn-primary" data-consent-accept hidden>Mostra i post qui</button>
-          <a class="btn btn-ghost" href="https://www.facebook.com/farmatortorici/" target="_blank" rel="noopener">Apri Facebook</a>
-        </div>
-        <small data-consent-note hidden>I post sono forniti da Facebook e usano cookie di terze parti.</small>
-      </div>
-    </div>
+    <div class="fb-feed reveal" id="fb-feed" aria-live="polite"></div>
   </div>
 </section>
 
@@ -408,6 +395,7 @@
 </a>
 
 <script src="consent.js"></script>
+<script src="facebook-data.js"></script>
 <script src="reviews-data.js"></script>
 <script>
 /* ===== ORARI: modifica qui =====
@@ -463,6 +451,35 @@ function render(){
 }
 render();
 setInterval(render, 60000);
+
+/* ===== ULTIMI POST FACEBOOK (facebook-data.js, aggiornato in automatico) ===== */
+(function(){
+  const box = document.getElementById("fb-feed"), posts = window.FB_POSTS || [];
+  if (!box) return;
+  const esc = t => t.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const MESI = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
+  const fdate = d => { const [y,m,g] = d.split("-"); return `${+g} ${MESI[+m-1]} ${y}`; };
+  function split(t){
+    const flat = t.replace(/\s*\n+\s*/g, " ").replace(/([.!?])(?=\p{Lu})/gu, "$1 ").trim();
+    const m = flat.match(/^(.{20,120}?[^.][.!?])(?![.!?])(\s|$)/u);
+    let title, rest;
+    if (m) { title = m[1]; rest = flat.slice(m[1].length); }
+    else { const cut = flat.slice(0, 90).replace(/\s\S*$/, ""); title = cut + "…"; rest = flat.slice(cut.length); }
+    let body = rest.trim();
+    if (body.length > 150) body = body.slice(0, 148).replace(/\s\S*$/, "") + "…";
+    return { title: title.replace(/^[^\p{L}\p{N}]+/u, ""), body };
+  }
+  const list = posts.filter(p => p.testo.length >= 60).slice(0, 4);
+  if (!list.length){ box.innerHTML = '<p class="fb-empty">Segui la nostra pagina Facebook per le ultime novità.</p>'; return; }
+  box.innerHTML = list.map(p => { const { title, body } = split(p.testo); const v = p.tipo === "video";
+    return `<a class="fb-post" href="${p.link}" target="_blank" rel="noopener">
+      <span class="fb-tag ${v ? "is-video" : ""}">${v ? "▶ Video" : "Post"}</span>
+      <time>${fdate(p.data)}</time>
+      <strong>${esc(title)}</strong>
+      ${body ? `<span class="fb-body">${esc(body)}</span>` : ""}
+      <span class="more">${v ? "Guarda il video" : "Leggi su Facebook"} →</span>
+    </a>`; }).join("");
+})();
 
 /* ===== RECENSIONI GOOGLE (reviews-data.js) ===== */
 (function(){
