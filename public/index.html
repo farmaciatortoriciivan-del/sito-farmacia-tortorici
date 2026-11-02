@@ -57,8 +57,7 @@
     <ul class="menu" id="menu">
       <li><a href="#chi-siamo">Chi siamo</a></li>
       <li><a href="#servizi">Servizi</a></li>
-      <li><a href="#video">Video</a></li>
-      <li><a href="#novita">Novità</a></li>
+      <li><a href="#facebook">Novità</a></li>
       <li><a href="recensioni.html">Recensioni</a></li>
       <li><a href="#orari">Contatti</a></li>
     </ul>
@@ -239,34 +238,34 @@
   </div>
 </section>
 
-<!-- ============ VIDEO ============ -->
-<section id="video">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div>
-        <span class="eyebrow">Video</span>
-        <h2>La farmacia in video</h2>
+<!-- ============ FACEBOOK (in diretta) ============ -->
+<section id="facebook">
+  <div class="wrap fb-grid">
+    <div class="reveal">
+      <span class="eyebrow">Novità e video</span>
+      <h2>In diretta dalla nostra pagina Facebook</h2>
+      <p class="lead">Giornate della salute, promozioni, avvisi e i nostri video: qui trovi sempre gli ultimi post, aggiornati in automatico appena li pubblichiamo.</p>
+      <ul class="fb-points">
+        <li>Video animati con i consigli del farmacista</li>
+        <li>Giornate di prevenzione e screening</li>
+        <li>Orari speciali e avvisi</li>
+      </ul>
+      <a class="btn btn-ghost" href="https://www.facebook.com/farmatortorici/" target="_blank" rel="noopener">Seguici su Facebook</a>
+    </div>
+    <div class="fb-box reveal">
+      <iframe title="Ultimi post della pagina Facebook della Farmacia Tortorici" loading="lazy"
+        data-consent-src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Ffarmatortorici&tabs=timeline&width=500&height=720&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false"
+        allow="encrypted-media; picture-in-picture; fullscreen; clipboard-write" hidden></iframe>
+      <div class="map-ph fb-ph">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v8h4v-8h3l1-4h-4V8.5c0-.3.2-.5.5-.5z"/></svg>
+        <strong>Gli ultimi post della farmacia</strong>
+        <div class="map-ph-actions">
+          <button type="button" class="btn btn-primary" data-consent-accept hidden>Mostra i post qui</button>
+          <a class="btn btn-ghost" href="https://www.facebook.com/farmatortorici/" target="_blank" rel="noopener">Apri Facebook</a>
+        </div>
+        <small data-consent-note hidden>I post sono forniti da Facebook e usano cookie di terze parti.</small>
       </div>
-      <p class="lead">I nostri video animati su servizi, prevenzione e consigli di salute. Si aggiornano da soli con le ultime uscite sulla nostra pagina Facebook.</p>
     </div>
-    <div class="video-grid" id="video-grid"></div>
-    <div class="reviews-cta reveal">
-      <a class="btn btn-ghost" href="https://www.facebook.com/farmatortorici/" target="_blank" rel="noopener">Tutti i video su Facebook</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ NOVITÀ DA FACEBOOK ============ -->
-<section id="novita" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <div>
-        <span class="eyebrow">Novità</span>
-        <h2>Ultime dalla farmacia</h2>
-      </div>
-      <p class="lead">Promozioni, giornate a tema e avvisi: le ultime notizie pubblicate sulla nostra pagina.</p>
-    </div>
-    <div class="news-grid" id="news-grid"></div>
   </div>
 </section>
 
@@ -382,8 +381,7 @@
         <ul>
           <li><a href="#chi-siamo">Chi siamo</a></li>
           <li><a href="#servizi">Servizi</a></li>
-          <li><a href="#video">Video</a></li>
-          <li><a href="#novita">Novità</a></li>
+          <li><a href="#facebook">Novità e video</a></li>
           <li><a href="recensioni.html">Recensioni</a></li>
           <li><a href="#orari">Orari e contatti</a></li>
         </ul>
@@ -410,7 +408,6 @@
 </a>
 
 <script src="consent.js"></script>
-<script src="facebook-data.js"></script>
 <script src="reviews-data.js"></script>
 <script>
 /* ===== ORARI: modifica qui =====
@@ -482,54 +479,6 @@ setInterval(render, 60000);
       </figure>`).join("");
 })();
 
-/* ===== CONTENUTI DA FACEBOOK (file facebook-data.js, aggiornato via Metricool) ===== */
-(function(){
-  const posts = (window.FB_POSTS || []);
-  const esc = t => t.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  const MESI = ["gen","feb","mar","apr","mag","giu","lug","ago","set","ott","nov","dic"];
-  const fdate = d => { const [y,m,g] = d.split("-"); return `${+g} ${MESI[+m-1]} ${y}`; };
-  const strip = t => t.replace(/^[^\p{L}\p{N}]+/u, "");
-  function split(t){
-    const flat = t.replace(/\s*\n+\s*/g, " ").replace(/([.!?])(?=\p{Lu})/gu, "$1 ").trim();
-    // prima frase "vera": termina con . ! ? non seguito/preceduto da altri punti
-    const m = flat.match(/^(.{20,120}?[^.][.!?])(?![.!?])(\s|$)/u);
-    let title, rest;
-    if (m) { title = m[1]; rest = flat.slice(m[1].length); }
-    else { const cut = flat.slice(0, 90).replace(/\s\S*$/, ""); title = cut + "…"; rest = flat.slice(cut.length); }
-    let body = rest.trim();
-    if (body.length > 170) body = body.slice(0, 168).replace(/\s\S*$/, "") + "…";
-    return { title: strip(title), body };
-  }
-  // embed del player Facebook solo sul sito pubblicato (non in anteprima)
-  const canEmbed = window.Consenso ? Consenso.esterni() : false;
-  const play = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>';
-
-  const videos = posts.filter(p => p.tipo === "video" && p.testo.length >= 100).slice(0, 6);
-  function renderVideos(canEmbed){
-  document.getElementById("video-grid").innerHTML = videos.map(v => {
-    const { title, body } = split(v.testo);
-    const frame = canEmbed
-      ? `<iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(v.link)}&show_text=false" loading="lazy" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="${esc(title)}"></iframe>`
-      : `<a class="vposter" href="${v.link}" target="_blank" rel="noopener" aria-label="Guarda su Facebook: ${esc(title)}">
-           <img src="img/logo-croce.png" alt="" class="vlogo"><span class="play">${play}</span><span class="soon">Guarda su Facebook</span></a>`;
-    return `<article class="vcard reveal">
-      <div class="vframe">${frame}</div>
-      <div class="vbody"><time>${fdate(v.data)}</time><h3>${esc(title)}</h3><p>${esc(body)}</p>
-        <a class="more" href="${v.link}" target="_blank" rel="noopener">Apri su Facebook →</a></div>
-    </article>`;
-  }).join("");
-  document.querySelectorAll("#video-grid .reveal").forEach(el => el.classList.add("in"));
-  }
-  renderVideos(canEmbed);
-  document.addEventListener("consenso", () => renderVideos(Consenso.esterni()));
-
-  const news = posts.filter(p => p.tipo !== "video" && p.testo.length >= 60).slice(0, 3);
-  document.getElementById("news-grid").innerHTML = news.map(n => {
-    const { title, body } = split(n.testo);
-    return `<a class="news reveal" href="${n.link}" target="_blank" rel="noopener">
-      <time>${fdate(n.data)}</time><h3>${esc(title)}</h3><p>${esc(body)}</p><span class="more">Leggi su Facebook →</span></a>`;
-  }).join("");
-})();
 document.getElementById("year").textContent = new Date().getFullYear();
 
 /* header ombra allo scroll */
