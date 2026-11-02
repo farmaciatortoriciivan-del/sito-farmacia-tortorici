@@ -536,3 +536,10 @@ footer .brand-name small{color:rgba(231,241,236,.6)}
 .faq p{margin:0;padding:0 22px 20px;color:var(--muted)}
 @media (max-width:1000px){.qa-grid{grid-template-columns:1fr 1fr}.faq-grid{grid-template-columns:1fr;gap:28px}}
 @media (max-width:640px){.qa-grid{grid-template-columns:1fr}.qa{flex-direction:row;flex-wrap:wrap;align-items:center;column-gap:14px}.qa-ico{margin:0}.qa strong{flex:1}.qa-d,.qa-go{flex-basis:100%}}
+
+/* v12: sigillo centrato */
+.about-visual{background:var(--sand-100);padding-bottom:70px}
+.seal-big{width:min(72%,420px);aspect-ratio:1;object-fit:cover;border-radius:50%;background:#fff;mix-blend-mode:normal;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.about-visual{aspect-ratio:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:40px 20px}
+.about-visual .about-badge{position:static;max-width:100%}
+.seal-big{width:min(78%,400px)}
