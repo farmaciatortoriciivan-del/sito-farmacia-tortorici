@@ -2,6 +2,10 @@
 name = "sito-farmacia-tortorici"
 main = "worker.js"
 compatibility_date = "2025-01-01"
+routes = [
+  { pattern = "farmaciatortorici.com", custom_domain = true },
+  { pattern = "www.farmaciatortorici.com", custom_domain = true }
+]
 
 [assets]
 directory = "./public"
