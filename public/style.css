@@ -757,3 +757,26 @@ html[lang="de"] .menu a{padding-left:10px;padding-right:10px}
 .mt-fonte{margin-top:16px}
 @media (max-width:900px){.mt-top{grid-template-columns:1fr}.mt-cons{grid-template-columns:1fr}}
 @media (max-width:560px){.mt-giorni{grid-template-columns:repeat(5,minmax(96px,1fr));overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:6px}.mt-giorni li{scroll-snap-align:start}.mt-g-d{display:none}}
+
+/* v35: Lo sapevi? Farmacisti geniali */
+.curiosita[hidden]{display:none}
+.cu-box{position:relative;background:linear-gradient(135deg,#fff7e8,#fdecd8);border:1px solid #f1d9b8;border-radius:28px;padding:32px;box-shadow:var(--shadow);overflow:hidden}
+.cu-box::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(226,0,26,.08),transparent 70%);pointer-events:none}
+.cu-card{display:flex;gap:24px;align-items:flex-start;min-height:150px}
+.cu-ic{flex:none;width:96px;height:96px;border-radius:26px;background:#fff;display:grid;place-items:center;font-size:3.2rem;box-shadow:0 10px 24px rgba(120,70,20,.15);animation:cuDondola 4s ease-in-out infinite}
+.cu-lbl{display:inline-block;background:#e2001a;color:#fff;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:999px;margin-bottom:8px}
+.cu-txt h3{margin:0 0 8px;font-size:1.45rem;color:#3b2410;font-family:Fraunces,Georgia,serif}
+.cu-anno{font-family:Inter,system-ui,sans-serif;font-size:.85rem;font-weight:700;color:#a4561a;background:rgba(164,86,26,.12);padding:3px 10px;border-radius:999px;vertical-align:middle;white-space:nowrap}
+.cu-txt p{margin:0;color:#4a3626;font-size:1.05rem;line-height:1.6;max-width:62ch}
+.cu-altra{margin-top:20px;display:inline-flex;align-items:center;gap:8px;color:#7a3e10;border-color:#d9a26b;background:rgba(255,255,255,.6)}
+.cu-altra svg{width:18px;height:18px;transition:transform .5s}
+.cu-altra:hover svg{transform:rotate(-180deg)}
+.cu-gira{animation:cuEntra .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes cuEntra{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes cuDondola{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg) translateY(-3px)}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cu-box{background:linear-gradient(135deg,#2a2016,#221a12);border-color:#4a3622}
+:root:not([data-theme="light"]) .cu-txt h3{color:#f6dcc0}:root:not([data-theme="light"]) .cu-txt p{color:#e6d3c0}
+:root:not([data-theme="light"]) .cu-ic{background:#3a2c1e}:root:not([data-theme="light"]) .cu-anno{color:#f0b37e;background:rgba(240,179,126,.14)}
+:root:not([data-theme="light"]) .cu-altra{color:#f0b37e;border-color:#6b4a2c;background:rgba(0,0,0,.2)}}
+@media (max-width:560px){.cu-box{padding:22px}.cu-card{flex-direction:column;gap:14px}.cu-ic{width:72px;height:72px;font-size:2.4rem;border-radius:20px}.cu-txt h3{font-size:1.25rem}}
+@media (prefers-reduced-motion:reduce){.cu-ic,.cu-gira{animation:none}}
