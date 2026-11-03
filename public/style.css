@@ -594,7 +594,7 @@ footer .brand-name small{color:rgba(231,241,236,.6)}
 .fb-count[hidden]{display:none}
 .fb-count svg{width:30px;height:30px;color:#1877F2;flex:none}
 .fb-count strong{font-family:Fraunces,serif;font-size:1.45rem;color:var(--heading);margin-right:4px}
-.fb-count + .btn{display:flex;width:max-content}
+
 
 /* v19: attualità sanitaria */
 .attualita[hidden]{display:none}
@@ -612,3 +612,7 @@ footer .brand-name small{color:rgba(231,241,236,.6)}
 
 /* v20 */
 .news-list[hidden]{display:none}
+
+/* v21: pulsante TikTok */
+.fb-btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn-tiktok svg{width:18px;height:18px}
