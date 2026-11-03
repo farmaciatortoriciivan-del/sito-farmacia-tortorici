@@ -2,6 +2,7 @@
 //   GET  -> recensioni pubblicate
 //   POST -> nuova recensione (resta "in_attesa" finché lo staff non la approva)
 import { json, sha256, DEFAULT_IP_SALT } from "./_util.js";
+import { inviaAvviso } from "./avviso.js";
 
 export async function onRequestGet({ env }) {
   const { results } = await env.DB.prepare(
@@ -12,7 +13,7 @@ export async function onRequestGet({ env }) {
   });
 }
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, ctx }) {
   let body;
   try { body = await request.json(); } catch { return json({ errore: "Richiesta non valida." }, 400); }
 
@@ -38,5 +39,8 @@ export async function onRequestPost({ request, env }) {
 
   await env.DB.prepare("INSERT INTO recensioni (nome, stelle, testo, data, ip_hash) VALUES (?, ?, ?, ?, ?)")
     .bind(nome, stelle, testo, new Date().toISOString(), ipHash).run();
+  // avviso email allo staff, senza far aspettare il cliente
+  const avviso = inviaAvviso(env, { nome, stelle, testo });
+  if (ctx && ctx.waitUntil) ctx.waitUntil(avviso); else await avviso;
   return json({ ok: true }, 201);
 }
