@@ -2,6 +2,8 @@
 // Il Worker scarica la pagina, ne estrae le righe che riguardano Trabia e le tiene in cache per 3 ore.
 // Le usa l'assistente; /api/turni mostra cosa è stato letto (utile per i controlli).
 const URL_TURNI = "https://www.ordinefarmacistipalermo.it/turni.provincia.asp";
+const BASE = "https://www.ordinefarmacistipalermo.it/";
+const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36";
 const TTL = 3 * 3600;
 
 const decode = (s) => s
@@ -51,6 +53,26 @@ export async function aggiornaTurni(env) {
     out.modulo = infoModulo(html);
     out.link = [...html.matchAll(/<a[^>]*href="([^"]+)"[^>]*>([^<]{0,80})</gi)].map((m) => m[1] + " | " + m[2].trim()).filter((x) => /turn|pdf|trabia|calend/i.test(x)).slice(0, 40);
     out.inizio = righe.join("\n").slice(0, 5000);
+    // diagnostica: come funziona il menu dei comuni
+    const iSel = html.search(/comuni-list/i);
+    out.selectHtml = iSel >= 0 ? html.slice(Math.max(0, iSel - 600), iSel + 400) : null;
+    out.script = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/gi)].map((m) => m[1]).filter((t) => /comun|turn|select|change/i.test(t)).join("\n----\n").slice(0, 4000);
+    out.formHtml = (html.match(/<form[\s\S]*?<\/form>/i) || [""])[0].replace(/<option[\s\S]*<\/option>/i, "<option…>").slice(0, 2500);
+    // prova gli indirizzi più probabili della pagina di Trabia (codice 87)
+    out.candidati = [];
+    for (const [url, opt] of [
+      [BASE + "turni.provincia.asp?c=87", null], [BASE + "turni.provincia.asp?id=87", null], [BASE + "turni.provincia.asp?comune=87", null],
+      [BASE + "turno.asp?c=87", null], [BASE + "turni.provincia.asp", { method: "POST", body: "comuni-list=87" }],
+      [BASE + "search.asp", { method: "POST", body: "comuni-list=87" }],
+    ]) {
+      try {
+        const rr = await fetch(url, { method: opt ? opt.method : "GET", body: opt ? opt.body : undefined, headers: { "user-agent": UA, "content-type": "application/x-www-form-urlencoded", referer: URL_TURNI } });
+        const h = await rr.text();
+        const rg = testoDaHtml(h);
+        const utile = rg.filter((x) => /farmaci|dott|via |piazza|corso|\d{1,2}\/\d{1,2}/i.test(x) && !/ordine dei farmacisti|via ausonia/i.test(x));
+        out.candidati.push({ url: url + (opt ? " (POST " + opt.body + ")" : ""), http: rr.status, righe: rg.length, utile: utile.slice(0, 25).join("\n").slice(0, 1500) });
+      } catch (e) { out.candidati.push({ url, errore: e && e.message }); }
+    }
     out.stato = r.ok ? (out.estratto ? "ok" : "trabia non trovata") : "http " + r.status;
   } catch (e) { out.stato = "errore: " + (e && e.message); }
   try {
@@ -71,6 +93,6 @@ export async function turniTrabia(env, ctx) {
 
 export async function onRequestGet({ env, ctx }) {
   const d = await turniTrabia(env, ctx);
-  delete d.inizio; delete d.link;
+  delete d.inizio; delete d.link; delete d.selectHtml; delete d.script; delete d.formHtml; delete d.candidati;
   return new Response(JSON.stringify(d, null, 1), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 }
