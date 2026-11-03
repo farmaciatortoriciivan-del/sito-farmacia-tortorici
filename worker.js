@@ -27,5 +27,6 @@ export default {
   // ogni 30 minuti: rilegge i turni ufficiali delle farmacie
   async scheduled(event, env, ctx) {
     ctx.waitUntil(turni.aggiornaTurni(env));
+    ctx.waitUntil(turni.sondaTurno(env));
   },
 };

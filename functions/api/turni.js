@@ -119,3 +119,24 @@ export async function onRequestGet({ env, ctx }) {
   d.tabella = await tabellaTurni(env, ctx);
   return new Response(JSON.stringify(d, null, 1), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 }
+
+// Diagnostica temporanea: salva il contenuto grezzo di turno.asp per studiarne il formato.
+export async function sondaTurno(env) {
+  const prove = [
+    ["GET", BASE + "turno.asp", null],
+    ["POST", BASE + "turno.asp", "redirect-from=&comuni-list=87"],
+    ["GET", BASE + "turno.asp?comune=87", null],
+  ];
+  const out = [];
+  for (const [m, u, b] of prove) {
+    try {
+      const r = await fetch(u, { method: m, body: b, headers: { "user-agent": UA, referer: BASE + "turno.asp", ...(b ? { "content-type": "application/x-www-form-urlencoded" } : {}) } });
+      const buf = await r.arrayBuffer();
+      let h = new TextDecoder("utf-8").decode(buf);
+      if (h.includes("�")) h = new TextDecoder("windows-1252").decode(buf);
+      out.push({ m, u, b, http: r.status, finale: r.url, html: h.slice(0, 60000) });
+    } catch (e) { out.push({ m, u, b, errore: String(e && e.message) }); }
+  }
+  await env.DB.prepare("INSERT INTO turni_cache (id, dati, quando) VALUES (9, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando")
+    .bind(JSON.stringify(out), new Date().toISOString()).run();
+}
