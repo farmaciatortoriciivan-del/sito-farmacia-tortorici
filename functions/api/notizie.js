@@ -69,6 +69,7 @@ export function parseFeed(xml, fonte) {
     if (!link) { const h = it.match(/<link[^>]*href="([^"]+)"/i); link = h ? h[1].replace(/&amp;/g, "&") : ""; }
     if (!titolo || !fonte.dominio.test(link)) continue;
     if (fonte.filtra && (SEZIONI_ESCLUSE.test(link) || PROFESSIONALI.some((r) => r.test(titolo)))) continue;
+    if (CATENE.test(titolo + " " + tag(it, "description") + " " + tag(it, "summary"))) continue;
     const d = Date.parse(tag(it, "pubDate") || tag(it, "published") || tag(it, "updated") || tag(it, "dc:date"));
     out.push({ titolo, link, data: isNaN(d) ? null : new Date(d).toISOString(), categoria: tag(it, "category") || null, fonte: fonte.nome,
       sommario: tag(it, "description").slice(0, 200) });
@@ -85,6 +86,10 @@ export function unisci(liste) {
   return out;
 }
 
+// Niente notizie che pubblicizzano catene, reti o insegne di farmacie (richiesta del titolare).
+// Controllo su titolo e riassunto, per entrambe le testate.
+export const CATENE = /\bbenu\b|dottor\s*max|dottormax|lloyds|admenta|hippocrates|apoteca\s*natura|farmacie\s*italiane|\bboots\b|neo\s*apotek|farma[eè]\b|\batida\b|\befarma\b|farmacia\s*loreto|amica\s*farmacia|amicafarmacia|top\s*farmacia|redcare|shop\s*apotheke|docpeter|pharmercure|1000\s*farmacie|farmacosmo|farmacia\s*igea|alphega|pharmapiu|farmapi[uù]\b|farmacie\s*comunali\s*riunite|\bcatena\b|\bcatene\b|network\s*di\s*farmacie|rete\s*di\s*farmacie|gruppo\s*di\s*farmacie|franchising|aggregazion/i;
+
 // Workers AI (gratuito nei limiti giornalieri): per entrambe le testate decide quali titoli interessano un cliente comune.
 // Se l'AI non è disponibile si usa la regola a parole, applicata al solo titolo.
 const MODELLO = "@cf/meta/llama-3.1-8b-instruct";
@@ -95,7 +100,7 @@ export async function perClienti(env, notizie) {
       const elenco = notizie.map((n, i) => `${i + 1}. ${n.titolo}${n.sommario ? " — " + n.sommario : ""}`).join("\n");
       const r = await env.AI.run(MODELLO, {
         messages: [
-          { role: "system", content: "Sei il redattore del sito di una farmacia di paese. Scegli SOLO le notizie che interessano a un cliente comune della farmacia (salute, malattie, prevenzione, consigli, farmaci dal punto di vista del paziente, alimentazione, benessere). ESCLUDI tutto ciò che interessa solo agli addetti ai lavori: aziende, forniture, mercato, politica sanitaria, contratti, professioni sanitarie, normative, congressi, ricerca di laboratorio senza ricadute pratiche per il paziente. Nel dubbio escludi. Rispondi solo con un array JSON dei numeri scelti, per esempio [2,5]. Se nessuna va bene rispondi []." },
+          { role: "system", content: "Sei il redattore del sito di una farmacia di paese. Scegli SOLO le notizie che interessano a un cliente comune della farmacia (salute, malattie, prevenzione, consigli, farmaci dal punto di vista del paziente, alimentazione, benessere). ESCLUDI le notizie che parlano di catene, reti o marchi di farmacie (per esempio Benu, Dottor Max, Lloyds) e tutto ciò che interessa solo agli addetti ai lavori: aziende, forniture, mercato, politica sanitaria, contratti, professioni sanitarie, normative, congressi, ricerca di laboratorio senza ricadute pratiche per il paziente. Nel dubbio escludi. Rispondi solo con un array JSON dei numeri scelti, per esempio [2,5]. Se nessuna va bene rispondi []." },
           { role: "user", content: elenco },
         ],
         max_tokens: 60,
@@ -129,7 +134,7 @@ async function leggi(fonte, env) {
 
 export async function onRequest({ request, env, ctx }) {
   const cache = caches.default;
-  const key = new Request(new URL("/api/notizie?v=5", request.url).toString());
+  const key = new Request(new URL("/api/notizie?v=6", request.url).toString());
   const hit = await cache.match(key);
   if (hit) return hit;
 
