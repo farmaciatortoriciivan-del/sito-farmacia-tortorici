@@ -565,3 +565,9 @@ footer .brand-name small{color:rgba(231,241,236,.6)}
 .hv-hint svg{width:16px;height:16px}
 @media (max-width:560px){.hv-hint{left:50%;transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.hv-card.gira{animation:none}.hv-back{transition:none}}
+
+/* v15: calendario 2027 */
+.cal-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:center}
+.cal-img{margin:0;border-radius:24px;overflow:hidden;box-shadow:var(--shadow);transform:rotate(-1.2deg)}
+.cal-img img{display:block;width:100%;height:auto}
+@media (max-width:820px){.cal-grid{grid-template-columns:1fr;gap:24px}.cal-img{transform:none}}
