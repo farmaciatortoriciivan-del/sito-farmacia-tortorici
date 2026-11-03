@@ -38,38 +38,45 @@ function infoModulo(html) {
   return { form: f ? f[0].slice(0, 200) : null, select: sel, opzioniTrabia: opz };
 }
 
-// Chiede alla pagina ufficiale i turni di un comune (come fa il menu "Seleziona Comune").
-async function turniComune(codice, cookie) {
+// Chiede alla pagina ufficiale i turni di un comune (come fa il menu "Seleziona Comune"):
+// la risposta contiene l'indirizzo del "cartello" settimanale con i turni, che poi leggiamo.
+async function cartelloComune(codice, data, cookie) {
   const r = await fetch(URL_TURNI, {
     method: "POST",
     headers: { "user-agent": UA, "content-type": "application/x-www-form-urlencoded", referer: URL_TURNI, origin: BASE.slice(0, -1), cookie: cookie || "" },
-    body: "redirect-from=&comuni-list=" + codice,
+    body: "redirect-from=&comuni-list=" + codice + (data ? "&simula-data=" + encodeURIComponent(data) : ""),
   });
-  const buf = await r.arrayBuffer();
-  let html = new TextDecoder("windows-1252").decode(buf);
-  if (/charset=utf-8/i.test(html)) html = new TextDecoder("utf-8").decode(buf);
-  // la parte utile sta dopo il menu dei comuni e prima del piè di pagina
-  const iSel = html.search(/<\/select>/i);
-  const iFine = html.search(/Via Ausonia/i);
-  const parte = iSel >= 0 ? html.slice(iSel + 9, iFine > iSel ? iFine : undefined) : "";
-  const righe = testoDaHtml(parte).filter((x) => !/HTMLSEMPLICE|^Ordine dei Farmacisti di Palermo$/i.test(x));
-  return { http: r.status, righe, html: parte.slice(0, 6000) };
+  const html = await r.text();
+  const m = html.match(/linknew\s*=\s*"([^"]+)"/);
+  if (!m) return { http: r.status, link: null, righe: [], html: "" };
+  const c = await fetch(m[1], { headers: { "user-agent": UA, referer: URL_TURNI } });
+  const buf = await c.arrayBuffer();
+  let h = new TextDecoder("utf-8").decode(buf);
+  if (h.includes("�") || /charset=(iso-8859-1|windows-1252)/i.test(h)) h = new TextDecoder("windows-1252").decode(buf);
+  return { http: c.status, link: m[1], righe: testoDaHtml(h), html: h };
 }
 
-// Legge i turni di Trabia e San Nicola L'Arena e li salva nel database.
+const ddmmyyyy = (d) => [d.getUTCDate(), d.getUTCMonth() + 1, d.getUTCFullYear()].map((n, i) => String(n).padStart(i < 2 ? 2 : 4, "0")).join("/");
+
+// Legge i turni di Trabia e San Nicola L'Arena (settimana corrente e successiva) e li salva nel database.
 export async function aggiornaTurni(env) {
-  const out = { fonte: URL_TURNI, letto: new Date().toISOString(), estratto: "", stato: "non letto", comuni: {} };
+  const out = { fonte: URL_TURNI, letto: new Date().toISOString(), estratto: "", stato: "non letto", cartelli: [] };
   try {
     const g = await fetch(URL_TURNI, { headers: { "user-agent": UA, accept: "text/html" } });
     const cookie = (g.headers.get("set-cookie") || "").split(/,(?=\s*[A-Za-z0-9_]+=)/).map((c) => c.split(";")[0].trim()).filter(Boolean).join("; ");
     await g.arrayBuffer();
-    for (const [nome, codice] of [["TRABIA", 87], ["TRABIA » S. NICOLA L'ARENA", 88]]) {
-      const t = await turniComune(codice, cookie);
-      out.comuni[nome] = { http: t.http, righe: t.righe };
-      if (codice === 87) out.htmlTrabia = t.html;
+    const fra7 = ddmmyyyy(new Date(Date.now() + 7 * 864e5));
+    const visti = new Set();
+    for (const [nome, codice] of [["Trabia", 87], ["San Nicola L'Arena (Trabia)", 88]]) {
+      for (const data of [null, fra7]) {
+        const t = await cartelloComune(codice, data, cookie);
+        if (!t.link || visti.has(t.link)) continue;
+        visti.add(t.link);
+        out.cartelli.push({ comune: nome, link: t.link, http: t.http, righe: t.righe.slice(0, 120), html: t.html.slice(0, 9000) });
+      }
     }
-    out.estratto = Object.entries(out.comuni).map(([n, c]) => "== " + n + " ==\n" + c.righe.join("\n")).join("\n\n").slice(0, 3500);
-    out.stato = Object.values(out.comuni).some((c) => c.righe.length) ? "ok" : "nessun turno trovato";
+    out.estratto = out.cartelli.map((c) => "== " + c.comune + " (" + c.link.split("/").pop() + ") ==\n" + c.righe.join("\n")).join("\n\n").slice(0, 6000);
+    out.stato = out.cartelli.some((c) => c.righe.length) ? "ok" : "nessun turno trovato";
   } catch (e) { out.stato = "errore: " + (e && e.message); }
   try {
     await env.DB.prepare("INSERT INTO turni_cache (id, dati, quando) VALUES (1, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando")
@@ -89,6 +96,6 @@ export async function turniTrabia(env, ctx) {
 
 export async function onRequestGet({ env, ctx }) {
   const d = await turniTrabia(env, ctx);
-  delete d.htmlTrabia;
+  (d.cartelli || []).forEach((c) => delete c.html);
   return new Response(JSON.stringify(d, null, 1), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 }
