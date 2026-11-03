@@ -16,6 +16,11 @@ binding = "DB"
 database_name = "recensioni-farmacia"
 database_id = "a4622bd3-6b64-4d9c-b469-f83480fe683b"
 
+# Avviso email allo staff per ogni nuova recensione (Cloudflare Email Routing)
+[[send_email]]
+name = "AVVISI"
+destination_address = "farmaciatortorici@live.it"
+
 # Segreti da impostare nel pannello Cloudflare (Settings > Variables and Secrets), NON qui:
 #   ADMIN_PASSWORD  -> password della pagina /admin.html
 #   IP_SALT         -> una stringa casuale qualsiasi
