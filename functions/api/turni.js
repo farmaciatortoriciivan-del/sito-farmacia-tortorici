@@ -134,9 +134,14 @@ export async function sondaTurno(env) {
       const buf = await r.arrayBuffer();
       let h = new TextDecoder("utf-8").decode(buf);
       if (h.includes("�")) h = new TextDecoder("windows-1252").decode(buf);
-      out.push({ m, u, b, http: r.status, finale: r.url, html: h.slice(0, 60000) });
+      out.push({ m, u, b, http: r.status, finale: r.url, html: h.slice(0, 20000) });
     } catch (e) { out.push({ m, u, b, errore: String(e && e.message) }); }
   }
-  await env.DB.prepare("INSERT INTO turni_cache (id, dati, quando) VALUES (9, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando")
-    .bind(JSON.stringify(out), new Date().toISOString()).run();
+  const q = "INSERT INTO turni_cache (id, dati, quando) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando";
+  const t = new Date().toISOString();
+  try { await env.DB.prepare(q).bind(8, "inizio " + out.map((o) => o.http || o.errore).join(","), t).run(); } catch (e) {}
+  for (let i = 0; i < out.length; i++) {
+    try { await env.DB.prepare(q).bind(10 + i, JSON.stringify(out[i]), t).run(); }
+    catch (e) { try { await env.DB.prepare(q).bind(20 + i, "errore " + String(e && e.message), t).run(); } catch (e2) {} }
+  }
 }
