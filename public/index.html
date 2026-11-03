@@ -362,21 +362,6 @@
   </div>
 </section>
 
-<!-- ============ ATTUALITÀ SANITARIA (Quotidiano Sanità + Farmacista33) ============ -->
-<section id="attualita" class="attualita" hidden>
-  <div class="wrap">
-    <div class="sec-head reveal in">
-      <div>
-        <span class="eyebrow">Attualità sanitaria</span>
-        <h2>Notizie dal mondo della salute</h2>
-      </div>
-      <p class="lead">Le ultime notizie da Quotidiano Sanità e Farmacista33, scelte per te e aggiornate in automatico.</p>
-    </div>
-    <ol class="news-list" id="news-list" hidden></ol>
-    <p class="news-src">Fonti: <a href="https://www.quotidianosanita.it/" target="_blank" rel="noopener">Quotidiano Sanità</a> e <a href="https://www.farmacista33.it/" target="_blank" rel="noopener">Farmacista33</a>. Gli articoli si aprono sul sito della testata.</p>
-  </div>
-</section>
-
 <!-- ============ RECENSIONI (anteprima) ============ -->
 <section id="recensioni" style="background:var(--sand-100)">
   <div class="wrap">
@@ -718,22 +703,6 @@ if ("IntersectionObserver" in window){
   el.hidden = false;
 })();
 
-// Attualità sanitaria: titoli da Quotidiano Sanità e Farmacista33 (letti dal nostro server, cache 30 min)
-(() => {
-  const sec = document.getElementById("attualita"), ol = document.getElementById("news-list");
-  if (!sec || window.claude || !/^https?:$/.test(location.protocol)) return;
-  const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  fetch("/api/notizie").then(r => r.ok ? r.json() : null).then(d => {
-    const n = d && Array.isArray(d.notizie) ? d.notizie.filter(x => /^https:\/\/(www\.)?(quotidianosanita|farmacista33)\.it\//.test(x.link)) : [];
-    if (!n.length) return;
-    ol.hidden = false;
-    sec.hidden = false;
-    ol.innerHTML = n.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">
-      ${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString("it-IT",{day:"numeric",month:"short"})}</time>` : ""}
-      <span class="news-cat">${esc(x.fonte || "Quotidiano Sanità")}</span>
-      <strong>${esc(x.titolo)}</strong><span class="news-go">Leggi →</span></a></li>`).join("");
-  }).catch(() => {});
-})();
 </script>
 </body>
 </html>
