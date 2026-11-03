@@ -9,7 +9,7 @@ const FONTI = [
     nome: "Quotidiano Sanità",
     dominio: /^https:\/\/(www\.)?quotidianosanita\.it\//,
     feed: ["https://www.quotidianosanita.it/feed/", "https://www.quotidianosanita.it/?feed=rss2"],
-    filtra: false,
+    filtra: true, // anche qui solo notizie utili ai clienti, niente politica sanitaria o temi di categoria
   },
   {
     nome: "Farmacista33",
@@ -85,7 +85,7 @@ export function unisci(liste) {
   return out;
 }
 
-// Workers AI (gratuito nei limiti giornalieri): decide quali titoli interessano un cliente comune.
+// Workers AI (gratuito nei limiti giornalieri): per entrambe le testate decide quali titoli interessano un cliente comune.
 // Se l'AI non è disponibile si usa la regola a parole, applicata al solo titolo.
 const MODELLO = "@cf/meta/llama-3.1-8b-instruct";
 export async function perClienti(env, notizie) {
@@ -120,7 +120,7 @@ async function leggi(fonte, env) {
       });
       if (!r.ok) continue;
       let n = parseFeed(await r.text(), fonte);
-      if (fonte.filtra) n = await perClienti(env, n.slice(0, 15));
+      if (fonte.filtra) n = await perClienti(env, n.slice(0, 20));
       if (n.length) return n;
     } catch (e) { /* prova l'indirizzo successivo */ }
   }
@@ -129,7 +129,7 @@ async function leggi(fonte, env) {
 
 export async function onRequest({ request, env, ctx }) {
   const cache = caches.default;
-  const key = new Request(new URL("/api/notizie?v=4", request.url).toString());
+  const key = new Request(new URL("/api/notizie?v=5", request.url).toString());
   const hit = await cache.match(key);
   if (hit) return hit;
 
