@@ -16,7 +16,7 @@
       rapide: ["Siete aperti adesso?", "Come prenoto l'Holter?", "Farmacia di turno", "Dove vi trovo?"],
       errore: "Al momento non riesco a rispondere. Scrivici su WhatsApp o chiamaci: ti aiutiamo noi.",
       troppi: "Hai scritto molti messaggi in poco tempo. Riprova tra un po', oppure scrivici su WhatsApp.",
-      nuova: "Nuova conversazione",
+      nuova: "Nuova conversazione", questa: "Questa settimana", prossima: "Prossima settimana",
       az: { whatsapp: "Scrivici su WhatsApp", chiama: "Chiama 091 814 6207", turni: "Farmacie di turno", mappa: "Come arrivare", prenota: "Prenota", canale: "Segui il canale", recensione: "Lascia una recensione" }
     },
     en: {
@@ -28,7 +28,7 @@
       rapide: ["Are you open now?", "How do I book a Holter?", "On-duty pharmacy", "Where are you?"],
       errore: "I can't reply right now. Message us on WhatsApp or give us a call: we'll help you.",
       troppi: "You've sent a lot of messages in a short time. Please try again later, or message us on WhatsApp.",
-      nuova: "New conversation",
+      nuova: "New conversation", questa: "This week", prossima: "Next week",
       az: { whatsapp: "Message us on WhatsApp", chiama: "Call +39 091 814 6207", turni: "On-duty pharmacies", mappa: "Directions", prenota: "Book", canale: "Follow the channel", recensione: "Leave a review" }
     },
     de: {
@@ -40,7 +40,7 @@
       rapide: ["Haben Sie jetzt geöffnet?", "Wie buche ich einen Holter?", "Notdienstapotheke", "Wo finde ich Sie?"],
       errore: "Ich kann gerade nicht antworten. Schreiben Sie uns auf WhatsApp oder rufen Sie uns an: Wir helfen Ihnen.",
       troppi: "Sie haben in kurzer Zeit viele Nachrichten gesendet. Bitte versuchen Sie es später oder schreiben Sie uns auf WhatsApp.",
-      nuova: "Neues Gespräch",
+      nuova: "Neues Gespräch", questa: "Diese Woche", prossima: "Nächste Woche",
       az: { whatsapp: "Auf WhatsApp schreiben", chiama: "+39 091 814 6207 anrufen", turni: "Notdienstapotheken", mappa: "Anfahrt", prenota: "Buchen", canale: "Kanal folgen", recensione: "Bewertung abgeben" }
     }
   }[LANG] || null;
@@ -129,12 +129,30 @@
     }).join("");
   }
 
-  function bollaMsg(ruolo, testo, azioni, anima, ora) {
+  function tabellaHtml(tab) {
+    if (!tab || !tab.length) return "";
+    var oggi = new Date().toISOString().slice(0, 10);
+    var fmt = function (d) { return new Date(d + "T12:00:00").toLocaleDateString(LANG === "de" ? "de-DE" : LANG === "en" ? "en-GB" : "it-IT", { day: "numeric", month: "short" }); };
+    return '<div class="ast-tab">' + tab.map(function (r, i) {
+      var ora = r.dal <= oggi && r.al >= oggi;
+      var prossimoLun = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10);
+      var etichetta = ora ? T.questa : (r.dal <= prossimoLun && r.al >= prossimoLun) ? T.prossima : "";
+      var tel = String(r.telefono || "").replace(/[^\d+]/g, "");
+      return '<div class="ast-tr' + (ora ? " ast-ora-ok" : "") + '">' +
+        '<div class="ast-per">' + (etichetta ? "<b>" + esc(etichetta) + "</b> · " : "") + esc(fmt(r.dal)) + " – " + esc(fmt(r.al)) + "</div>" +
+        '<div class="ast-far">' + esc(r.farmacia) + "</div>" +
+        (r.indirizzo ? '<div class="ast-ind">' + esc(r.indirizzo) + "</div>" : "") +
+        '<div class="ast-riga">' + (tel ? '<a href="tel:' + (tel[0] === "+" ? tel : "+39" + tel) + '">' + svg(ICONE.chiama) + esc(r.telefono) + "</a>" : "") +
+        (r.tipo ? "<em>" + esc(r.tipo) + "</em>" : "") + "</div></div>";
+    }).join("") + "</div>";
+  }
+
+  function bollaMsg(ruolo, testo, azioni, anima, ora, tabella) {
     var el = document.createElement("div");
     var bot = ruolo !== "utente";
     el.className = "ast-m ast-" + (bot ? "b" : "u") + (anima && !RIDOTTO ? " ast-in" : "");
     el.innerHTML = (bot ? '<span class="ast-mav">' + LOGO + "</span>" : "") +
-      '<div class="ast-col"><div class="ast-bub"></div><div class="ast-azs"></div>' + (ora ? '<span class="ast-ora">' + esc(ora) + "</span>" : "") + "</div>";
+      '<div class="ast-col"><div class="ast-bub"></div>' + tabellaHtml(tabella) + '<div class="ast-azs"></div>' + (ora ? '<span class="ast-ora">' + esc(ora) + "</span>" : "") + "</div>";
     msgs.appendChild(el);
     var txt = el.querySelector(".ast-bub"), azs = el.querySelector(".ast-azs");
     var finale = function () { azs.innerHTML = azioniHtml(azioni); if (azioni && azioni.length && !RIDOTTO) azs.classList.add("ast-pop"); giu(); };
@@ -153,7 +171,7 @@
     if (storia.length) {
       var sep = document.createElement("div"); sep.className = "ast-sep"; sep.textContent = T.oggi; msgs.appendChild(sep);
     }
-    storia.forEach(function (m) { bollaMsg(m.ruolo, m.testo, m.azioni, false, m.ora); });
+    storia.forEach(function (m) { bollaMsg(m.ruolo, m.testo, m.azioni, false, m.ora, m.tabella); });
     scroll.scrollTop = storia.length ? scroll.scrollHeight : 0;
   }
 
@@ -184,12 +202,12 @@
         var attesa = Math.max(0, 900 - (Date.now() - t0));
         setTimeout(function () {
           dots.remove();
-          var testoR, az;
-          if (res.s === 200 && res.d.testo) { testoR = res.d.testo; az = res.d.azioni || []; }
+          var testoR, az, tab = null;
+          if (res.s === 200 && res.d.testo) { testoR = res.d.testo; az = res.d.azioni || []; tab = res.d.tabella || null; }
           else { testoR = res.s === 429 ? T.troppi : T.errore; az = ["whatsapp", "chiama"]; }
           var o = adesso();
-          storia.push({ ruolo: "assistente", testo: testoR, azioni: az, ora: o }); salva();
-          bollaMsg("assistente", testoR, az, true, o);
+          storia.push({ ruolo: "assistente", testo: testoR, azioni: az, ora: o, tabella: tab }); salva();
+          bollaMsg("assistente", testoR, az, true, o, tab);
           occupato = false; send.disabled = !input.value.trim();
         }, attesa);
       });

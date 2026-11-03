@@ -2,7 +2,7 @@
 // Usa Workers AI di Cloudflare (gratuito nei limiti giornalieri). Nessun dato viene salvato:
 // si conta solo quanti messaggi arrivano da ogni indirizzo (in forma cifrata) per evitare abusi.
 import { json, sha256, DEFAULT_IP_SALT } from "./_util.js";
-import { turniTrabia } from "./turni.js";
+import { turniTrabia, tabellaTurni } from "./turni.js";
 
 const MODELLI = ["@cf/meta/llama-3.3-70b-instruct-fp8-fast", "@cf/meta/llama-3.1-8b-instruct-fast"];
 const LIMITE_ORA = 40; // messaggi per indirizzo all'ora
@@ -79,6 +79,15 @@ REGOLE IMPORTANTI:
 AZIONI: alla fine della risposta puoi aggiungere, se utili, uno o due di questi codici (il sito li mostra come pulsanti): [[whatsapp]] [[chiama]] [[turni]] [[mappa]] [[prenota]] [[canale]] [[recensione]]`;
 }
 
+const TESTI_TURNI = {
+  it: { con: "Ecco le farmacie di turno a Trabia, secondo il calendario ufficiale:", nota: "Di notte e nei festivi il servizio è a chiamata, solo per farmaci urgenti.",
+        senza: "Il sito ufficiale dell'Ordine dei Farmacisti di Palermo non ha ancora pubblicato i turni di Trabia per questo periodo. Il calendario dei turni è esposto sulle bacheche di tutte le farmacie: chiamaci e ti diciamo subito quale farmacia è di turno." },
+  en: { con: "Here are the on-duty pharmacies in Trabia, from the official rota:", nota: "At night and on public holidays there is an on-call service for urgent medicines only.",
+        senza: "The official website of the Palermo Order of Pharmacists hasn't published Trabia's rota for this period yet. The rota is posted on the notice boards of all pharmacies: call us and we'll tell you straight away which pharmacy is on duty." },
+  de: { con: "Hier sind die Notdienstapotheken in Trabia laut offiziellem Plan:", nota: "Nachts und an Feiertagen gibt es einen Rufbereitschaftsdienst nur für dringende Arzneimittel.",
+        senza: "Die offizielle Website der Apothekerkammer Palermo hat den Notdienstplan für Trabia für diesen Zeitraum noch nicht veröffentlicht. Der Plan hängt an den Aushängen aller Apotheken: Rufen Sie uns an, wir sagen Ihnen sofort, welche Apotheke Dienst hat." },
+};
+
 const AZIONI = ["whatsapp", "chiama", "turni", "mappa", "prenota", "canale", "recensione"];
 export function separaAzioni(testo) {
   const azioni = [];
@@ -117,6 +126,16 @@ export async function onRequestPost({ request, env, ctx }) {
 
   if (!env.AI) return json({ errore: "non_disponibile" }, 503);
   if ((await contaUso(request, env)) > LIMITE_ORA) return json({ errore: "troppi" }, 429);
+
+  // Domande sui turni: risposta precisa con la tabella ufficiale (senza passare dal modello)
+  const ultima = storia[storia.length - 1].content;
+  if (/\bturn[oi]\b|di guardia|farmacia aperta (di|la) notte|on[- ]?duty|night pharmac|notdienst|bereitschaft/i.test(ultima)) {
+    let tab = [];
+    try { tab = await tabellaTurni(env, ctx); } catch (e) {}
+    const L = TESTI_TURNI[lingua];
+    if (tab.length) return json({ testo: L.con + "\n" + L.nota, azioni: ["turni", "chiama"], tabella: tab.map(({ dal, al, farmacia, indirizzo, telefono, tipo }) => ({ dal, al, farmacia, indirizzo, telefono, tipo })) });
+    return json({ testo: L.senza, azioni: ["chiama", "turni"] });
+  }
 
   let turni = null;
   if (/turno|turni|notte|nott|festiv|domenica|aperta ora|duty|night|notdienst|nacht/i.test(storia.map((m) => m.content).join(" "))) {

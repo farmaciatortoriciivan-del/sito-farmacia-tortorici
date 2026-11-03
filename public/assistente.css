@@ -156,3 +156,17 @@
 @media (max-width:640px){.has-sticky .ast-launch{bottom:84px}.has-sticky .ast-bolla{bottom:148px}}
 @media (prefers-reduced-motion:reduce){.ast *,.ast *::before,.ast *::after{animation:none!important;transition:none!important}}
 @media print{.ast{display:none}}
+
+/* tabella dei turni */
+.ast-tab{display:grid;gap:8px;margin-top:2px}
+.ast-tr{background:var(--a-bg);border:1px solid var(--a-line);border-radius:16px;padding:12px 14px;display:grid;gap:3px;box-shadow:0 2px 8px rgba(18,59,44,.06)}
+.ast-tr.ast-ora-ok{border:1.5px solid #3a9f45;background:linear-gradient(180deg,#f1faf4,var(--a-bg));box-shadow:0 8px 18px -10px rgba(31,92,69,.45)}
+.ast-per{font-size:12px;color:var(--a-muted);text-transform:capitalize}
+.ast-per b{color:#1f7a4a;text-transform:none}
+.ast-far{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:16px;color:var(--a-ink);line-height:1.25}
+.ast-ind{font-size:13px;color:var(--a-muted)}
+.ast-riga{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:4px}
+.ast-riga a{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13px;color:#fff;background:linear-gradient(135deg,var(--a-g1),var(--a-g2));padding:6px 12px;border-radius:999px;text-decoration:none}
+.ast-riga a svg{width:14px;height:14px}
+.ast-riga em{font-style:normal;font-size:11.5px;font-weight:600;color:#b45a12;background:#fde6cf;padding:3px 9px;border-radius:999px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ast-tr.ast-ora-ok{background:var(--a-bg)}}

@@ -1,6 +1,7 @@
 // Farmacie di turno a Trabia, lette dal sito ufficiale dell'Ordine dei Farmacisti di Palermo.
 // Il Worker scarica la pagina, ne estrae le righe che riguardano Trabia e le tiene in cache per 3 ore.
 // Le usa l'assistente; /api/turni mostra cosa è stato letto (utile per i controlli).
+import { CALENDARIO } from "./turni-trabia.js";
 const URL_TURNI = "https://www.ordinefarmacistipalermo.it/turni.provincia.asp";
 const BASE = "https://www.ordinefarmacistipalermo.it/";
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36";
@@ -38,54 +39,52 @@ function infoModulo(html) {
   return { form: f ? f[0].slice(0, 200) : null, select: sel, opzioniTrabia: opz };
 }
 
-// Chiede alla pagina ufficiale i turni di un comune (come fa il menu "Seleziona Comune"):
-// la risposta contiene l'indirizzo del "cartello" settimanale con i turni, che poi leggiamo.
-async function cartelloComune(codice, data, cookie) {
-  const r = await fetch(URL_TURNI, {
-    method: "POST",
-    headers: { "user-agent": UA, "content-type": "application/x-www-form-urlencoded", referer: URL_TURNI, origin: BASE.slice(0, -1), cookie: cookie || "" },
-    body: "redirect-from=&comuni-list=" + codice + (data ? "&simula-data=" + encodeURIComponent(data) : ""),
-  });
-  const html = await r.text();
-  const m = html.match(/linknew\s*=\s*"([^"]+)"/);
-  if (!m) return { http: r.status, link: null, righe: [], html: "" };
-  const c = await fetch(m[1], { headers: { "user-agent": UA, referer: URL_TURNI } });
-  const buf = await c.arrayBuffer();
-  let h = new TextDecoder("utf-8").decode(buf);
-  if (h.includes("�") || /charset=(iso-8859-1|windows-1252)/i.test(h)) h = new TextDecoder("windows-1252").decode(buf);
-  return { http: c.status, link: m[1], righe: testoDaHtml(h), html: h };
+// Settimana ISO (i cartelli ufficiali sono settimanali: 90019_ANNO_SETTIMANA.html)
+export function settimanaIso(d) {
+  const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  const g = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - g);
+  const anno = t.getUTCFullYear();
+  const w = Math.ceil(((t - Date.UTC(anno, 0, 1)) / 864e5 + 1) / 7);
+  return { anno, w };
+}
+export function lunediDi(d) {
+  const t = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  t.setUTCDate(t.getUTCDate() - ((t.getUTCDay() || 7) - 1));
+  return t;
+}
+const iso = (d) => d.toISOString().slice(0, 10);
+
+// Legge un cartello: "TURNO DIURNO E NOTTURNO / FARMACIA ... / VIA ... - TRABIA / 091 ..."
+export function leggiCartello(righe) {
+  const tipo = righe.find((r) => /turno/i.test(r)) || "";
+  const iF = righe.findIndex((r) => /^farmacia\b/i.test(r));
+  if (iF < 0) return null;
+  const tel = righe.slice(iF + 1).find((r) => /^\+?[\d\s./-]{6,}$/.test(r)) || "";
+  const ind = righe.slice(iF + 1).find((r) => r !== tel && /[a-z]/i.test(r)) || "";
+  return { tipo: tipo.toLowerCase(), farmacia: righe[iF], indirizzo: ind, telefono: tel };
 }
 
-const ddmmyyyy = (d) => [d.getUTCDate(), d.getUTCMonth() + 1, d.getUTCFullYear()].map((n, i) => String(n).padStart(i < 2 ? 2 : 4, "0")).join("/");
-
-// Legge i turni di Trabia e San Nicola L'Arena (settimana corrente e successiva) e li salva nel database.
+// Legge i cartelli ufficiali di Trabia per questa settimana e le 3 successive e li salva nel database.
 export async function aggiornaTurni(env) {
-  const out = { fonte: URL_TURNI, letto: new Date().toISOString(), estratto: "", stato: "non letto", cartelli: [] };
+  const out = { fonte: URL_TURNI, letto: new Date().toISOString(), stato: "non letto", settimane: [] };
   try {
-    const g = await fetch(URL_TURNI, { headers: { "user-agent": UA, accept: "text/html" } });
-    const cookie = (g.headers.get("set-cookie") || "").split(/,(?=\s*[A-Za-z0-9_]+=)/).map((c) => c.split(";")[0].trim()).filter(Boolean).join("; ");
-    await g.arrayBuffer();
-    const fra7 = ddmmyyyy(new Date(Date.now() + 7 * 864e5));
-    const visti = new Set();
-    for (const [nome, codice] of [["Trabia", 87], ["San Nicola L'Arena (Trabia)", 88]]) {
-      for (const data of [null, fra7]) {
-        const t = await cartelloComune(codice, data, cookie);
-        if (!t.link || visti.has(t.link)) continue;
-        visti.add(t.link);
-        out.cartelli.push({ comune: nome, link: t.link, http: t.http, righe: t.righe.slice(0, 120), html: t.html.slice(0, 9000) });
-      }
+    const lun = lunediDi(new Date());
+    for (let k = 0; k < 4; k++) {
+      const inizio = new Date(lun.getTime() + k * 7 * 864e5), fine = new Date(inizio.getTime() + 6 * 864e5);
+      const { anno, w } = settimanaIso(inizio);
+      const url = `${BASE}public/cartelli-provincia/trabia/html/90019_${anno}_${w}.html`;
+      const r = await fetch(url, { headers: { "user-agent": UA, referer: URL_TURNI } });
+      const sett = { dal: iso(inizio), al: iso(fine), url, http: r.status, turno: null };
+      if (r.ok) {
+        const buf = await r.arrayBuffer();
+        let h = new TextDecoder("utf-8").decode(buf);
+        if (h.includes("�")) h = new TextDecoder("windows-1252").decode(buf);
+        sett.turno = leggiCartello(testoDaHtml(h));
+      } else await r.arrayBuffer();
+      out.settimane.push(sett);
     }
-    // diagnostica: altre pubblicazioni dei turni (calendari annuali, PDF)
-    out.altro = [];
-    try {
-      const p43 = await (await fetch(BASE + "default.asp?pageid=43", { headers: { "user-agent": UA } })).text();
-      out.altro.push(...[...p43.matchAll(/<a[^>]*href="([^"]+)"[^>]*>([\s\S]{0,120}?)<\/a>/gi)].map((m) => m[1] + " | " + m[2].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()).filter((x) => /trabia|2026|2025|pdf|cartell|turn/i.test(x)).slice(0, 60));
-    } catch (e) { out.altro.push("p43 errore " + e.message); }
-    for (const u of ["public/cartelli-provincia/trabia/", "public/cartelli-provincia/trabia/html/", "public/cartelli-provincia/trabia/pdf/90019_2026_45.pdf", "public/cartelli-provincia/trabia/90019_2026_45.pdf", "public/cartelli-provincia/trabia/html/90019_2026_44.html", "public/cartelli-provincia/trabia/html/90019_2025_45.html", "public/cartelli-provincia/trabia/html/90019_2026_1.html", "public/cartelli-provincia/termini-imerese/html/90018_2026_45.html", "public/cartelli-provincia/bagheria/html/90011_2026_45.html"]) {
-      try { const r = await fetch(BASE + u, { headers: { "user-agent": UA } }); const t = await r.text(); out.altro.push(u + " -> " + r.status + " " + testoDaHtml(t).slice(0, 6).join(" / ").slice(0, 300)); } catch (e) { out.altro.push(u + " errore"); }
-    }
-    out.estratto = out.cartelli.map((c) => "== " + c.comune + " (" + c.link.split("/").pop() + ") ==\n" + c.righe.join("\n")).join("\n\n").slice(0, 6000);
-    out.stato = out.cartelli.some((c) => c.righe.length) ? "ok" : "nessun turno trovato";
+    out.stato = out.settimane.some((s) => s.turno) ? "ok" : "turni non pubblicati sul sito ufficiale";
   } catch (e) { out.stato = "errore: " + (e && e.message); }
   try {
     await env.DB.prepare("INSERT INTO turni_cache (id, dati, quando) VALUES (1, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando")
@@ -94,17 +93,29 @@ export async function aggiornaTurni(env) {
   return out;
 }
 
+// Tabella dei turni da mostrare: prima il calendario inserito a mano, poi i cartelli ufficiali.
+export async function tabellaTurni(env, ctx) {
+  const oggi = iso(new Date());
+  const righe = [];
+  for (const c of CALENDARIO) if (c.al >= oggi) righe.push({ ...c, fonte: "calendario" });
+  if (!righe.length) {
+    const d = await turniTrabia(env, ctx);
+    for (const s of d.settimane || []) if (s.turno && s.al >= oggi) righe.push({ dal: s.dal, al: s.al, ...s.turno, fonte: "ordine" });
+  }
+  return righe.sort((a, b) => a.dal.localeCompare(b.dal)).slice(0, 4);
+}
+
 // Per l'assistente: usa i dati salvati (aggiornati ogni 30 minuti); se mancano o sono vecchi, li rilegge.
 export async function turniTrabia(env, ctx) {
   try {
     const r = await env.DB.prepare("SELECT dati, quando FROM turni_cache WHERE id = 1").first();
-    if (r && Date.now() - Date.parse(r.quando) < 6 * 3600 * 1000) return JSON.parse(r.dati);
+    if (r && Date.now() - Date.parse(r.quando) < 6 * 3600 * 1000) { const d = JSON.parse(r.dati); if (d.settimane) return d; }
   } catch (e) {}
   return aggiornaTurni(env);
 }
 
 export async function onRequestGet({ env, ctx }) {
   const d = await turniTrabia(env, ctx);
-  (d.cartelli || []).forEach((c) => delete c.html);
+  d.tabella = await tabellaTurni(env, ctx);
   return new Response(JSON.stringify(d, null, 1), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 }
