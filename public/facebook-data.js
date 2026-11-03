@@ -1,4 +1,4 @@
-/* Generato automaticamente da Metricool (2026-11-01T22:11Z). Non modificare a mano. */
+/* Generato automaticamente da Metricool (2026-11-03T13:27Z). Non modificare a mano. */
 window.FB_POSTS = [
  {
   "data": "2026-11-01",
@@ -97,3 +97,4 @@ window.FB_POSTS = [
   "link": "https://facebook.com/1821993283266877/posts/1759438046189068"
  }
 ];
+window.FB_FOLLOWERS = {"numero": 1414, "data": "2026-11-02"};

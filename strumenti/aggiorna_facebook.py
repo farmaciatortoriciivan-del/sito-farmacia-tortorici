@@ -3,12 +3,14 @@
 (metriche FBPO02 data, FBPO03 testo, FBPO05 immagine, FBPO06 link, FBPO07 tipo, FBPO16 visualizzazioni)
 nel file facebook-data.js letto dal sito.
 
-Uso: python3 strumenti/aggiorna_facebook.py strumenti/facebook-rows.json public/facebook-data.js
+Uso: python3 strumenti/aggiorna_facebook.py strumenti/facebook-rows.json public/facebook-data.js [strumenti/facebook-followers.json]
+(il terzo file, facoltativo, sono le righe Metricool della metrica FBEV17 = follower della pagina)
 """
 import json, re, sys
 from datetime import datetime, timezone
 
 src, dst = sys.argv[1], sys.argv[2]
+fol_src = sys.argv[3] if len(sys.argv) > 3 else None
 rows = json.load(open(src, encoding="utf-8"))
 
 posts = []
@@ -34,4 +36,12 @@ with open(dst, "w", encoding="utf-8") as f:
     f.write("window.FB_POSTS = ")
     json.dump(posts, f, ensure_ascii=False, indent=1)
     f.write(";\n")
+    if fol_src:
+        frows = [r for r in json.load(open(fol_src, encoding="utf-8")) if r and r[0] not in (None, "")]
+        if frows:
+            frows.sort(key=lambda r: r[1])
+            n, d = frows[-1]
+            f.write("window.FB_FOLLOWERS = ")
+            json.dump({"numero": int(float(n)), "data": datetime.strptime(d, "%Y%m%d").strftime("%Y-%m-%d")}, f)
+            f.write(";\n")
 print(f"{len(posts)} post scritti in {dst}")
