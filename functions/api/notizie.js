@@ -15,14 +15,31 @@ const FONTI = [
     nome: "Farmacista33",
     dominio: /^https:\/\/(www\.)?farmacista33\.it\//,
     feed: ["https://www.farmacista33.it/feed/", "https://www.farmacista33.it/rss", "https://www.farmacista33.it/rss.xml", "https://www.farmacista33.it/feed", "https://www.farmacista33.it/?feed=rss2"],
-    filtra: true, // testata per farmacisti: teniamo solo le notizie utili ai clienti
+    filtra: true, // testata per farmacisti: teniamo solo le notizie dedicate ai pazienti
   },
 ];
 
-// Selezione per i clienti della farmacia: temi di salute sì, temi di categoria/professionali no.
-const UTILI = /salut|prevenz|vaccin|influenz|farmac[io]|medicin|integrator|vitamin|dieta|alimenta|nutriz|pelle|derma|sole|solar|allerg|asma|diabet|glicem|pression|cuore|cardi|colesterol|bambin|pediatr|neonat|gravidanz|anzian|sonno|antibiot|screening|tumor|cancro|virus|covid|infezion|ricetta|carenz|studio|ricerca|sintom|dolore|osse|osteopor|memoria|demenz|alzheimer|obesit|peso|sport|fumo|alcol|stress|ansia|depress|occhi|vista|denti|orale|intestin|stomaco|fegato|reni|tiroid|ormon|menopaus|holter|ecg|telemedicin|consigli|benesser|igiene|cura/i;
-const PROFESSIONALI = /contratt|ccnl|sindacat|concors|laure|universit|titolar|bilanc|fatturat|mercato|distribuzion|grossist|ordine dei|fofi|enpaf|federfarma|assofarm|utifar|assemblea|congress|convention|nomin|elezion|fusion|acquisizion|catene|retail|marketing|gestional|software|fiscal|tasse|iva\b|remunerazion|convenzione farmaceutica|dpc|gara|appalt|aziend|industria|investiment|borsa|ricavi|personale|stipend|tirocin|formazion|ecm\b|webinar|annunci/i;
-const utile = (t) => UTILI.test(t) && !PROFESSIONALI.test(t);
+// Farmacista33 è una testata per farmacisti: pubblichiamo SOLO le notizie rivolte ai pazienti.
+// Regola: almeno un tema da paziente e nessun tema professionale/di categoria.
+const PAZIENTI = [/cittadin/i, /pazient/i, /campagn/i, /sintom/i, /prevenz/i, /vaccin/i, /screening/i, /consigl/i,
+  /segnal/i, /malatti/i, /ictus/i, /cuore|cardi/i, /diabet|glicem/i, /allerg|asma/i, /influenz|raffreddor/i,
+  /bambin|pediatr|neonat/i, /donn|gravidanz|menopaus/i, /anzian/i, /sonno|insonn/i, /aliment|dieta|nutriz/i,
+  /sole|solar|abbronz/i, /pelle|derma/i, /dolor/i, /rischi/i, /giornata mondiale|settimana mondiale/i,
+  /salute (di|del|della|dei|delle)/i, /come (curare|prevenire|riconoscere)/i, /effetti collateral|reazioni avvers/i,
+  /integrator|vitamin/i, /colesterol|pression/i, /tumor|cancro/i, /osteopor|ossa/i, /memoria|demenz|alzheimer/i,
+  /peso|obesit/i, /fumo|alcol/i, /occhi|vista/i, /denti|bocca/i, /intestin|stomaco|digest/i, /virus|infezion|batteri/i];
+const PROFESSIONALI = [/contratt|ccnl/i, /sindacat|mobilitazion|sciopero/i, /farmacist[ie]\b/i, /\bmedici\b/i, /prescrizion|ricett[ae] (elettronic|dematerializz)/i,
+  /remunerazion|convenzion|tariff/i, /normativ|decreto|legge|ddl|emendament|delibera/i, /mercato|vendite|fatturat|bilanc|ricavi/i,
+  /aziend|industri|investiment/i, /federfarma|fofi|enpaf|assofarm|utifar|ordine de/i, /concors|laure|universit|tirocin/i,
+  /formazion|ecm\b|webinar|corso|congress|convegn/i, /titolar|catene|retail|marketing|gestional|software/i,
+  /distribuzion|grossist|dpc\b|gar[ae] d|appalt/i, /nomin|elezion|president|assemblea/i, /fiscal|tasse|\biva\b/i, /lavor|personale|stipend/i];
+const SEZIONI_ESCLUSE = /\/(lavoro|mercato|politica|normativa|professione|aziende|eventi|annunci)[-/]/i;
+export const perPazienti = (testo, link = "") => {
+  if (SEZIONI_ESCLUSE.test(link)) return false;
+  const piu = PAZIENTI.filter((r) => r.test(testo)).length;
+  const meno = PROFESSIONALI.filter((r) => r.test(testo)).length;
+  return meno === 0 && piu >= 1;
+};
 
 const decode = (s) =>
   s
@@ -51,7 +68,7 @@ export function parseFeed(xml, fonte) {
     if (!link) { const h = it.match(/<link[^>]*href="([^"]+)"/i); link = h ? h[1].replace(/&amp;/g, "&") : ""; }
     if (!titolo || !fonte.dominio.test(link)) continue;
     const testo = titolo + " " + tag(it, "description") + " " + tag(it, "summary") + " " + tag(it, "category");
-    if (fonte.filtra && !utile(testo)) continue;
+    if (fonte.filtra && !perPazienti(testo, link)) continue;
     const d = Date.parse(tag(it, "pubDate") || tag(it, "published") || tag(it, "updated") || tag(it, "dc:date"));
     out.push({ titolo, link, data: isNaN(d) ? null : new Date(d).toISOString(), categoria: tag(it, "category") || null, fonte: fonte.nome });
   }
@@ -84,7 +101,7 @@ async function leggi(fonte) {
 
 export async function onRequest({ request, ctx }) {
   const cache = caches.default;
-  const key = new Request(new URL("/api/notizie?v=2", request.url).toString());
+  const key = new Request(new URL("/api/notizie?v=3", request.url).toString());
   const hit = await cache.match(key);
   if (hit) return hit;
 
