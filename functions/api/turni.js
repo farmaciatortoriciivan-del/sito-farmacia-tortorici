@@ -38,42 +38,38 @@ function infoModulo(html) {
   return { form: f ? f[0].slice(0, 200) : null, select: sel, opzioniTrabia: opz };
 }
 
-// Scarica e analizza la pagina ufficiale; salva risultato e diagnostica nel database.
+// Chiede alla pagina ufficiale i turni di un comune (come fa il menu "Seleziona Comune").
+async function turniComune(codice, cookie) {
+  const r = await fetch(URL_TURNI, {
+    method: "POST",
+    headers: { "user-agent": UA, "content-type": "application/x-www-form-urlencoded", referer: URL_TURNI, origin: BASE.slice(0, -1), cookie: cookie || "" },
+    body: "redirect-from=&comuni-list=" + codice,
+  });
+  const buf = await r.arrayBuffer();
+  let html = new TextDecoder("windows-1252").decode(buf);
+  if (/charset=utf-8/i.test(html)) html = new TextDecoder("utf-8").decode(buf);
+  // la parte utile sta dopo il menu dei comuni e prima del piè di pagina
+  const iSel = html.search(/<\/select>/i);
+  const iFine = html.search(/Via Ausonia/i);
+  const parte = iSel >= 0 ? html.slice(iSel + 9, iFine > iSel ? iFine : undefined) : "";
+  const righe = testoDaHtml(parte).filter((x) => !/HTMLSEMPLICE|^Ordine dei Farmacisti di Palermo$/i.test(x));
+  return { http: r.status, righe, html: parte.slice(0, 6000) };
+}
+
+// Legge i turni di Trabia e San Nicola L'Arena e li salva nel database.
 export async function aggiornaTurni(env) {
-  const out = { fonte: URL_TURNI, letto: new Date().toISOString(), estratto: "", stato: "non letto" };
+  const out = { fonte: URL_TURNI, letto: new Date().toISOString(), estratto: "", stato: "non letto", comuni: {} };
   try {
-    const r = await fetch(URL_TURNI, { headers: { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36", accept: "text/html,application/xhtml+xml", "accept-language": "it-IT,it;q=0.9" }, redirect: "follow" });
-    out.http = r.status; out.url = r.url; out.tipo = r.headers.get("content-type");
-    const buf = await r.arrayBuffer();
-    let html = new TextDecoder("utf-8").decode(buf);
-    if (/charset=(iso-8859-1|windows-1252)/i.test(html + (out.tipo || "")) || html.includes("�")) html = new TextDecoder("windows-1252").decode(buf);
-    const righe = testoDaHtml(html);
-    out.righeTotali = righe.length;
-    out.estratto = estraiTrabia(righe);
-    out.modulo = infoModulo(html);
-    out.link = [...html.matchAll(/<a[^>]*href="([^"]+)"[^>]*>([^<]{0,80})</gi)].map((m) => m[1] + " | " + m[2].trim()).filter((x) => /turn|pdf|trabia|calend/i.test(x)).slice(0, 40);
-    out.inizio = righe.join("\n").slice(0, 5000);
-    // diagnostica: come funziona il menu dei comuni
-    const iSel = html.search(/comuni-list/i);
-    out.selectHtml = iSel >= 0 ? html.slice(Math.max(0, iSel - 600), iSel + 400) : null;
-    out.script = [...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/gi)].map((m) => m[1]).filter((t) => /comun|turn|select|change/i.test(t)).join("\n----\n").slice(0, 4000);
-    out.formHtml = (html.match(/<form[\s\S]*?<\/form>/i) || [""])[0].replace(/<option[\s\S]*<\/option>/i, "<option…>").slice(0, 2500);
-    // prova gli indirizzi più probabili della pagina di Trabia (codice 87)
-    out.candidati = [];
-    for (const [url, opt] of [
-      [BASE + "turni.provincia.asp?c=87", null], [BASE + "turni.provincia.asp?id=87", null], [BASE + "turni.provincia.asp?comune=87", null],
-      [BASE + "turno.asp?c=87", null], [BASE + "turni.provincia.asp", { method: "POST", body: "comuni-list=87" }],
-      [BASE + "search.asp", { method: "POST", body: "comuni-list=87" }],
-    ]) {
-      try {
-        const rr = await fetch(url, { method: opt ? opt.method : "GET", body: opt ? opt.body : undefined, headers: { "user-agent": UA, "content-type": "application/x-www-form-urlencoded", referer: URL_TURNI } });
-        const h = await rr.text();
-        const rg = testoDaHtml(h);
-        const utile = rg.filter((x) => /farmaci|dott|via |piazza|corso|\d{1,2}\/\d{1,2}/i.test(x) && !/ordine dei farmacisti|via ausonia/i.test(x));
-        out.candidati.push({ url: url + (opt ? " (POST " + opt.body + ")" : ""), http: rr.status, righe: rg.length, utile: utile.slice(0, 25).join("\n").slice(0, 1500) });
-      } catch (e) { out.candidati.push({ url, errore: e && e.message }); }
+    const g = await fetch(URL_TURNI, { headers: { "user-agent": UA, accept: "text/html" } });
+    const cookie = (g.headers.get("set-cookie") || "").split(/,(?=\s*[A-Za-z0-9_]+=)/).map((c) => c.split(";")[0].trim()).filter(Boolean).join("; ");
+    await g.arrayBuffer();
+    for (const [nome, codice] of [["TRABIA", 87], ["TRABIA » S. NICOLA L'ARENA", 88]]) {
+      const t = await turniComune(codice, cookie);
+      out.comuni[nome] = { http: t.http, righe: t.righe };
+      if (codice === 87) out.htmlTrabia = t.html;
     }
-    out.stato = r.ok ? (out.estratto ? "ok" : "trabia non trovata") : "http " + r.status;
+    out.estratto = Object.entries(out.comuni).map(([n, c]) => "== " + n + " ==\n" + c.righe.join("\n")).join("\n\n").slice(0, 3500);
+    out.stato = Object.values(out.comuni).some((c) => c.righe.length) ? "ok" : "nessun turno trovato";
   } catch (e) { out.stato = "errore: " + (e && e.message); }
   try {
     await env.DB.prepare("INSERT INTO turni_cache (id, dati, quando) VALUES (1, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando")
@@ -93,6 +89,6 @@ export async function turniTrabia(env, ctx) {
 
 export async function onRequestGet({ env, ctx }) {
   const d = await turniTrabia(env, ctx);
-  delete d.inizio; delete d.link; delete d.selectHtml; delete d.script; delete d.formHtml; delete d.candidati;
+  delete d.htmlTrabia;
   return new Response(JSON.stringify(d, null, 1), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 }
