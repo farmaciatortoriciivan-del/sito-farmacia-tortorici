@@ -629,7 +629,7 @@
   }
 
   var ATTR = ["alt", "aria-label", "placeholder", "title"];
-  var SALTA = ".ast,script,style,#fb-feed .fb-post strong,#fb-feed .fb-body,#news-list strong,blockquote,.rv-text,.r-text,q";
+  var SALTA = ".ast,#meteo,script,style,#fb-feed .fb-post strong,#fb-feed .fb-body,#news-list strong,blockquote,.rv-text,.r-text,q";
 
   function nodo(n) {
     if (n.nodeType === 3) {

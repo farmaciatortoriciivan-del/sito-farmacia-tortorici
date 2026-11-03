@@ -50,7 +50,7 @@
 </script>
 
 <script src="i18n.js"></script>
-<link rel="stylesheet" href="style.css?v=33">
+<link rel="stylesheet" href="style.css?v=34">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body>
@@ -407,6 +407,21 @@
       </div>
     </div>
     <div class="fb-feed reveal" id="fb-feed" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ METEO E SALUTE (Open-Meteo) ============ -->
+<section id="meteo" class="meteo" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow mt-eyebrow">Meteo e salute</span>
+        <h2 class="mt-titolo">Che tempo fa a Trabia</h2>
+      </div>
+      <p class="lead mt-lead"></p>
+    </div>
+    <div class="mt-corpo"></div>
+    <p class="news-src mt-fonte"></p>
   </div>
 </section>
 
@@ -809,6 +824,7 @@ document.getElementById("vai-canale").addEventListener("click", function (e) {
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !l.hidden) { set(false); b.focus(); } });
 })();
 </script>
+<script src="meteo.js?v=1" defer></script>
 <script src="assistente.js?v=5" defer></script>
 </body>
 </html>
