@@ -36,32 +36,41 @@ function infoModulo(html) {
   return { form: f ? f[0].slice(0, 200) : null, select: sel, opzioniTrabia: opz };
 }
 
-export async function turniTrabia(ctx) {
-  const cache = caches.default;
-  const key = new Request("https://farmaciatortorici.com/__cache/turni-trabia-v1");
-  const hit = await cache.match(key);
-  if (hit) return hit.json();
-  let out = { fonte: URL_TURNI, letto: new Date().toISOString(), estratto: "", stato: "non letto" };
+// Scarica e analizza la pagina ufficiale; salva risultato e diagnostica nel database.
+export async function aggiornaTurni(env) {
+  const out = { fonte: URL_TURNI, letto: new Date().toISOString(), estratto: "", stato: "non letto" };
   try {
-    const r = await fetch(URL_TURNI, { headers: { "user-agent": "Mozilla/5.0 (compatible; SitoFarmaciaTortorici/1.0)", accept: "text/html" }, cf: { cacheTtl: TTL, cacheEverything: true } });
-    out.http = r.status;
-    if (r.ok) {
-      const buf = await r.arrayBuffer();
-      let html = new TextDecoder("utf-8").decode(buf);
-      if (/charset=(iso-8859-1|windows-1252)/i.test(html) || html.includes("�")) html = new TextDecoder("windows-1252").decode(buf);
-      const righe = testoDaHtml(html);
-      out.estratto = estraiTrabia(righe);
-      out.modulo = infoModulo(html);
-      out.righeTotali = righe.length;
-      out.stato = out.estratto ? "ok" : "trabia non trovata";
-    }
+    const r = await fetch(URL_TURNI, { headers: { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36", accept: "text/html,application/xhtml+xml", "accept-language": "it-IT,it;q=0.9" }, redirect: "follow" });
+    out.http = r.status; out.url = r.url; out.tipo = r.headers.get("content-type");
+    const buf = await r.arrayBuffer();
+    let html = new TextDecoder("utf-8").decode(buf);
+    if (/charset=(iso-8859-1|windows-1252)/i.test(html + (out.tipo || "")) || html.includes("�")) html = new TextDecoder("windows-1252").decode(buf);
+    const righe = testoDaHtml(html);
+    out.righeTotali = righe.length;
+    out.estratto = estraiTrabia(righe);
+    out.modulo = infoModulo(html);
+    out.link = [...html.matchAll(/<a[^>]*href="([^"]+)"[^>]*>([^<]{0,80})</gi)].map((m) => m[1] + " | " + m[2].trim()).filter((x) => /turn|pdf|trabia|calend/i.test(x)).slice(0, 40);
+    out.inizio = righe.join("\n").slice(0, 5000);
+    out.stato = r.ok ? (out.estratto ? "ok" : "trabia non trovata") : "http " + r.status;
   } catch (e) { out.stato = "errore: " + (e && e.message); }
-  const res = new Response(JSON.stringify(out), { headers: { "content-type": "application/json", "cache-control": `public, max-age=${out.estratto ? TTL : 600}` } });
-  if (ctx && ctx.waitUntil) ctx.waitUntil(cache.put(key, res.clone())); else await cache.put(key, res.clone());
+  try {
+    await env.DB.prepare("INSERT INTO turni_cache (id, dati, quando) VALUES (1, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando")
+      .bind(JSON.stringify(out), out.letto).run();
+  } catch (e) {}
   return out;
 }
 
-export async function onRequestGet({ ctx }) {
-  const d = await turniTrabia(ctx);
+// Per l'assistente: usa i dati salvati (aggiornati ogni 30 minuti); se mancano o sono vecchi, li rilegge.
+export async function turniTrabia(env, ctx) {
+  try {
+    const r = await env.DB.prepare("SELECT dati, quando FROM turni_cache WHERE id = 1").first();
+    if (r && Date.now() - Date.parse(r.quando) < 6 * 3600 * 1000) return JSON.parse(r.dati);
+  } catch (e) {}
+  return aggiornaTurni(env);
+}
+
+export async function onRequestGet({ env, ctx }) {
+  const d = await turniTrabia(env, ctx);
+  delete d.inizio; delete d.link;
   return new Response(JSON.stringify(d, null, 1), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 }

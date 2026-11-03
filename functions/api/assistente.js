@@ -120,7 +120,7 @@ export async function onRequestPost({ request, env, ctx }) {
 
   let turni = null;
   if (/turno|turni|notte|nott|festiv|domenica|aperta ora|duty|night|notdienst|nacht/i.test(storia.map((m) => m.content).join(" "))) {
-    try { turni = await turniTrabia(ctx); } catch (e) {}
+    try { turni = await turniTrabia(env, ctx); } catch (e) {}
   }
   const messages = [{ role: "system", content: istruzioni(lingua, turni) }, ...storia];
   for (const modello of MODELLI) {
