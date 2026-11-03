@@ -67,6 +67,7 @@ export function leggiCartello(righe) {
 
 // Legge i cartelli ufficiali di Trabia per questa settimana e le 3 successive e li salva nel database.
 export async function aggiornaTurni(env) {
+  try { await sondaTurno(env); } catch (e) {}
   const out = { fonte: URL_TURNI, letto: new Date().toISOString(), stato: "non letto", settimane: [] };
   try {
     const lun = lunediDi(new Date());
