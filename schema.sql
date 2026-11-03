@@ -9,3 +9,11 @@ CREATE TABLE IF NOT EXISTS recensioni (
   ip_hash   TEXT                           -- solo per limitare gli abusi, mai mostrato
 );
 CREATE INDEX IF NOT EXISTS idx_recensioni_stato ON recensioni(stato, data);
+
+-- Limite di messaggi all'assistente del sito (per indirizzo, per ora)
+CREATE TABLE IF NOT EXISTS assistente_uso (
+  ora TEXT NOT NULL,
+  ip_hash TEXT NOT NULL,
+  n INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (ora, ip_hash)
+);

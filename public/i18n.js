@@ -268,6 +268,8 @@
     "Cerchi la farmacia di turno?": "Looking for the on-duty pharmacy?",
     "Di notte e nei festivi il servizio a chiamata, solo per farmaci urgenti, è garantito a rotazione dalle farmacie della zona. Il calendario dei turni è esposto sulle bacheche di tutte le farmacie.": "At night and on public holidays, an on-call service for urgent medicines only is provided on a rota by local pharmacies. The duty rota is posted on the notice boards of all pharmacies.",
     "Chiamaci": "Call us",
+    "Farmacie di turno · sito ufficiale": "On-duty pharmacies · official website",
+    "Vedi le farmacie di turno sul sito ufficiale dell'Ordine dei Farmacisti di Palermo →": "See the on-duty pharmacies on the official website of the Palermo Order of Pharmacists →",
 
     // --- pagina recensioni
     "Le vostre": "Your",
@@ -528,6 +530,8 @@
    "Cerchi la farmacia di turno?": "Suchen Sie die Notdienstapotheke?",
    "Di notte e nei festivi il servizio a chiamata, solo per farmaci urgenti, è garantito a rotazione dalle farmacie della zona. Il calendario dei turni è esposto sulle bacheche di tutte le farmacie.": "Nachts und an Feiertagen wird ein Rufbereitschaftsdienst nur für dringende Arzneimittel abwechselnd von den Apotheken der Umgebung angeboten. Der Notdienstplan hängt an den Aushängen aller Apotheken.",
    "Chiamaci": "Rufen Sie uns an",
+   "Farmacie di turno · sito ufficiale": "Notdienstapotheken · offizielle Website",
+   "Vedi le farmacie di turno sul sito ufficiale dell'Ordine dei Farmacisti di Palermo →": "Notdienstapotheken auf der offiziellen Website der Apothekerkammer Palermo ansehen →",
    "Le vostre": "Ihre",
    "parole": "Worte",
    "Grazie a tutti i clienti che hanno lasciato un'opinione sulla nostra farmacia. Qui trovi le recensioni pubblicate su Google, così come sono state scritte.": "Danke an alle Kundinnen und Kunden, die ihre Meinung über unsere Apotheke geteilt haben. Hier finden Sie die auf Google veröffentlichten Bewertungen, so wie sie geschrieben wurden (auf Italienisch).",
@@ -623,7 +627,7 @@
   }
 
   var ATTR = ["alt", "aria-label", "placeholder", "title"];
-  var SALTA = "script,style,#fb-feed .fb-post strong,#fb-feed .fb-body,#news-list strong,blockquote,.rv-text,.r-text,q";
+  var SALTA = ".ast,script,style,#fb-feed .fb-post strong,#fb-feed .fb-body,#news-list strong,blockquote,.rv-text,.r-text,q";
 
   function nodo(n) {
     if (n.nodeType === 3) {
