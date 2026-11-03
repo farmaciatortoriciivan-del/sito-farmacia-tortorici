@@ -50,7 +50,7 @@
 </script>
 
 <script src="i18n.js"></script>
-<link rel="stylesheet" href="style.css?v=27">
+<link rel="stylesheet" href="style.css?v=29">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body>
@@ -100,6 +100,7 @@
           Chiama ora
         </a>
         <a class="btn btn-wa" href="#prenota">Prenota su WhatsApp</a>
+        <a class="btn btn-ghost" href="#canale" id="vai-canale">Iscriviti al canale</a>
       </div>
       <div class="hero-facts">
         <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Via Ettore Maiorana, 27 · Trabia</div>
@@ -363,7 +364,7 @@
         <li>Avvisi su orari e chiusure</li>
         <li>Novità e consigli per la salute</li>
       </ul>
-      <a class="btn btn-wa btn-lg" href="https://whatsapp.com/channel/0029VbDXlZKFy72CVSyoRg3o" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zM12 0a12 12 0 0 0-10.3 18L0 24l6.2-1.6A12 12 0 1 0 12 0z"/></svg>Segui il canale</a>
+      <a class="btn btn-wa btn-lg" id="canale-segui" href="https://whatsapp.com/channel/0029VbDXlZKFy72CVSyoRg3o" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zM12 0a12 12 0 0 0-10.3 18L0 24l6.2-1.6A12 12 0 1 0 12 0z"/></svg>Segui il canale</a>
       <p class="canale-nota">Si apre WhatsApp: tocca «Segui».</p>
     </div>
     <div class="canale-come">
@@ -780,6 +781,14 @@ if ("IntersectionObserver" in window){
   }).catch(() => {});
 })();
 </script>
-<script src="assistente.js?v=3" defer></script>
+<script>
+document.getElementById("vai-canale").addEventListener("click", function (e) {
+  var b = document.getElementById("canale-segui"); if (!b) return;
+  e.preventDefault();
+  b.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  b.classList.add("evidenzia"); setTimeout(function () { b.classList.remove("evidenzia"); }, 2200);
+});
+</script>
+<script src="assistente.js?v=4" defer></script>
 </body>
 </html>
