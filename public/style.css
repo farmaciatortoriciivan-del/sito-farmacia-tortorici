@@ -571,3 +571,12 @@ footer .brand-name small{color:rgba(231,241,236,.6)}
 .cal-img{margin:0;border-radius:24px;overflow:hidden;box-shadow:var(--shadow);transform:rotate(-1.2deg)}
 .cal-img img{display:block;width:100%;height:auto}
 @media (max-width:820px){.cal-grid{grid-template-columns:1fr;gap:24px}.cal-img{transform:none}}
+
+/* v16: evento */
+.ev-grid{display:grid;grid-template-columns:minmax(0,420px) 1fr;gap:56px;align-items:center}
+.ev-img{margin:0;border-radius:20px;overflow:hidden;box-shadow:0 30px 60px -20px rgba(120,10,10,.35)}
+.ev-img img{display:block;width:100%;height:auto}
+.ev-info{list-style:none;padding:0;margin:22px 0 26px;display:grid;gap:10px}
+.ev-info li{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:12px 16px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.ev-info b{color:var(--heading)}
+@media (max-width:820px){.ev-grid{grid-template-columns:1fr;gap:24px}.ev-img{max-width:420px;margin:0 auto}.ev-info li{grid-template-columns:1fr;gap:2px}}

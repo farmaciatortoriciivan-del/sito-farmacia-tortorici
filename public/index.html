@@ -48,7 +48,7 @@
 }
 </script>
 
-<link rel="stylesheet" href="style.css?v=15">
+<link rel="stylesheet" href="style.css?v=16">
 </head>
 <body>
 <a href="#main" class="skip">Vai al contenuto</a>
@@ -87,7 +87,7 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="reveal">
-      <a class="novita" href="#calendario"><b>Novità</b> Prenota il calendario 2027</a><br>
+      <a class="novita" id="novita" href="#evento"><b>Venerdì 6/11</b> Incontro su sport e nutrizione</a><br>
       <div class="status" id="status"><span class="dot" id="status-dot"></span><span id="status-text">Controllo orari…</span></div>
       <h1>La tua salute,<br>in <em>buone mani</em>.</h1>
       <p class="lead">Da tanti anni la Farmacia del Dott. Ivan Tortorici è un punto di riferimento per le famiglie di Trabia: consiglio professionale, servizi di prevenzione e un assortimento curato per ogni esigenza.</p>
@@ -145,6 +145,34 @@
     </ul>
   </div>
 </div>
+
+<!-- ============ EVENTO (si nasconde da solo dopo la data) ============ -->
+<section id="evento" class="evento" data-fino="2026-11-06T21:00:00+01:00">
+  <div class="wrap ev-grid">
+    <figure class="ev-img reveal">
+      <picture>
+        <source srcset="img/evento-enervit.webp" type="image/webp">
+        <img src="img/evento-enervit.jpg" width="800" height="1132" loading="lazy" alt="Locandina dell'incontro Enervit: Allenamento, nutrizione ed integrazione. Venerdì 6 novembre dalle ore 18.00 presso la Farmacia Tortorici. Relatore Dott. Valerio Papa">
+      </picture>
+    </figure>
+    <div class="reveal">
+      <span class="eyebrow">Evento in farmacia · Venerdì 6 novembre</span>
+      <h2>Allenamento, nutrizione ed integrazione</h2>
+      <p class="lead">Sei uno sportivo? Oppure vuoi curare la tua alimentazione per iniziare a fare sport? Questo incontro è per te.</p>
+      <p>Il <strong>Dott. Valerio Papa</strong>, biologo nutrizionista ed Enervit nutrition specialist, ti darà strategie e consigli pratici per gestire al meglio l'energia, il recupero e la performance sportiva.</p>
+      <ul class="ev-info">
+        <li><b>Quando</b><span>Venerdì 6 novembre, dalle ore 18.00</span></li>
+        <li><b>Dove</b><span>Farmacia Tortorici, Via Ettore Maiorana 27, Trabia</span></li>
+        <li><b>Prenotazioni</b><span>091 814 6207</span></li>
+      </ul>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="tel:+390918146207">Chiama e prenota</a>
+        <a class="btn btn-wa" href="https://wa.me/393315250555?text=Buongiorno%2C%20vorrei%20prenotare%20un%20posto%20per%20l%27incontro%20Enervit%20di%20venerd%C3%AC%206%20novembre%20alle%2018.00.%20Nome%3A%20" target="_blank" rel="noopener">Prenota su WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Event", "name": "Allenamento, nutrizione ed integrazione", "description": "Strategie e consigli pratici per ottimizzare la gestione dell'energia, il recupero e la performance sportiva. Relatore: Dott. Valerio Papa, biologo nutrizionista ed Enervit nutrition specialist.", "startDate": "2026-11-06T18:00:00+01:00", "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode", "eventStatus": "https://schema.org/EventScheduled", "image": "https://farmaciatortorici.com/img/evento-enervit.jpg", "location": {"@type": "Place", "name": "Farmacia Dott. Ivan Tortorici", "address": {"@type": "PostalAddress", "streetAddress": "Via Ettore Maiorana 27", "addressLocality": "Trabia", "addressRegion": "PA", "postalCode": "90019", "addressCountry": "IT"}}, "organizer": {"@type": "Organization", "name": "Farmacia Dott. Ivan Tortorici", "url": "https://farmaciatortorici.com/"}, "performer": {"@type": "Person", "name": "Dott. Valerio Papa"}}</script>
 
 <!-- ============ CALENDARIO 2027 ============ -->
 <section id="calendario" class="cal">
@@ -640,6 +668,16 @@ if ("IntersectionObserver" in window){
     b.setAttribute("aria-label", on ? "Mostra il fumetto del team" : "Mostra la foto vera del team");
     t.textContent = on ? "Tocca per il fumetto" : "Tocca per la foto vera";
   });
+})();
+
+// Evento: dopo la data si nasconde da solo e la "Novità" torna al calendario
+(() => {
+  const ev = document.getElementById("evento"); if (!ev) return;
+  if (Date.now() > Date.parse(ev.dataset.fino)) {
+    ev.remove();
+    const n = document.getElementById("novita");
+    if (n) { n.href = "#calendario"; n.innerHTML = "<b>Novità</b> Prenota il calendario 2027"; }
+  }
 })();
 </script>
 </body>
