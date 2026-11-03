@@ -123,11 +123,13 @@ export async function onRequestGet({ env, ctx }) {
 
 // Diagnostica temporanea: salva il contenuto grezzo di turno.asp per studiarne il formato.
 export async function sondaTurno(env) {
-  const prove = [
-    ["GET", BASE + "turno.asp", null],
-    ["POST", BASE + "turno.asp", "redirect-from=&comuni-list=87"],
-    ["GET", BASE + "turno.asp?comune=87", null],
-  ];
+  let prove = [["GET", BASE + "dati.js", null]];
+  try {
+    const dj = await (await fetch(BASE + "dati.js", { headers: { "user-agent": UA } })).text();
+    const m = dj.match(/zona\s*:\s*["']TRABIA["'][^}]*codice\s*:\s*["']([^"']+)["']|codice\s*:\s*["']([^"']+)["'][^}]*zona\s*:\s*["']TRABIA["']/i);
+    const cod = m ? (m[1] || m[2]) : "90019";
+    for (const w of ["45", "46", "47"]) prove.push(["GET", BASE + "newturni/html_pubblico/" + cod + "_2026_" + w + ".html", null]);
+  } catch (e) {}
   const out = [];
   for (const [m, u, b] of prove) {
     try {
