@@ -78,7 +78,7 @@ export function leggiSettimana(html) {
     const nome = prendi("ragsoc");
     if (!nome) return null;
     return {
-      tipo: tipo.toLowerCase(),
+      tipo: tipo.toLowerCase().replace(/[:.\s]+$/, ""),
       farmacia: "Farmacia " + titolo(nome),
       indirizzo: titolo(prendi("Indirizzo")).replace(/ - /, ", ").replace(/' /g, "'"),
       telefono: prendi("tel"),
@@ -141,7 +141,7 @@ export async function tabellaTurni(env, ctx) {
     const d = await turniTrabia(env, ctx);
     for (const s of d.settimane || []) for (const t of s.turni || (s.turno ? [s.turno] : [])) if ((t.al || s.al) >= oggi) righe.push({ dal: s.dal, al: s.al, ...t, fonte: "ordine" });
   }
-  return righe.sort((a, b) => a.dal.localeCompare(b.dal)).slice(0, 4);
+  return righe.sort((a, b) => a.dal.localeCompare(b.dal)).slice(0, 6);
 }
 
 // Per l'assistente: usa i dati salvati (aggiornati ogni 30 minuti); se mancano o sono vecchi, li rilegge.
