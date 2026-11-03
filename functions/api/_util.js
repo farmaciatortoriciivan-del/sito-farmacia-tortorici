@@ -11,8 +11,8 @@ export async function sha256(text) {
 
 // Password admin: se in Cloudflare è impostato il segreto ADMIN_PASSWORD vale quello,
 // altrimenti vale la password predefinita, di cui qui c'è solo l'impronta (non reversibile).
-const ADMIN_SALT = "78ad008e60e824860685285b39ad49e9";
-const ADMIN_HASH = "cd2cb37b38c105d6949b7ec3bc27fc4ac1bb62358f824167755b14d557ebd4de";
+const ADMIN_SALT = "f154bf1e80501a85b8dfc0d6c46c4b5d";
+const ADMIN_HASH = "4eacd5dceabf32f95088861b174c6342f9a330fc4c07b05114b07f8efe64d045";
 export const DEFAULT_IP_SALT = "farmacia-tortorici-trabia";
 
 // confronto a tempo costante della password admin
