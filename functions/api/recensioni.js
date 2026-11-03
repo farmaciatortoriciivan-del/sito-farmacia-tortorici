@@ -3,11 +3,16 @@
 //   POST -> nuova recensione (resta "in_attesa" finché lo staff non la approva)
 import { json, sha256, DEFAULT_IP_SALT } from "./_util.js";
 import { inviaAvviso } from "./avviso.js";
+import { rispondiSeManca } from "./risposta.js";
 
-export async function onRequestGet({ env }) {
+export async function onRequestGet({ env, ctx }) {
   const { results } = await env.DB.prepare(
-    "SELECT nome, stelle, testo, data FROM recensioni WHERE stato = 'pubblicata' ORDER BY data DESC LIMIT 500"
+    "SELECT id, nome, stelle, testo, data, risposta FROM recensioni WHERE stato = 'pubblicata' ORDER BY data DESC LIMIT 500"
   ).all();
+  // recensioni pubblicate senza risposta (per esempio quelle approvate prima): la scriviamo ora, poche alla volta
+  const mancano = results.filter((r) => !r.risposta).slice(0, 3);
+  if (mancano.length && ctx) ctx.waitUntil(Promise.all(mancano.map((r) => rispondiSeManca(env, r.id).catch(() => {}))));
+  for (const r of results) delete r.id;
   return new Response(JSON.stringify(results), {
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=60" },
   });

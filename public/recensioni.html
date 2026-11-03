@@ -11,7 +11,7 @@
 <link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/fraunces.woff2" as="font" type="font/woff2" crossorigin>
 <script src="i18n.js"></script>
-<link rel="stylesheet" href="style.css?v=35">
+<link rel="stylesheet" href="style.css?v=36">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body class="has-sticky">
@@ -194,7 +194,7 @@
   /* ---------- elenco + riepilogo ---------- */
   function render(){
     const all = [
-      ...sito.map(r => ({ nome: r.nome, stelle: r.stelle, testo: r.testo, anno: new Date(r.data).getFullYear(), fonte: "Sito", ts: r.data })),
+      ...sito.map(r => ({ nome: r.nome, stelle: r.stelle, testo: r.testo, risposta: r.risposta, anno: new Date(r.data).getFullYear(), fonte: "Sito", ts: r.data })),
       ...G.recensioni.map(r => ({ ...r, fonte: "Google", ts: 0 }))
     ];
     const tot = all.length, media = tot ? all.reduce((a, r) => a + r.stelle, 0) / tot : 0;
@@ -210,6 +210,7 @@
         <div class="rstars" aria-label="${r.stelle} stelle su 5">${stars(r.stelle)}</div>
         <blockquote>«${esc(r.testo)}»</blockquote>
         <figcaption><span class="av">${esc((r.nome.trim()[0] || "?").toUpperCase())}</span><span><b>${esc(r.nome)}</b>${r.fonte === "Sito" ? '<span class="src-sito">Recensione dal sito</span>' : "Google"} · ${r.anno}</span></figcaption>
+        ${r.risposta ? `<div class="r-risp"><span class="r-risp-t"><img src="img/logo-croce.png" alt="" width="20" height="20">Risposta della farmacia</span><p class="r-text">${esc(r.risposta)}</p></div>` : ""}
       </figure>`).join("");
     const others = tot - withText.length;
     $("r-note").textContent = others > 0 ? `Altre ${others} persone hanno lasciato solo una valutazione senza commento: sono incluse nella media.` : "";

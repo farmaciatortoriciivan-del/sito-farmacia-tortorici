@@ -780,3 +780,10 @@ html[lang="de"] .menu a{padding-left:10px;padding-right:10px}
 :root:not([data-theme="light"]) .cu-altra{color:#f0b37e;border-color:#6b4a2c;background:rgba(0,0,0,.2)}}
 @media (max-width:560px){.cu-box{padding:22px}.cu-card{flex-direction:column;gap:14px}.cu-ic{width:72px;height:72px;font-size:2.4rem;border-radius:20px}.cu-txt h3{font-size:1.25rem}}
 @media (prefers-reduced-motion:reduce){.cu-ic,.cu-gira{animation:none}}
+
+/* v36: risposta della farmacia alle recensioni */
+.r-risp{margin-top:2px;padding:14px 16px;border-radius:16px;background:var(--sand-100);border-left:3px solid #2e9e6a}
+.r-risp-t{display:flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#2e7d57;margin-bottom:6px}
+.r-risp-t img{width:20px;height:20px;background:#fff;border-radius:6px;padding:2px}
+.r-risp p{margin:0;font-size:.95rem;line-height:1.55;color:var(--ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .r-risp-t{color:#8fd1b2}}

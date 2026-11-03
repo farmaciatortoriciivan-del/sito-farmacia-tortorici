@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS recensioni (
   testo     TEXT    NOT NULL,
   data      TEXT    NOT NULL,              -- ISO 8601
   stato     TEXT    NOT NULL DEFAULT 'in_attesa' CHECK (stato IN ('in_attesa','pubblicata')),
-  ip_hash   TEXT                           -- solo per limitare gli abusi, mai mostrato
+  ip_hash   TEXT,                          -- solo per limitare gli abusi, mai mostrato
+  risposta  TEXT                           -- risposta automatica della farmacia, scritta all'approvazione
 );
 CREATE INDEX IF NOT EXISTS idx_recensioni_stato ON recensioni(stato, data);
 

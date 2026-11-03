@@ -25,6 +25,7 @@
   .btn-danger{border:1.5px solid #c0392b;color:#c0392b;background:transparent}
   .empty{color:var(--muted);text-align:center;padding:30px 0}
   .msg{color:#c0392b;margin:0}
+.risp{margin:8px 0 0;padding:10px 12px;background:#eef7f1;border-left:3px solid #2e9e6a;border-radius:8px;font-size:.92rem}
 </style>
 </head>
 <body>
@@ -73,6 +74,7 @@ function render(){
       <div class="rstars">${"★".repeat(r.stelle)}<span class="off">${"★".repeat(5 - r.stelle)}</span></div>
       <p>«${esc(r.testo)}»</p>
       <small><b>${esc(r.nome)}</b> · ${new Date(r.data).toLocaleString("it-IT")}</small>
+      ${r.risposta ? `<p class="risp"><b>Risposta automatica:</b> ${esc(r.risposta)}</p>` : ""}
       <div class="acts">${tab === "in_attesa"
         ? '<button class="btn btn-primary" data-a="approva">Approva</button><button class="btn btn-danger" data-a="elimina">Elimina</button>'
         : '<button class="btn btn-ghost" data-a="nascondi">Nascondi</button><button class="btn btn-danger" data-a="elimina">Elimina</button>'}</div>
