@@ -654,3 +654,10 @@ html[lang="en"] .hours tr.is-today td:first-child::after{content:"Today"}
 .menu a{white-space:nowrap}
 @media (max-width:1180px){.nav-cta a.btn-ghost[href^="tel:"]{display:none}}
 @media (max-width:1100px){.menu{gap:0}.menu a{padding:8px 9px;font-size:.9rem}}
+
+/* v24: riferimenti a WhatsApp cliccabili */
+.wa-link{color:#1a8f4a;font-weight:600;text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}
+.wa-link:hover{color:#127a3d}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wa-link{color:#4cd685}}
+@media (max-width:560px){.brand-name small{font-size:.58rem;letter-spacing:.03em;overflow:visible;text-overflow:clip}}
+@media (max-width:375px){.brand-name small{display:none}}
