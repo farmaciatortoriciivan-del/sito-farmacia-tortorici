@@ -693,8 +693,8 @@ html[lang="de"] .menu a{padding-left:10px;padding-right:10px}
 }
 
 /* v28: etichetta "Novità" in arancio chiaro */
-.novita{background:#fde6cf}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .novita{background:#3d2a18;color:#f6c99b}}
+.novita{background:#e2001a;color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .novita{background:#e2001a;color:#fff}}
 
 /* v29: evidenzia il pulsante del canale */
 @keyframes evid{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}40%{box-shadow:0 0 0 10px rgba(37,211,102,.35)}}
