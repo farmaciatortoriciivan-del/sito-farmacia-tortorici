@@ -610,13 +610,5 @@ footer .brand-name small{color:rgba(231,241,236,.6)}
 @media (max-width:640px){.news-list{grid-template-columns:1fr}}
 @media (max-width:640px){.news-list li:nth-child(n+5){display:none}}
 
-/* v20: link rubrica L'isolano */
+/* v20 */
 .news-list[hidden]{display:none}
-.isolano{margin-top:16px;display:flex;align-items:center;gap:16px;padding:18px 22px;background:var(--green-900);color:#fff;border-radius:18px;text-decoration:none;box-shadow:var(--shadow);transition:transform .2s}
-.isolano:hover{transform:translateY(-2px)}
-.isolano-ico{flex:none;width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.12);display:grid;place-items:center}
-.isolano-ico svg{width:24px;height:24px}
-.isolano small{display:block;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
-.isolano strong{font-family:Fraunces,serif;font-size:1.2rem}
-.isolano .news-go{margin-left:auto;color:#fff;white-space:nowrap}
-@media (max-width:560px){.isolano .news-go{display:none}}

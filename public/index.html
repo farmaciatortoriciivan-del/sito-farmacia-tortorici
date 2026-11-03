@@ -373,11 +373,6 @@
       <p class="lead">Le ultime notizie da Quotidiano Sanità e Farmacista33, scelte per te e aggiornate in automatico.</p>
     </div>
     <ol class="news-list" id="news-list" hidden></ol>
-    <a class="isolano" href="https://www.puntoeffe.it/rivista" target="_blank" rel="noopener">
-      <span class="isolano-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M8 7h8M8 11h6"/></svg></span>
-      <span><small>Dalla rivista Punto Effe</small><strong>Leggi la rubrica «L'isolano»</strong></span>
-      <span class="news-go">Apri →</span>
-    </a>
     <p class="news-src">Fonti: <a href="https://www.quotidianosanita.it/" target="_blank" rel="noopener">Quotidiano Sanità</a> e <a href="https://www.farmacista33.it/" target="_blank" rel="noopener">Farmacista33</a>. Gli articoli si aprono sul sito della testata.</p>
   </div>
 </section>
@@ -726,14 +721,13 @@ if ("IntersectionObserver" in window){
 // Attualità sanitaria: titoli da Quotidiano Sanità e Farmacista33 (letti dal nostro server, cache 30 min)
 (() => {
   const sec = document.getElementById("attualita"), ol = document.getElementById("news-list");
-  if (!sec) return;
-  sec.hidden = false; // il link a «L'isolano» si vede sempre
-  if (window.claude || !/^https?:$/.test(location.protocol)) return;
+  if (!sec || window.claude || !/^https?:$/.test(location.protocol)) return;
   const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   fetch("/api/notizie").then(r => r.ok ? r.json() : null).then(d => {
     const n = d && Array.isArray(d.notizie) ? d.notizie.filter(x => /^https:\/\/(www\.)?(quotidianosanita|farmacista33)\.it\//.test(x.link)) : [];
     if (!n.length) return;
     ol.hidden = false;
+    sec.hidden = false;
     ol.innerHTML = n.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">
       ${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString("it-IT",{day:"numeric",month:"short"})}</time>` : ""}
       <span class="news-cat">${esc(x.fonte || "Quotidiano Sanità")}</span>
