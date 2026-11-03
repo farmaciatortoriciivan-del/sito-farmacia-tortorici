@@ -7,6 +7,10 @@ routes = [
   { pattern = "www.farmaciatortorici.com", custom_domain = true }
 ]
 
+# Workers AI (piano gratuito): sceglie le notizie di Farmacista33 adatte ai clienti
+[ai]
+binding = "AI"
+
 [assets]
 directory = "./public"
 binding = "ASSETS"
