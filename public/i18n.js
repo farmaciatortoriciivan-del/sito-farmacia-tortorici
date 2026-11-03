@@ -1,44 +1,49 @@
-/* Versione inglese del sito — Farmacia Tortorici
-   Il sito è scritto in italiano (lingua predefinita). Con il pulsante EN in alto
-   i testi vengono sostituiti con la traduzione qui sotto; la scelta resta salvata nel browser.
+/* Versioni inglese e tedesca del sito — Farmacia Tortorici
+   Il sito è scritto in italiano (lingua predefinita). Con il menu IT/EN/DE in alto
+   i testi vengono sostituiti con le traduzioni qui sotto; la scelta resta salvata nel browser.
    Se un testo italiano viene modificato e non ha ancora la traduzione, resta in italiano.
    I contenuti scritti da altri (post Facebook, recensioni, notizie) restano in originale. */
 (function () {
   var KEY = "ft-lingua";
-  var q = (location.search.match(/[?&]lang=(it|en)\b/) || [])[1];
+  var q = (location.search.match(/[?&]lang=(it|en|de)\b/) || [])[1];
   var lang = q || (function () { try { return localStorage.getItem(KEY); } catch (e) { return null; } })() || "it";
+  if (!/^(it|en|de)$/.test(lang)) lang = "it";
   if (q) { try { localStorage.setItem(KEY, q); } catch (e) {} }
   window.LINGUA = lang;
 
   function cambia(l) {
     try { localStorage.setItem(KEY, l); } catch (e) {}
-    location.href = location.pathname + (l === "en" ? "?lang=en" : "?lang=it") + location.hash;
+    location.href = location.pathname + "?lang=" + l + location.hash;
   }
 
   function aggiungiPulsante() {
     var cta = document.querySelector(".nav-cta");
     if (!cta || document.getElementById("lang-btn")) return;
-    var b = document.createElement("button");
-    b.type = "button"; b.id = "lang-btn"; b.className = "lang-btn";
-    b.textContent = lang === "en" ? "IT" : "EN";
-    b.setAttribute("aria-label", lang === "en" ? "Passa all'italiano" : "Switch to English");
-    b.setAttribute("lang", lang === "en" ? "it" : "en");
-    b.onclick = function () { cambia(lang === "en" ? "it" : "en"); };
+    var b = document.createElement("select");
+    b.id = "lang-btn"; b.className = "lang-btn";
+    b.setAttribute("aria-label", "Lingua · Language · Sprache");
+    [["it", "IT", "Italiano"], ["en", "EN", "English"], ["de", "DE", "Deutsch"]].forEach(function (o) {
+      var op = document.createElement("option");
+      op.value = o[0]; op.textContent = o[1]; op.title = o[2]; op.setAttribute("lang", o[0]);
+      if (o[0] === lang) op.selected = true;
+      b.appendChild(op);
+    });
+    b.onchange = function () { cambia(b.value); };
     var burger = cta.querySelector(".burger");
     cta.insertBefore(b, burger || null);
   }
 
-  if (lang !== "en") {
+  if (lang === "it") {
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", aggiungiPulsante);
     else aggiungiPulsante();
     return;
   }
 
-  document.documentElement.lang = "en";
+  document.documentElement.lang = lang;
   document.documentElement.classList.add("i18n-wait");
   setTimeout(function () { document.documentElement.classList.remove("i18n-wait"); }, 1500);
 
-  var D = {
+  var EN = {
     // --- intestazione, menu, piè di pagina (tutte le pagine)
     "Vai al contenuto": "Skip to content",
     "Trabia · dal cuore del paese": "Trabia · in the heart of town",
@@ -318,21 +323,295 @@
     "Le recensioni dei clienti della Farmacia Dott. Ivan Tortorici a Trabia (PA).": "Customer reviews of Farmacia Dott. Ivan Tortorici in Trabia (PA)."
   };
 
-  var GIORNI = { "lunedì": "Monday", "martedì": "Tuesday", "mercoledì": "Wednesday", "giovedì": "Thursday", "venerdì": "Friday", "sabato": "Saturday", "domenica": "Sunday" };
-  var MESI = { gen: "Jan", feb: "Feb", mar: "Mar", apr: "Apr", mag: "May", giu: "Jun", lug: "Jul", ago: "Aug", set: "Sep", ott: "Oct", nov: "Nov", dic: "Dec" };
+  var DE = {
+   "Vai al contenuto": "Zum Inhalt springen",
+   "Trabia · dal cuore del paese": "Trabia · im Herzen des Ortes",
+   "Chi siamo": "Über uns",
+   "Servizi": "Leistungen",
+   "Novità": "News",
+   "Recensioni": "Bewertungen",
+   "Prenota": "Buchen",
+   "Contatti": "Kontakt",
+   "Farmacia Tortorici, torna all'inizio": "Farmacia Tortorici, zurück zum Anfang",
+   "Scrivici su WhatsApp": "Schreiben Sie uns auf WhatsApp",
+   "Apri menu": "Menü öffnen",
+   "← Torna alla home": "← Zurück zur Startseite",
+   "Navigazione": "Navigation",
+   "Telefono": "Telefon",
+   "Indirizzo · Indicazioni": "Adresse · Anfahrt",
+   "Titolare e direttore responsabile: Dott. Ivan Tortorici, iscritto all'Ordine dei Farmacisti della Provincia di Palermo, n. 2352": "Inhaber und verantwortlicher Leiter: Dr. Ivan Tortorici, eingetragen in der Apothekerkammer der Provinz Palermo, Nr. 2352",
+   "Farmacia Dott. Ivan Tortorici · P.IVA 01488560820": "Farmacia Dott. Ivan Tortorici · USt-IdNr. 01488560820",
+   "Preferenze cookie": "Cookie-Einstellungen",
+   "Le informazioni presenti in questo sito hanno carattere informativo e non sostituiscono il parere del medico o del farmacista.": "Die Informationen auf dieser Website dienen nur der allgemeinen Orientierung und ersetzen nicht den Rat eines Arztes oder Apothekers.",
+   "Usiamo solo cookie tecnici. Con il tuo consenso mostriamo anche la mappa di Google, che usa cookie di terze parti.": "Wir verwenden nur technische Cookies. Mit Ihrer Zustimmung zeigen wir auch die Google-Karte an, die Cookies von Drittanbietern verwendet.",
+   "Rifiuta": "Ablehnen",
+   "Accetta": "Akzeptieren",
+   "Chiudi e rifiuta": "Schließen und ablehnen",
+   "Canale WhatsApp": "WhatsApp-Kanal",
+   "Venerdì 6/11": "Fr. 6.11.",
+   "Incontro su sport e nutrizione": "Vortrag über Sport und Ernährung",
+   "Prenota il calendario 2027": "Den Kalender 2027 reservieren",
+   "La tua salute,": "Ihre Gesundheit,",
+   "buone mani": "guten Händen",
+   "Da tanti anni la Farmacia del Dott. Ivan Tortorici è un punto di riferimento per le famiglie di Trabia: consiglio professionale, servizi di prevenzione e un assortimento curato per ogni esigenza.": "Seit vielen Jahren ist die Apotheke von Dr. Ivan Tortorici eine feste Anlaufstelle für die Familien in Trabia: fachkundige Beratung, Vorsorgeleistungen und ein sorgfältig ausgewähltes Sortiment für jeden Bedarf.",
+   "Chiama ora": "Jetzt anrufen",
+   "Prenota su WhatsApp": "Auf WhatsApp buchen",
+   "Assistenza a domicilio": "Betreuung zu Hause",
+   "Parcheggio facile": "Einfaches Parken",
+   "Accesso per persone con disabilità": "Barrierefreier Zugang",
+   "Tocca per la foto vera": "Tippen für das echte Foto",
+   "Tocca per il fumetto": "Tippen für den Comic",
+   "Mostra la foto vera del team": "Echtes Foto des Teams zeigen",
+   "Mostra il fumetto del team": "Comic des Teams zeigen",
+   "Il nostro team, sempre al tuo fianco": "Unser Team, immer an Ihrer Seite",
+   "Lo staff della Farmacia Tortorici di Trabia, illustrato in stile animazione": "Das Team der Farmacia Tortorici in Trabia, im Animationsstil gezeichnet",
+   "Foto dello staff della Farmacia Tortorici di Trabia": "Foto des Teams der Farmacia Tortorici in Trabia",
+   "Orario di oggi": "Heutige Öffnungszeiten",
+   "Oggi": "Heute",
+   "I nostri punti di forza": "Unsere Stärken",
+   "Accessibile a tutti": "Für alle zugänglich",
+   "Holter in convenzione": "Holter mit Kassenleistung",
+   "Consiglio personalizzato": "Persönliche Beratung",
+   "Evento · Venerdì 6 novembre": "Veranstaltung · Freitag, 6. November",
+   "Allenamento, nutrizione ed integrazione": "Training, Ernährung und Nahrungsergänzung",
+   "Sei uno sportivo? Oppure vuoi curare la tua alimentazione per iniziare a fare sport? Questo incontro è per te.": "Treiben Sie Sport? Oder möchten Sie Ihre Ernährung verbessern, um mit dem Sport anzufangen? Dieser Vortrag ist für Sie.",
+   "Il": "",
+   "Dott. Valerio Papa": "Dr. Valerio Papa",
+   ", biologo nutrizionista ed Enervit nutrition specialist, ti darà strategie e consigli pratici per gestire al meglio l'energia, il recupero e la performance sportiva.": ", Ernährungsbiologe und Enervit Nutrition Specialist, gibt Ihnen Strategien und praktische Tipps, um Energie, Erholung und sportliche Leistung optimal zu steuern.",
+   "La partecipazione è gratuita e non prevede vendita di prodotti.": "Die Teilnahme ist kostenlos, es werden keine Produkte verkauft.",
+   "Quando": "Wann",
+   "Venerdì 6 novembre, dalle ore 18.00": "Freitag, 6. November, ab 18 Uhr",
+   "Dove": "Wo",
+   "Ambulatorio medico accanto alla farmacia, Via Ettore Maiorana 26, Trabia": "Arztpraxis neben der Apotheke, Via Ettore Maiorana 26, Trabia",
+   "Prenotazioni": "Anmeldung",
+   "Chiama e prenota": "Anrufen und anmelden",
+   "Evento svolto": "Vergangene Veranstaltung",
+   "Evento della Farmacia Tortorici svolto in data venerdì 6 novembre 2026": "Veranstaltung der Farmacia Tortorici am Freitag, 6. November 2026",
+   "Locandina dell'incontro Enervit: Allenamento, nutrizione ed integrazione. Venerdì 6 novembre dalle ore 18.00 presso la Farmacia Tortorici. Relatore Dott. Valerio Papa": "Plakat des Enervit-Vortrags: Training, Ernährung und Nahrungsergänzung. Freitag, 6. November ab 18 Uhr in der Farmacia Tortorici. Referent Dr. Valerio Papa",
+   "Novità · Calendario 2027": "Neu · Kalender 2027",
+   "Il nostro calendario 2027 ti aspetta!": "Unser Kalender 2027 wartet auf Sie!",
+   "Ci siamo fumettizzati per te: il nostro calendario di qualità con tante utili informazioni e spazio per scrivere appunti e ricorrenze. Prenota la tua copia e ritirala in farmacia.": "Wir haben uns für Sie in Comicfiguren verwandelt: unser hochwertiger Kalender mit vielen nützlichen Informationen und Platz für Notizen und Jahrestage. Reservieren Sie Ihr Exemplar und holen Sie es in der Apotheke ab.",
+   "Chiama": "Anrufen",
+   "Anteprima del calendario 2027 della Farmacia Tortorici, pagina di gennaio": "Vorschau des Kalenders 2027 der Farmacia Tortorici, Januarseite",
+   "Molto apprezzata dai clienti": "Von Kunden sehr geschätzt",
+   "per competenza e cortesia": "für Kompetenz und Freundlichkeit",
+   "Attenti alle tue esigenze.": "Wir achten auf Ihre Bedürfnisse.",
+   "Crediamo in un rapporto diretto con chi entra: ascoltare, consigliare, seguire nel tempo.": "Wir glauben an eine direkte Beziehung zu allen, die zu uns kommen: zuhören, beraten und langfristig begleiten.",
+   "Da tanti anni ampliamo i nostri servizi mantenendo la stessa idea di partenza: ogni persona ha esigenze diverse. Per questo selezioniamo con attenzione alimenti speciali, dermocosmesi, prodotti ortopedici e veterinari, e offriamo controlli e screening direttamente in farmacia.": "Seit vielen Jahren erweitern wir unsere Leistungen und bleiben dabei unserer Grundidee treu: Jeder Mensch hat andere Bedürfnisse. Deshalb wählen wir Spezialnahrung, Hautpflege, orthopädische und tierärztliche Produkte sorgfältig aus und bieten Kontrollen und Screenings direkt in der Apotheke an.",
+   "Siamo facilmente raggiungibili, con comodo parcheggio e accesso agevole per le persone con disabilità. E se non puoi venire in farmacia, ti assistiamo a domicilio.": "Wir sind leicht erreichbar, mit bequemen Parkplätzen und barrierefreiem Zugang für Menschen mit Behinderung. Und wenn Sie nicht in die Apotheke kommen können, betreuen wir Sie zu Hause.",
+   "— Dott. Ivan Tortorici e lo staff": "— Dr. Ivan Tortorici und das Team",
+   "Sigillo della Farmacia Dott. Ivan Tortorici, Trabia (PA)": "Siegel der Farmacia Dott. Ivan Tortorici, Trabia (PA)",
+   "Cosa possiamo fare per te": "Was wir für Sie tun können",
+   "Oltre alla dispensazione di farmaci con e senza ricetta, offriamo servizi pensati per semplificarti la vita.": "Neben verschreibungspflichtigen und rezeptfreien Arzneimitteln bieten wir Leistungen, die Ihnen das Leben erleichtern.",
+   "Convenzionato SSN": "Kassenleistung",
+   "Holter cardiaco e pressorio": "Langzeit-EKG und Langzeit-Blutdruckmessung (Holter)",
+   "In convenzione con il SSN con la ricetta del medico di base, oppure anche senza ricetta, a pagamento. Prenoti in farmacia, al telefono o": "Mit Rezept Ihres Hausarztes als Leistung des italienischen Gesundheitsdienstes, oder auch ohne Rezept gegen Bezahlung. Buchung in der Apotheke, telefonisch oder",
+   "su WhatsApp": "über WhatsApp",
+   "Screening in farmacia": "Screening in der Apotheke",
+   "Quadro lipidico completo, emoglobina glicata, glicemia, PSA e vitamina D con una goccia di sangue dal dito: indolore e in pochi minuti.": "Vollständiges Lipidprofil, HbA1c, Blutzucker, PSA und Vitamin D aus einem Tropfen Blut aus der Fingerkuppe: schmerzlos und in wenigen Minuten.",
+   "SOF test gratuito": "Kostenloser Stuhltest",
+   "Hai tra 50 e 69 anni? Ritira in farmacia, quando vuoi e senza attese, il kit gratuito per lo screening del colon-retto.": "Sind Sie zwischen 50 und 69 Jahre alt? Holen Sie das kostenlose Testset zur Darmkrebsvorsorge jederzeit und ohne Wartezeit in der Apotheke ab.",
+   "Giornate della salute": "Gesundheitstage",
+   "Screening per la prevenzione con specialisti in farmacia: esame per la densità ossea, screening senologico, consulenze dermocosmetiche personalizzate, consigli alimentari. Su prenotazione.": "Vorsorge-Screenings mit Fachärzten in der Apotheke: Knochendichtemessung, Brustkrebs-Screening, persönliche Hautpflegeberatung, Ernährungsberatung. Nach Terminvereinbarung.",
+   "Pressione ed ECG": "Blutdruck und EKG",
+   "Misurazione della pressione arteriosa ed elettrocardiogramma in farmacia, rapidi e vicino a casa.": "Blutdruckmessung und Elektrokardiogramm in der Apotheke, schnell und in Ihrer Nähe.",
+   "Foratura dei lobi": "Ohrlochstechen",
+   "In modo indolore e in ambiente igienicamente sicuro, con materiali ipoallergenici e molto gradevoli.": "Schmerzfrei und in hygienisch sicherer Umgebung, mit hypoallergenen und sehr schönen Materialien.",
+   "Assistenza a domicilio gratuita": "Kostenlose Betreuung zu Hause",
+   "Chi non può venire in farmacia non resta solo: chiamaci o": "Wer nicht in die Apotheke kommen kann, ist nicht allein: Rufen Sie uns an oder",
+   "scrivici su WhatsApp": "schreiben Sie uns auf WhatsApp",
+   "e ti assistiamo direttamente a casa, gratuitamente.": "– wir betreuen Sie kostenlos direkt zu Hause.",
+   "Alimenti": "Spezialnahrung",
+   "Alimenti speciali per intolleranze, celiachia ed esigenze particolari, disponibili o ordinabili.": "Spezialnahrung bei Unverträglichkeiten, Zöliakie und besonderen Bedürfnissen, vorrätig oder bestellbar.",
+   "Dermocosmesi": "Hautpflege",
+   "Prodotti selezionati per la cura della pelle, del viso e del corpo, con il consiglio giusto per te.": "Ausgewählte Produkte für die Pflege von Haut, Gesicht und Körper, mit der passenden Beratung für Sie.",
+   "Prodotti ortopedici": "Orthopädische Produkte",
+   "Tutori e ausili ortopedici per il benessere e il recupero di ogni giorno.": "Bandagen und orthopädische Hilfsmittel für Wohlbefinden und Erholung im Alltag.",
+   "Prodotti per sportivi": "Sportprodukte",
+   "Prodotti per chi fa sport, con il consiglio giusto per te.": "Produkte für Sportlerinnen und Sportler, mit der passenden Beratung für Sie.",
+   "Veterinaria": "Tiergesundheit",
+   "Farmaci, alimenti e prodotti per la salute dei tuoi animali, anche su ricetta veterinaria.": "Arzneimittel, Futter und Gesundheitsprodukte für Ihre Haustiere, auch mit tierärztlichem Rezept.",
+   "Devi pagare un ticket per visita ospedaliera?": "Müssen Sie eine Krankenhausgebühr (Ticket) bezahlen?",
+   "Questo ed altro da noi.": "Das und mehr bei uns.",
+   "Prenota in un tocco": "Mit einem Tippen buchen",
+   "Cosa ti serve oggi?": "Was brauchen Sie heute?",
+   "Tocca un pulsante: si apre": "Tippen Sie auf eine Schaltfläche:",
+   "con il messaggio già scritto. Ti rispondiamo noi.": "öffnet sich mit der bereits geschriebenen Nachricht. Wir antworten Ihnen.",
+   "Prenota l'Holter": "Holter buchen",
+   "Con la ricetta del medico (SSN) o anche senza, a pagamento.": "Mit ärztlichem Rezept (Kassenleistung) oder auch ohne, gegen Bezahlung.",
+   "Scrivici su WhatsApp →": "Schreiben Sie uns auf WhatsApp →",
+   "Prenota uno screening": "Screening buchen",
+   "Colesterolo, glicata, glicemia, PSA, vitamina D.": "Cholesterin, HbA1c, Blutzucker, PSA, Vitamin D.",
+   "Ti assistiamo a casa, gratuitamente.": "Wir betreuen Sie kostenlos zu Hause.",
+   "Chiedi un prodotto": "Nach einem Produkt fragen",
+   "Ti diciamo se è disponibile.": "Wir sagen Ihnen, ob es verfügbar ist.",
+   "Community · Canale WhatsApp": "Community · WhatsApp-Kanal",
+   "Segui il canale Farmacia Tortorici Trabia": "Folgen Sie dem Kanal Farmacia Tortorici Trabia",
+   "È gratis e non serve salvare il nostro numero: le novità della farmacia ti arrivano direttamente su WhatsApp, come su una bacheca sempre a portata di mano.": "Es ist kostenlos und Sie müssen unsere Nummer nicht speichern: Die Neuigkeiten der Apotheke kommen direkt auf WhatsApp, wie an einem Schwarzen Brett, das Sie immer dabeihaben.",
+   "Di cosa parla": "Worum es geht",
+   "Giornate della salute e screening": "Gesundheitstage und Screenings",
+   "Eventi e incontri in farmacia": "Veranstaltungen und Vorträge in der Apotheke",
+   "Avvisi su orari e chiusure": "Hinweise zu Öffnungszeiten und Schließungen",
+   "Novità e consigli per la salute": "Neuigkeiten und Gesundheitstipps",
+   "Segui il canale": "Kanal folgen",
+   "Si apre WhatsApp: tocca «Segui».": "WhatsApp öffnet sich: Tippen Sie auf „Folgen“.",
+   "Cos'è un canale WhatsApp?": "Was ist ein WhatsApp-Kanal?",
+   "Solo i nostri aggiornamenti.": "Nur unsere Neuigkeiten.",
+   "Non è un gruppo: niente chat e niente messaggi da altri iscritti.": "Es ist keine Gruppe: kein Chat und keine Nachrichten von anderen Abonnenten.",
+   "Il tuo numero resta privato.": "Ihre Nummer bleibt privat.",
+   "Né noi né gli altri iscritti possiamo vederlo.": "Weder wir noch andere Abonnenten können sie sehen.",
+   "Smetti quando vuoi.": "Jederzeit beenden.",
+   "Basta un tocco su «Non seguire più».": "Ein Tippen auf „Nicht mehr folgen“ genügt.",
+   "Novità e video": "Neuigkeiten und Videos",
+   "Dalla nostra pagina Facebook": "Von unserer Facebook-Seite",
+   "Gli ultimi post della nostra pagina, aggiornati in automatico.": "Die neuesten Beiträge unserer Seite, automatisch aktualisiert.",
+   "persone ci seguono su Facebook": "Personen folgen uns auf Facebook",
+   "Seguici su Facebook": "Folgen Sie uns auf Facebook",
+   "Seguici su TikTok": "Folgen Sie uns auf TikTok",
+   "Seguici su Instagram": "Folgen Sie uns auf Instagram",
+   "Guarda il video →": "Video ansehen →",
+   "Leggi su Facebook →": "Auf Facebook lesen →",
+   "Segui la nostra pagina Facebook per le ultime novità.": "Folgen Sie unserer Facebook-Seite für die neuesten Nachrichten.",
+   "Attualità sanitaria": "Gesundheitsnachrichten",
+   "Notizie dal mondo della salute": "Nachrichten aus der Welt der Gesundheit",
+   "Le ultime notizie da Quotidiano Sanità e Farmacista33, scelte per te e aggiornate in automatico.": "Die neuesten Nachrichten von Quotidiano Sanità und Farmacista33 (auf Italienisch), für Sie ausgewählt und automatisch aktualisiert.",
+   "Fonti:": "Quellen:",
+   "e": "und",
+   ". Gli articoli si aprono sul sito della testata.": ". Die Artikel öffnen sich auf der Website der Zeitung.",
+   "Leggi →": "Lesen →",
+   "Cosa dicono di noi": "Was man über uns sagt",
+   "Dalle recensioni su Google.": "Aus unseren Google-Bewertungen.",
+   "Leggi tutte le recensioni": "Alle Bewertungen lesen",
+   "Lascia una recensione": "Bewertung abgeben",
+   "Domande frequenti": "Häufige Fragen",
+   "Hai un dubbio?": "Haben Sie eine Frage?",
+   "Per tutto il resto, chiamaci o scrivici.": "Für alles andere rufen Sie uns an oder schreiben Sie uns.",
+   "Come prenoto l'Holter cardiaco o pressorio?": "Wie buche ich ein Langzeit-EKG oder eine Langzeit-Blutdruckmessung?",
+   "Con la ricetta del medico di base è in convenzione con il Servizio Sanitario Nazionale; si può fare anche senza ricetta, a pagamento. Prenoti chiamando lo 091 814 6207 o": "Mit Rezept Ihres Hausarztes ist es eine Leistung des italienischen Gesundheitsdienstes; es ist auch ohne Rezept gegen Bezahlung möglich. Buchung telefonisch unter 091 814 6207 oder",
+   "scrivendo su WhatsApp al 331 525 0555": "per WhatsApp an 331 525 0555",
+   "Fate anche l'ECG?": "Machen Sie auch EKGs?",
+   "Sì: in farmacia facciamo l'elettrocardiogramma e la misurazione della pressione. Chiamaci per sapere i tempi.": "Ja: In der Apotheke machen wir Elektrokardiogramme und Blutdruckmessungen. Rufen Sie uns an, um die Termine zu erfahren.",
+   "L'assistenza a domicilio ha un costo?": "Kostet die Betreuung zu Hause etwas?",
+   "No, è gratuita. Chiamaci o": "Nein, sie ist kostenlos. Rufen Sie uns an oder",
+   "scrivici su WhatsApp al 331 525 0555": "schreiben Sie uns auf WhatsApp an 331 525 0555",
+   "e ti assistiamo direttamente a casa.": "– wir betreuen Sie direkt zu Hause.",
+   "Serve la prenotazione per il controllo del colesterolo?": "Muss ich die Cholesterinmessung buchen?",
+   "No, puoi passare quando vuoi. Con una goccia di sangue dal dito facciamo anche emoglobina glicata, glicemia, PSA e vitamina D.": "Nein, Sie können jederzeit vorbeikommen. Aus einem Tropfen Blut aus der Fingerkuppe messen wir auch HbA1c, Blutzucker, PSA und Vitamin D.",
+   "Chi può ritirare il kit SOF test?": "Wer kann das Stuhltest-Set abholen?",
+   "Chi ha tra 50 e 69 anni può ritirarlo gratuitamente in farmacia, quando vuole e senza attese.": "Alle zwischen 50 und 69 Jahren können es kostenlos in der Apotheke abholen, jederzeit und ohne Wartezeit.",
+   "Siete aperti la domenica?": "Haben Sie sonntags geöffnet?",
+   "Sì: la domenica dalle 9.00 alle 13.00. Dal lunedì al venerdì 8.30–13.00 e 16.15–19.45, il sabato 8.30–13.00 e 16.15–19.30.": "Ja: sonntags von 9:00 bis 13:00 Uhr. Montag bis Freitag 8:30–13:00 und 16:15–19:45 Uhr, Samstag 8:30–13:00 und 16:15–19:30 Uhr.",
+   "Di notte o nei festivi a chi mi rivolgo?": "An wen wende ich mich nachts oder an Feiertagen?",
+   "Alla farmacia di turno, con servizio a chiamata solo per farmaci urgenti. Il calendario dei turni è esposto sulle bacheche di tutte le farmacie.": "An die Notdienstapotheke, mit Rufbereitschaft nur für dringende Arzneimittel. Der Notdienstplan hängt an den Aushängen aller Apotheken.",
+   "Nel cuore del nostro paese.": "Im Herzen unseres Ortes.",
+   "Ci trovi in Via Ettore Maiorana 27, facilmente raggiungibili e con comodo parcheggio.": "Sie finden uns in der Via Ettore Maiorana 27, leicht erreichbar und mit bequemen Parkplätzen.",
+   "Orari e come arrivare": "Öffnungszeiten und Anfahrt",
+   "Veduta aerea di Trabia con il castello sul mare": "Luftaufnahme von Trabia mit der Burg am Meer",
+   "Orari e contatti": "Öffnungszeiten und Kontakt",
+   "Vieni a trovarci": "Besuchen Sie uns",
+   "Via Ettore Maiorana 27. Parcheggio facile e accesso per persone con disabilità.": "Via Ettore Maiorana 27. Einfaches Parken und barrierefreier Zugang.",
+   "Orario di apertura": "Öffnungszeiten",
+   "Orari settimanali": "Wöchentliche Öffnungszeiten",
+   "Lunedì": "Montag",
+   "Martedì": "Dienstag",
+   "Mercoledì": "Mittwoch",
+   "Giovedì": "Donnerstag",
+   "Venerdì": "Freitag",
+   "Sabato": "Samstag",
+   "Domenica": "Sonntag",
+   "Chiuso": "Geschlossen",
+   "Nei giorni festivi e nei turni gli orari possono variare. Gli avvisi aggiornati sono sulla nostra bacheca.": "An Feiertagen und Notdiensttagen können die Öffnungszeiten abweichen. Aktuelle Hinweise finden Sie an unserem Aushang.",
+   "Indicazioni stradali": "Route berechnen",
+   "Mostra la mappa qui": "Karte hier anzeigen",
+   "La mappa è fornita da Google e usa cookie di terze parti.": "Die Karte wird von Google bereitgestellt und verwendet Cookies von Drittanbietern.",
+   "Mappa: Farmacia Tortorici, Via Ettore Maiorana 27, Trabia": "Karte: Farmacia Tortorici, Via Ettore Maiorana 27, Trabia",
+   "Cerchi la farmacia di turno?": "Suchen Sie die Notdienstapotheke?",
+   "Di notte e nei festivi il servizio a chiamata, solo per farmaci urgenti, è garantito a rotazione dalle farmacie della zona. Il calendario dei turni è esposto sulle bacheche di tutte le farmacie.": "Nachts und an Feiertagen wird ein Rufbereitschaftsdienst nur für dringende Arzneimittel abwechselnd von den Apotheken der Umgebung angeboten. Der Notdienstplan hängt an den Aushängen aller Apotheken.",
+   "Chiamaci": "Rufen Sie uns an",
+   "Le vostre": "Ihre",
+   "parole": "Worte",
+   "Grazie a tutti i clienti che hanno lasciato un'opinione sulla nostra farmacia. Qui trovi le recensioni pubblicate su Google, così come sono state scritte.": "Danke an alle Kundinnen und Kunden, die ihre Meinung über unsere Apotheke geteilt haben. Hier finden Sie die auf Google veröffentlichten Bewertungen, so wie sie geschrieben wurden (auf Italienisch).",
+   "Ti siamo stati utili?": "Konnten wir Ihnen helfen?",
+   "Raccontaci la tua esperienza: aiuta altre famiglie di Trabia a conoscerci. Bastano 30 secondi.": "Erzählen Sie uns von Ihrer Erfahrung: So lernen uns auch andere Familien in Trabia kennen. Es dauert nur 30 Sekunden.",
+   "Scegli le stelle e scrivi due parole": "Sterne wählen und ein paar Worte schreiben",
+   "Lo staff la legge e la pubblica qui sul sito": "Unser Team liest sie und veröffentlicht sie hier auf der Website",
+   "Preferisci Google? Lascia la recensione su Google →": "Lieber Google? Bewertung auf Google abgeben →",
+   "Il tuo voto": "Ihre Wertung",
+   "Tocca una stella": "Tippen Sie auf einen Stern",
+   "Il tuo nome": "Ihr Name",
+   "La tua recensione": "Ihre Bewertung",
+   "Acconsento alla pubblicazione del nome e della recensione su questo sito. Non inserire dati sulla tua salute.": "Ich bin damit einverstanden, dass mein Name und meine Bewertung auf dieser Website veröffentlicht werden. Bitte keine Angaben zu Ihrer Gesundheit machen.",
+   "Invia la recensione": "Bewertung senden",
+   "Invio…": "Wird gesendet…",
+   "Puoi lasciare la tua recensione su": "Sie können Ihre Bewertung hinterlassen auf",
+   "Grazie!": "Danke!",
+   "Abbiamo ricevuto la tua recensione. Sarà visibile qui dopo la verifica dello staff.": "Wir haben Ihre Bewertung erhalten. Sie erscheint hier, sobald unser Team sie geprüft hat.",
+   "Da approvare": "Zur Freigabe",
+   "Personale gentile e preparato": "Freundliches, kompetentes Personal",
+   "Tanto assortimento": "Große Auswahl",
+   "Consigli su misura": "Individuelle Beratung",
+   "Reparto cosmesi": "Kosmetikabteilung",
+   "Leggi tutte le recensioni su Google": "Alle Bewertungen auf Google lesen",
+   "Lascia la tua recensione": "Ihre Bewertung abgeben",
+   "1 stella": "1 Stern",
+   "Es. Maria R.": "z. B. Maria R.",
+   "Com'è andata? Cosa ti è piaciuto?": "Wie war es? Was hat Ihnen gefallen?",
+   "Recensioni da approvare": "Bewertungen zur Freigabe",
+   "Distribuzione delle valutazioni": "Verteilung der Bewertungen",
+   "Recensione dal sito": "Bewertung von unserer Website",
+   "Eccellente": "Ausgezeichnet",
+   "Buona": "Gut",
+   "Nella media": "Durchschnittlich",
+   "Scarsa": "Schlecht",
+   "Pessima": "Sehr schlecht",
+   "Scegli da 1 a 5 stelle.": "Wählen Sie 1 bis 5 Sterne.",
+   "Scrivi il tuo nome (anche solo nome e iniziale del cognome).": "Schreiben Sie Ihren Namen (Vorname und Anfangsbuchstabe des Nachnamens genügen).",
+   "Scrivi almeno qualche parola sulla tua esperienza.": "Schreiben Sie wenigstens ein paar Worte über Ihre Erfahrung.",
+   "Per pubblicarla serve il tuo consenso.": "Zur Veröffentlichung brauchen wir Ihre Zustimmung.",
+   "Non siamo riusciti a inviarla. Riprova tra poco.": "Senden fehlgeschlagen. Bitte versuchen Sie es gleich noch einmal.",
+   "Scrivi il tuo nome (2-40 caratteri).": "Schreiben Sie Ihren Namen (2–40 Zeichen).",
+   "La recensione deve avere tra 10 e 600 caratteri.": "Die Bewertung muss zwischen 10 und 600 Zeichen lang sein.",
+   "Serve il consenso alla pubblicazione.": "Die Zustimmung zur Veröffentlichung ist erforderlich.",
+   "Per favore non inserire link.": "Bitte keine Links einfügen.",
+   "Hai già inviato diverse recensioni oggi. Riprova domani.": "Sie haben heute schon mehrere Bewertungen gesendet. Bitte versuchen Sie es morgen noch einmal.",
+   "Privacy · Farmacia Tortorici": "Datenschutz · Farmacia Tortorici",
+   "Cookie · Farmacia Tortorici": "Cookies · Farmacia Tortorici",
+   "Recensioni · Farmacia Tortorici": "Bewertungen · Farmacia Tortorici",
+   "Farmacia Dott. Ivan Tortorici a Trabia (PA), Via Ettore Maiorana 27. Holter in convenzione, screening, dermocosmesi, veterinaria, assistenza a domicilio gratuita. Tel. 091 814 6207.": "Farmacia Dott. Ivan Tortorici in Trabia (PA), Via Ettore Maiorana 27. Holter als Kassenleistung, Screenings, Hautpflege, Tiergesundheit, kostenlose Betreuung zu Hause. Tel. +39 091 814 6207.",
+   "Le recensioni dei clienti della Farmacia Dott. Ivan Tortorici a Trabia (PA).": "Kundenbewertungen der Farmacia Dott. Ivan Tortorici in Trabia (PA)."
+  };
+  var D = lang === "de" ? DE : EN;
+
+  var L = {
+    en: { giorni: { "lunedì": "Monday", "martedì": "Tuesday", "mercoledì": "Wednesday", "giovedì": "Thursday", "venerdì": "Friday", "sabato": "Saturday", "domenica": "Sunday" },
+          mesi: { gen: "Jan", feb: "Feb", mar: "Mar", apr: "Apr", mag: "May", giu: "Jun", lug: "Jul", ago: "Aug", set: "Sep", ott: "Oct", nov: "Nov", dic: "Dec" },
+          oggi: "Today, ", aperto: "Open now · closes at ", chiuso: "Closed now", riapre: "Closed now · reopens ", domani: "tomorrow", il: "on ", alle: " at ",
+          recG: " Google reviews", recSuG: " reviews on Google", stelleSu5: function (n) { return n + " out of 5 stars"; }, stelle: " stars",
+          altre: function (n) { return "Another " + n + " people left a rating without a comment: they are included in the average."; },
+          data: function (g, m, y) { return m + " " + g + (y ? "," + y : ""); },
+          soloIt: "This page is available in Italian only. For any questions, please contact us." },
+    de: { giorni: { "lunedì": "Montag", "martedì": "Dienstag", "mercoledì": "Mittwoch", "giovedì": "Donnerstag", "venerdì": "Freitag", "sabato": "Samstag", "domenica": "Sonntag" },
+          mesi: { gen: "Jan.", feb: "Feb.", mar: "März", apr: "Apr.", mag: "Mai", giu: "Juni", lug: "Juli", ago: "Aug.", set: "Sept.", ott: "Okt.", nov: "Nov.", dic: "Dez." },
+          oggi: "Heute, ", aperto: "Jetzt geöffnet · schließt um ", chiuso: "Jetzt geschlossen", riapre: "Jetzt geschlossen · öffnet ", domani: "morgen", il: "am ", alle: " um ",
+          recG: " Google-Bewertungen", recSuG: " Bewertungen auf Google", stelleSu5: function (n) { return n + " von 5 Sternen"; }, stelle: " Sterne",
+          altre: function (n) { return "Weitere " + n + " Personen haben nur eine Wertung ohne Kommentar abgegeben: Sie sind im Durchschnitt enthalten."; },
+          data: function (g, m, y) { return g + ". " + m + (y || ""); },
+          soloIt: "Diese Seite ist nur auf Italienisch verfügbar. Bei Fragen kontaktieren Sie uns bitte." }
+  }[lang];
+  var GIORNI = L.giorni, MESI = L.mesi;
   var ora = function (h, m) { return h + ":" + m; };
   var R = [
-    [/^Oggi, (\S+)$/, function (_, g) { return "Today, " + (GIORNI[g] || g); }],
-    [/^Aperto ora · chiude alle (\d\d)\.(\d\d)$/, function (_, h, m) { return "Open now · closes at " + ora(h, m); }],
-    [/^Chiuso ora · riapre (\S+) alle (\d\d)\.(\d\d)$/, function (_, g, h, m) { return "Closed now · reopens " + (g === "domani" ? "tomorrow" : "on " + (GIORNI[g] || g)) + " at " + ora(h, m); }],
-    [/^Chiuso ora$/, function () { return "Closed now"; }],
-    [/^(\d+) recensioni Google$/, function (_, n) { return n + " Google reviews"; }],
-    [/^(\d+) recensioni su Google$/, function (_, n) { return n + " reviews on Google"; }],
-    [/^(\d) stelle su 5$/, function (_, n) { return n + " out of 5 stars"; }],
-    [/^(\d) stelle$/, function (_, n) { return n + " stars"; }],
-    [/^Altre (\d+) persone hanno lasciato solo una valutazione senza commento: sono incluse nella media\.$/, function (_, n) { return "Another " + n + " people left a rating without a comment: they are included in the average."; }],
-    [/^(\d{1,2}) (gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic)( \d{4})?$/, function (_, g, m, y) { return MESI[m] + " " + g + (y ? "," + y : ""); }],
-    [/^(\d{1,2}) (gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic)\.?$/, function (_, g, m) { return MESI[m] + " " + g; }]
+    [/^Oggi, (\S+)$/, function (_, g) { return L.oggi + (GIORNI[g] || g); }],
+    [/^Aperto ora · chiude alle (\d\d)\.(\d\d)$/, function (_, h, m) { return L.aperto + ora(h, m); }],
+    [/^Chiuso ora · riapre (\S+) alle (\d\d)\.(\d\d)$/, function (_, g, h, m) { return L.riapre + (g === "domani" ? L.domani : L.il + (GIORNI[g] || g)) + L.alle + ora(h, m); }],
+    [/^Chiuso ora$/, function () { return L.chiuso; }],
+    [/^(\d+) recensioni Google$/, function (_, n) { return n + L.recG; }],
+    [/^(\d+) recensioni su Google$/, function (_, n) { return n + L.recSuG; }],
+    [/^(\d) stelle su 5$/, function (_, n) { return L.stelleSu5(n); }],
+    [/^(\d) stelle$/, function (_, n) { return n + L.stelle; }],
+    [/^Altre (\d+) persone hanno lasciato solo una valutazione senza commento: sono incluse nella media\.$/, function (_, n) { return L.altre(n); }],
+    [/^(\d{1,2}) (gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic)( \d{4})?$/, function (_, g, m, y) { return L.data(g, MESI[m], y); }],
+    [/^(\d{1,2}) (gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic)\.?$/, function (_, g, m) { return L.data(g, MESI[m]); }]
   ];
 
   function traduci(s) {
@@ -372,7 +651,7 @@
     if (!m || document.getElementById("only-it")) return;
     var d = document.createElement("p");
     d.id = "only-it"; d.className = "only-it";
-    d.textContent = "This page is available in Italian only. For any questions, please contact us.";
+    d.textContent = L.soloIt;
     m.insertBefore(d, m.firstChild);
   }
 

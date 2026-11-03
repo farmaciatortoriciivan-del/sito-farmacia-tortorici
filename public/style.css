@@ -661,3 +661,11 @@ html[lang="en"] .hours tr.is-today td:first-child::after{content:"Today"}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .wa-link{color:#4cd685}}
 @media (max-width:560px){.brand-name small{font-size:.58rem;letter-spacing:.03em;overflow:visible;text-overflow:clip}}
 @media (max-width:375px){.brand-name small{display:none}}
+
+/* v25: menu lingua IT / EN / DE */
+select.lang-btn{-webkit-appearance:none;appearance:none;padding:0 24px 0 12px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%236b7a72' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;background-size:10px}
+html[lang="de"] .hours tr.is-today td:first-child::after{content:"Heute"}
+@media (max-width:560px){select.lang-btn{padding:0 18px 0 8px;background-position:right 6px center;background-size:8px}}
+html[lang="de"] .menu a{padding-left:10px;padding-right:10px}
+@media (max-width:1366px){html[lang="de"] .nav-cta a.btn-ghost[href^="tel:"]{display:none}}
+@media (max-width:1100px){html[lang="de"] .menu a{padding:8px 7px;font-size:.88rem}}
