@@ -616,3 +616,21 @@ footer .brand-name small{color:rgba(231,241,236,.6)}
 /* v21: pulsante TikTok */
 .fb-btns{display:flex;flex-wrap:wrap;gap:10px}
 .btn-tiktok svg{width:18px;height:18px}
+
+/* v22: canale WhatsApp */
+.canale-box{display:grid;grid-template-columns:1.2fr 1fr;gap:40px;align-items:center;background:linear-gradient(150deg,#e9f7ee,#f6fbf7);border:1px solid #cfe9d8;border-radius:28px;padding:44px}
+.canale-k{font-weight:700;color:var(--heading);margin:18px 0 8px}
+.canale-temi{list-style:none;padding:0;margin:0 0 24px;display:flex;flex-wrap:wrap;gap:8px}
+.canale-temi li{background:#fff;border:1px solid #cfe9d8;border-radius:999px;padding:6px 14px;font-size:.92rem}
+.btn-lg{padding:16px 26px;font-size:1.05rem}
+.btn-wa svg{width:20px;height:20px}
+.canale-nota{margin:10px 0 0;font-size:.85rem;color:var(--muted)}
+.canale-come{background:#fff;border-radius:20px;padding:24px;box-shadow:var(--shadow)}
+.canale-come .canale-k{margin-top:0}
+.canale-come ul{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.canale-come li{display:grid;gap:2px;padding-left:28px;position:relative}
+.canale-come li::before{content:"✓";position:absolute;left:0;top:0;color:#1fa855;font-weight:700}
+.canale-come b{color:var(--heading)}
+.canale-come span{color:var(--muted);font-size:.95rem}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .canale-box{background:var(--card);border-color:var(--line)}:root:not([data-theme="light"]) .canale-temi li{background:var(--sand-100);border-color:var(--line)}}
+@media (max-width:820px){.canale-box{grid-template-columns:1fr;padding:26px 20px;gap:24px}}
