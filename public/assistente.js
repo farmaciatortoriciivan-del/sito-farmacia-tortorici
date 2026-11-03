@@ -8,7 +8,8 @@
   var WA = "https://wa.me/393315250555";
   var T = {
     it: {
-      apri: "Hai una domanda? Chiedi a noi", titolo: "Farmacia Tortorici", sotto: "Assistente automatico · risponde subito",
+      apri: "Hai una domanda? Chiedi a noi", corto: "Chiedi a noi", titolo: "Farmacia Tortorici", sotto: "Assistente automatico · risponde subito",
+      benv: "Ciao! 👋", benv2: "Come possiamo aiutarti oggi?", oggi: "Oggi", scrive: "sta scrivendo…", bollaT: "Hai bisogno di aiuto?",
       ciao: "Ciao! 👋 Sono l'assistente della Farmacia Tortorici. Posso aiutarti con orari, servizi, prenotazioni e farmacie di turno. Cosa ti serve?",
       bolla: "Ciao! Posso aiutarti? 👋", chiudi: "Chiudi", invia: "Invia", scrivi: "Scrivi la tua domanda…",
       nota: "Risposte automatiche: per consigli sulla salute parla con il farmacista.",
@@ -19,7 +20,8 @@
       az: { whatsapp: "Scrivici su WhatsApp", chiama: "Chiama 091 814 6207", turni: "Farmacie di turno", mappa: "Come arrivare", prenota: "Prenota", canale: "Segui il canale", recensione: "Lascia una recensione" }
     },
     en: {
-      apri: "Got a question? Ask us", titolo: "Farmacia Tortorici", sotto: "Automatic assistant · instant replies",
+      apri: "Got a question? Ask us", corto: "Ask us", titolo: "Farmacia Tortorici", sotto: "Automatic assistant · instant replies",
+      benv: "Hi there! 👋", benv2: "How can we help you today?", oggi: "Today", scrive: "typing…", bollaT: "Need any help?",
       ciao: "Hi! 👋 I'm Farmacia Tortorici's assistant. I can help with opening hours, services, bookings and on-duty pharmacies. What do you need?",
       bolla: "Hi! Can I help? 👋", chiudi: "Close", invia: "Send", scrivi: "Type your question…",
       nota: "Automatic replies: for health advice, please talk to the pharmacist.",
@@ -30,7 +32,8 @@
       az: { whatsapp: "Message us on WhatsApp", chiama: "Call +39 091 814 6207", turni: "On-duty pharmacies", mappa: "Directions", prenota: "Book", canale: "Follow the channel", recensione: "Leave a review" }
     },
     de: {
-      apri: "Haben Sie eine Frage? Fragen Sie uns", titolo: "Farmacia Tortorici", sotto: "Automatischer Assistent · antwortet sofort",
+      apri: "Haben Sie eine Frage? Fragen Sie uns", corto: "Fragen Sie uns", titolo: "Farmacia Tortorici", sotto: "Automatischer Assistent · antwortet sofort",
+      benv: "Hallo! 👋", benv2: "Wie können wir Ihnen heute helfen?", oggi: "Heute", scrive: "schreibt…", bollaT: "Brauchen Sie Hilfe?",
       ciao: "Hallo! 👋 Ich bin der Assistent der Farmacia Tortorici. Ich helfe Ihnen bei Öffnungszeiten, Leistungen, Terminen und Notdienstapotheken. Was brauchen Sie?",
       bolla: "Hallo! Kann ich helfen? 👋", chiudi: "Schließen", invia: "Senden", scrivi: "Ihre Frage…",
       nota: "Automatische Antworten: Für Gesundheitsfragen sprechen Sie bitte mit dem Apotheker.",
@@ -67,39 +70,57 @@
   var svg = function (p, cls) { return '<svg class="' + (cls || "") + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + "</svg>"; };
 
   // ---------- struttura
+  var LOGO = '<img src="img/logo-croce.png" alt="" width="30" height="30">';
+  var QICONE = [
+    '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+    '<path d="M12 21s-7-4.4-9.3-9A5.4 5.4 0 0 1 12 6a5.4 5.4 0 0 1 9.3 6c-.5 1-1.1 1.9-1.8 2.8"/><path d="M3 13h4l2-3 3 6 2-3h7"/>',
+    '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+    '<path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>'
+  ];
   var root = document.createElement("div");
   root.className = "ast";
   root.innerHTML =
     '<button type="button" class="ast-launch" aria-expanded="false" aria-controls="ast-panel" aria-label="' + esc(T.apri) + '">' +
-      '<span class="ast-ring" aria-hidden="true"></span>' +
-      svg('<path d="M21 12a8.5 8.5 0 0 1-12.4 7.5L3 21l1.5-5.6A8.5 8.5 0 1 1 21 12z"/><path d="M8.5 11h.01M12 11h.01M15.5 11h.01" stroke-width="2.6"/>', "ast-i-chat") +
-      svg('<path d="M6 6l12 12M18 6L6 18"/>', "ast-i-x") +
+      '<span class="ast-l-av">' + LOGO + '</span><span class="ast-l-txt">' + esc(T.corto) + '</span>' +
+      '<span class="ast-l-x">' + svg('<path d="M6 6l12 12M18 6L6 18"/>') + '</span>' +
     "</button>" +
-    '<div class="ast-bolla" role="status"><button type="button" class="ast-bolla-x" aria-label="' + esc(T.chiudi) + '">×</button><span>' + esc(T.bolla) + "</span></div>" +
+    '<div class="ast-bolla" role="status"><button type="button" class="ast-bolla-x" aria-label="' + esc(T.chiudi) + '">×</button>' +
+      '<picture><source srcset="img/team-banner.webp" type="image/webp"><img src="img/team-banner.jpg" alt="" width="36" height="36"></picture>' +
+      '<p style="margin:0"><b>' + esc(T.bollaT) + '</b><span>' + esc(T.bolla) + '</span></p></div>' +
     '<section class="ast-panel" id="ast-panel" role="dialog" aria-modal="false" aria-label="' + esc(T.titolo + " · " + T.sotto) + '" hidden>' +
       '<header class="ast-head">' +
-        '<span class="ast-av"><img src="img/logo-croce.png" alt="" width="30" height="30"></span>' +
-        '<span class="ast-ht"><strong>' + esc(T.titolo) + '</strong><small><i class="ast-dot"></i>' + esc(T.sotto) + "</small></span>" +
-        '<button type="button" class="ast-new" title="' + esc(T.nuova) + '" aria-label="' + esc(T.nuova) + '">' + svg('<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>') + "</button>" +
-        '<button type="button" class="ast-close" aria-label="' + esc(T.chiudi) + '">' + svg('<path d="M6 6l12 12M18 6L6 18"/>') + "</button>" +
+        '<span class="ast-h-av">' + LOGO + '</span>' +
+        '<span class="ast-h-t"><strong>' + esc(T.titolo) + '</strong><small>' + esc(T.sotto) + "</small></span>" +
+        '<button type="button" class="ast-h-b ast-new" title="' + esc(T.nuova) + '" aria-label="' + esc(T.nuova) + '">' + svg('<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>') + "</button>" +
+        '<button type="button" class="ast-h-b ast-close" aria-label="' + esc(T.chiudi) + '">' + svg('<path d="M6 9l6 6 6-6"/>') + "</button>" +
       "</header>" +
-      '<div class="ast-msgs" aria-live="polite"></div>' +
-      '<form class="ast-form">' +
+      '<div class="ast-scroll">' +
+        '<div class="ast-hero">' +
+          '<div class="ast-banner"><picture><source srcset="img/team-banner.webp" type="image/webp"><img src="img/team-banner.jpg" alt="" width="640" height="433"></picture>' +
+          '<div class="ast-banner-t"><b>' + esc(T.benv) + '</b><span>' + esc(T.benv2) + '</span></div></div>' +
+          '<div class="ast-quick">' + T.rapide.map(function (q, i) {
+            return '<button type="button" class="ast-q" style="animation-delay:' + (120 + i * 70) + 'ms"><i>' + svg(QICONE[i]) + "</i><span>" + esc(q) + "</span></button>";
+          }).join("") + "</div>" +
+        "</div>" +
+        '<div class="ast-msgs" aria-live="polite"></div>' +
+      "</div>" +
+      '<form class="ast-form"><div class="ast-box">' +
         '<textarea rows="1" maxlength="500" placeholder="' + esc(T.scrivi) + '" aria-label="' + esc(T.scrivi) + '"></textarea>' +
         '<button type="submit" class="ast-send" aria-label="' + esc(T.invia) + '" disabled>' + svg('<path d="M5 12h14M13 6l6 6-6 6"/>') + "</button>" +
-      "</form>" +
+      "</div></form>" +
       '<p class="ast-nota">' + esc(T.nota) + "</p>" +
     "</section>";
   document.body.appendChild(root);
 
   var launch = root.querySelector(".ast-launch"), panel = root.querySelector(".ast-panel"),
-      msgs = root.querySelector(".ast-msgs"), form = root.querySelector(".ast-form"),
-      input = form.querySelector("textarea"), send = form.querySelector(".ast-send"),
-      bolla = root.querySelector(".ast-bolla");
+      scroll = root.querySelector(".ast-scroll"), msgs = root.querySelector(".ast-msgs"),
+      form = root.querySelector(".ast-form"), input = form.querySelector("textarea"),
+      send = form.querySelector(".ast-send"), bolla = root.querySelector(".ast-bolla");
   var occupato = false;
 
   function salva() { try { sessionStorage.setItem(KEY, JSON.stringify(storia.slice(-20))); } catch (e) {} }
-  function giu() { msgs.scrollTo({ top: msgs.scrollHeight, behavior: RIDOTTO ? "auto" : "smooth" }); }
+  function giu() { scroll.scrollTo({ top: scroll.scrollHeight, behavior: RIDOTTO ? "auto" : "smooth" }); }
+  function adesso() { var d = new Date(); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
 
   function azioniHtml(az) {
     return (az || []).filter(function (a) { return LINK[a]; }).map(function (a) {
@@ -108,47 +129,38 @@
     }).join("");
   }
 
-  function bollaMsg(ruolo, testo, azioni, anima) {
+  function bollaMsg(ruolo, testo, azioni, anima, ora) {
     var el = document.createElement("div");
-    el.className = "ast-m ast-" + (ruolo === "utente" ? "u" : "b") + (anima && !RIDOTTO ? " ast-in" : "");
-    var corpo = '<div class="ast-txt"></div>';
-    el.innerHTML = (ruolo === "utente" ? "" : '<span class="ast-mav"><img src="img/logo-croce.png" alt="" width="20" height="20"></span>') +
-      '<div class="ast-bub">' + corpo + '<div class="ast-azs"></div></div>';
+    var bot = ruolo !== "utente";
+    el.className = "ast-m ast-" + (bot ? "b" : "u") + (anima && !RIDOTTO ? " ast-in" : "");
+    el.innerHTML = (bot ? '<span class="ast-mav">' + LOGO + "</span>" : "") +
+      '<div class="ast-col"><div class="ast-bub"></div><div class="ast-azs"></div>' + (ora ? '<span class="ast-ora">' + esc(ora) + "</span>" : "") + "</div>";
     msgs.appendChild(el);
-    var txt = el.querySelector(".ast-txt"), azs = el.querySelector(".ast-azs");
+    var txt = el.querySelector(".ast-bub"), azs = el.querySelector(".ast-azs");
     var finale = function () { azs.innerHTML = azioniHtml(azioni); if (azioni && azioni.length && !RIDOTTO) azs.classList.add("ast-pop"); giu(); };
-    if (ruolo === "utente" || !anima || RIDOTTO) { txt.textContent = testo; finale(); giu(); return; }
-    // le parole compaiono una dopo l'altra
+    if (!bot || !anima || RIDOTTO) { txt.textContent = testo; finale(); return; }
     var parole = testo.split(/(\s+)/), i = 0;
     (function passo() {
       i = Math.min(parole.length, i + 2);
       txt.textContent = parole.slice(0, i).join("");
-      if (i % 8 === 0) giu();
-      if (i < parole.length) setTimeout(passo, 28); else finale();
+      if (i % 10 === 0) giu();
+      if (i < parole.length) setTimeout(passo, 26); else finale();
     })();
-  }
-
-  function rapide() {
-    if (storia.length) return;
-    var w = document.createElement("div");
-    w.className = "ast-chips";
-    w.innerHTML = T.rapide.map(function (q, i) { return '<button type="button" style="--d:' + (i * 70) + 'ms">' + esc(q) + "</button>"; }).join("");
-    msgs.appendChild(w);
-    w.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) chiedi(b.textContent); });
   }
 
   function disegna() {
     msgs.innerHTML = "";
-    bollaMsg("assistente", T.ciao, null, false);
-    storia.forEach(function (m) { bollaMsg(m.ruolo, m.testo, m.azioni, false); });
-    rapide();
-    giu();
+    if (storia.length) {
+      var sep = document.createElement("div"); sep.className = "ast-sep"; sep.textContent = T.oggi; msgs.appendChild(sep);
+    }
+    storia.forEach(function (m) { bollaMsg(m.ruolo, m.testo, m.azioni, false, m.ora); });
+    scroll.scrollTop = storia.length ? scroll.scrollHeight : 0;
   }
 
   function scrivendo() {
     var el = document.createElement("div");
     el.className = "ast-m ast-b ast-typing" + (RIDOTTO ? "" : " ast-in");
-    el.innerHTML = '<span class="ast-mav"><img src="img/logo-croce.png" alt="" width="20" height="20"></span><div class="ast-bub"><span class="ast-dots"><i></i><i></i><i></i></span></div>';
+    el.innerHTML = '<span class="ast-mav">' + LOGO + '</span><div class="ast-col"><div class="ast-bub"><span class="ast-dots"><i></i><i></i><i></i></span><small>' + esc(T.scrive) + "</small></div></div>";
     msgs.appendChild(el); giu();
     return el;
   }
@@ -157,9 +169,10 @@
     testo = String(testo || "").trim().slice(0, 500);
     if (!testo || occupato) return;
     occupato = true; send.disabled = true;
-    var ch = msgs.querySelector(".ast-chips"); if (ch) ch.remove();
-    storia.push({ ruolo: "utente", testo: testo }); salva();
-    bollaMsg("utente", testo, null, true);
+    if (!storia.length) { var sep = document.createElement("div"); sep.className = "ast-sep"; sep.textContent = T.oggi; msgs.appendChild(sep); }
+    var ora = adesso();
+    storia.push({ ruolo: "utente", testo: testo, ora: ora }); salva();
+    bollaMsg("utente", testo, null, true, ora);
     input.value = ""; cresci();
     var dots = scrivendo(), t0 = Date.now();
     fetch("/api/assistente", {
@@ -168,14 +181,15 @@
     }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { s: r.status, d: d }; }); })
       .catch(function () { return { s: 0, d: {} }; })
       .then(function (res) {
-        var attesa = Math.max(0, 700 - (Date.now() - t0));
+        var attesa = Math.max(0, 900 - (Date.now() - t0));
         setTimeout(function () {
           dots.remove();
           var testoR, az;
           if (res.s === 200 && res.d.testo) { testoR = res.d.testo; az = res.d.azioni || []; }
           else { testoR = res.s === 429 ? T.troppi : T.errore; az = ["whatsapp", "chiama"]; }
-          storia.push({ ruolo: "assistente", testo: testoR, azioni: az }); salva();
-          bollaMsg("assistente", testoR, az, true);
+          var o = adesso();
+          storia.push({ ruolo: "assistente", testo: testoR, azioni: az, ora: o }); salva();
+          bollaMsg("assistente", testoR, az, true, o);
           occupato = false; send.disabled = !input.value.trim();
         }, attesa);
       });
@@ -188,7 +202,7 @@
     requestAnimationFrame(function () { root.classList.add("ast-open"); });
     launch.setAttribute("aria-expanded", "true");
     nascondiBolla();
-    if (!msgs.childElementCount) disegna();
+    if (!panel.dataset.pronto) { panel.dataset.pronto = 1; disegna(); }
     setTimeout(function () { if (matchMedia("(min-width: 561px)").matches) input.focus(); giu(); }, 220);
     document.documentElement.classList.add("ast-aperto");
   }
@@ -203,7 +217,8 @@
 
   launch.addEventListener("click", function () { root.classList.contains("ast-open") ? chiudi() : apri(); });
   root.querySelector(".ast-close").addEventListener("click", chiudi);
-  root.querySelector(".ast-new").addEventListener("click", function () { if (occupato) return; storia = []; salva(); disegna(); input.focus(); });
+  root.querySelector(".ast-new").addEventListener("click", function () { if (occupato) return; storia = []; salva(); disegna(); scroll.scrollTo({ top: 0, behavior: "smooth" }); input.focus(); });
+  root.querySelector(".ast-quick").addEventListener("click", function (e) { var b = e.target.closest(".ast-q"); if (b) chiedi(b.textContent); });
   bolla.addEventListener("click", function (e) { if (e.target.closest(".ast-bolla-x")) nascondiBolla(); else apri(); });
   input.addEventListener("input", function () { cresci(); send.disabled = occupato || !input.value.trim(); });
   input.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); chiedi(input.value); } });
