@@ -75,6 +75,15 @@ export async function aggiornaTurni(env) {
         out.cartelli.push({ comune: nome, link: t.link, http: t.http, righe: t.righe.slice(0, 120), html: t.html.slice(0, 9000) });
       }
     }
+    // diagnostica: altre pubblicazioni dei turni (calendari annuali, PDF)
+    out.altro = [];
+    try {
+      const p43 = await (await fetch(BASE + "default.asp?pageid=43", { headers: { "user-agent": UA } })).text();
+      out.altro.push(...[...p43.matchAll(/<a[^>]*href="([^"]+)"[^>]*>([\s\S]{0,120}?)<\/a>/gi)].map((m) => m[1] + " | " + m[2].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()).filter((x) => /trabia|2026|2025|pdf|cartell|turn/i.test(x)).slice(0, 60));
+    } catch (e) { out.altro.push("p43 errore " + e.message); }
+    for (const u of ["public/cartelli-provincia/trabia/", "public/cartelli-provincia/trabia/html/", "public/cartelli-provincia/trabia/pdf/90019_2026_45.pdf", "public/cartelli-provincia/trabia/90019_2026_45.pdf", "public/cartelli-provincia/trabia/html/90019_2026_44.html", "public/cartelli-provincia/trabia/html/90019_2025_45.html", "public/cartelli-provincia/trabia/html/90019_2026_1.html", "public/cartelli-provincia/termini-imerese/html/90018_2026_45.html", "public/cartelli-provincia/bagheria/html/90011_2026_45.html"]) {
+      try { const r = await fetch(BASE + u, { headers: { "user-agent": UA } }); const t = await r.text(); out.altro.push(u + " -> " + r.status + " " + testoDaHtml(t).slice(0, 6).join(" / ").slice(0, 300)); } catch (e) { out.altro.push(u + " errore"); }
+    }
     out.estratto = out.cartelli.map((c) => "== " + c.comune + " (" + c.link.split("/").pop() + ") ==\n" + c.righe.join("\n")).join("\n\n").slice(0, 6000);
     out.stato = out.cartelli.some((c) => c.righe.length) ? "ok" : "nessun turno trovato";
   } catch (e) { out.stato = "errore: " + (e && e.message); }
