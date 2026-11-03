@@ -48,7 +48,7 @@
 }
 </script>
 
-<link rel="stylesheet" href="style.css?v=18">
+<link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
 <a href="#main" class="skip">Vai al contenuto</a>
@@ -359,6 +359,21 @@
       <a class="btn btn-ghost" href="https://www.facebook.com/farmatortorici/" target="_blank" rel="noopener">Seguici su Facebook</a>
     </div>
     <div class="fb-feed reveal" id="fb-feed" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ============ ATTUALITÀ SANITARIA (da Quotidiano Sanità) ============ -->
+<section id="attualita" class="attualita" hidden>
+  <div class="wrap">
+    <div class="sec-head reveal in">
+      <div>
+        <span class="eyebrow">Attualità sanitaria</span>
+        <h2>Notizie dal mondo della salute</h2>
+      </div>
+      <p class="lead">Le ultime notizie da Quotidiano Sanità, aggiornate in automatico.</p>
+    </div>
+    <ol class="news-list" id="news-list"></ol>
+    <p class="news-src">Fonte: <a href="https://www.quotidianosanita.it/" target="_blank" rel="noopener">Quotidiano Sanità</a>. Gli articoli si aprono sul sito della testata.</p>
   </div>
 </section>
 
@@ -701,6 +716,22 @@ if ("IntersectionObserver" in window){
   if (!f || !f.numero || !el) return;
   document.getElementById("fb-count-n").textContent = f.numero.toLocaleString("it-IT");
   el.hidden = false;
+})();
+
+// Attualità sanitaria: titoli da Quotidiano Sanità (letti dal nostro server, cache 30 min)
+(() => {
+  const sec = document.getElementById("attualita"), ol = document.getElementById("news-list");
+  if (!sec || window.claude || !/^https?:$/.test(location.protocol)) return;
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  fetch("/api/notizie").then(r => r.ok ? r.json() : null).then(d => {
+    const n = d && Array.isArray(d.notizie) ? d.notizie.filter(x => /^https:\/\/(www\.)?quotidianosanita\.it\//.test(x.link)) : [];
+    if (!n.length) return;
+    ol.innerHTML = n.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">
+      ${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString("it-IT",{day:"numeric",month:"short"})}</time>` : ""}
+      ${x.categoria ? `<span class="news-cat">${esc(x.categoria)}</span>` : ""}
+      <strong>${esc(x.titolo)}</strong><span class="news-go">Leggi →</span></a></li>`).join("");
+    sec.hidden = false;
+  }).catch(() => {});
 })();
 </script>
 </body>
