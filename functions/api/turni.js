@@ -138,7 +138,7 @@ export async function sondaTurno(env) {
       out.push({ m, u, b, http: r.status, finale: r.url, html: h.slice(0, 20000) });
     } catch (e) { out.push({ m, u, b, errore: String(e && e.message) }); }
   }
-  const q = "INSERT INTO turni_cache (id, dati, quando) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando";
+  const q = "INSERT INTO sonda (id, dati, quando) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando";
   const t = new Date().toISOString();
   try { await env.DB.prepare(q).bind(8, "inizio " + out.map((o) => o.http || o.errore).join(","), t).run(); } catch (e) {}
   for (let i = 0; i < out.length; i++) {
