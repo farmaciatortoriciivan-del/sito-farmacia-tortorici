@@ -1,13 +1,28 @@
-// Notizie in primo piano da Quotidiano Sanità (feed RSS pubblico del sito).
-// Il Worker legge il feed lato server (niente problemi di CORS nel browser),
-// tiene il risultato in cache per 30 minuti e restituisce solo titolo, data e link:
-// gli articoli si leggono sul sito della fonte.
-const FONTI = [
-  "https://www.quotidianosanita.it/feed/",
-  "https://www.quotidianosanita.it/?feed=rss2",
-];
+// Rubrica "Attualità sanitaria": titoli da Quotidiano Sanità e Farmacista33 (feed RSS/Atom pubblici).
+// Il Worker legge i feed lato server, tiene il risultato in cache per 30 minuti
+// e restituisce solo titolo, data, link e fonte: gli articoli si leggono sui siti delle testate.
 const TTL = 1800; // secondi
 const MAX = 6;
+
+const FONTI = [
+  {
+    nome: "Quotidiano Sanità",
+    dominio: /^https:\/\/(www\.)?quotidianosanita\.it\//,
+    feed: ["https://www.quotidianosanita.it/feed/", "https://www.quotidianosanita.it/?feed=rss2"],
+    filtra: false,
+  },
+  {
+    nome: "Farmacista33",
+    dominio: /^https:\/\/(www\.)?farmacista33\.it\//,
+    feed: ["https://www.farmacista33.it/feed/", "https://www.farmacista33.it/rss", "https://www.farmacista33.it/rss.xml", "https://www.farmacista33.it/feed", "https://www.farmacista33.it/?feed=rss2"],
+    filtra: true, // testata per farmacisti: teniamo solo le notizie utili ai clienti
+  },
+];
+
+// Selezione per i clienti della farmacia: temi di salute sì, temi di categoria/professionali no.
+const UTILI = /salut|prevenz|vaccin|influenz|farmac[io]|medicin|integrator|vitamin|dieta|alimenta|nutriz|pelle|derma|sole|solar|allerg|asma|diabet|glicem|pression|cuore|cardi|colesterol|bambin|pediatr|neonat|gravidanz|anzian|sonno|antibiot|screening|tumor|cancro|virus|covid|infezion|ricetta|carenz|studio|ricerca|sintom|dolore|osse|osteopor|memoria|demenz|alzheimer|obesit|peso|sport|fumo|alcol|stress|ansia|depress|occhi|vista|denti|orale|intestin|stomaco|fegato|reni|tiroid|ormon|menopaus|holter|ecg|telemedicin|consigli|benesser|igiene|cura/i;
+const PROFESSIONALI = /contratt|ccnl|sindacat|concors|laure|universit|titolar|bilanc|fatturat|mercato|distribuzion|grossist|ordine dei|fofi|enpaf|federfarma|assofarm|utifar|assemblea|congress|convention|nomin|elezion|fusion|acquisizion|catene|retail|marketing|gestional|software|fiscal|tasse|iva\b|remunerazion|convenzione farmaceutica|dpc|gara|appalt|aziend|industria|investiment|borsa|ricavi|personale|stipend|tirocin|formazion|ecm\b|webinar|annunci/i;
+const utile = (t) => UTILI.test(t) && !PROFESSIONALI.test(t);
 
 const decode = (s) =>
   s
@@ -22,44 +37,59 @@ const decode = (s) =>
     .trim();
 
 const tag = (xml, name) => {
-  const m = xml.match(new RegExp(`<${name}[^>]*>([\\s\\S]*?)</${name}>`, "i"));
+  const m = xml.match(new RegExp(`<${name}(?:\\s[^>]*)?>([\\s\\S]*?)</${name}>`, "i"));
   return m ? decode(m[1]) : "";
 };
 
-export function parseRss(xml) {
+// Legge sia RSS (<item>) sia Atom (<entry>)
+export function parseFeed(xml, fonte) {
   const out = [];
-  for (const m of xml.matchAll(/<item[\s>][\s\S]*?<\/item>/gi)) {
+  for (const m of xml.matchAll(/<(item|entry)[\s>][\s\S]*?<\/\1>/gi)) {
     const it = m[0];
     const titolo = tag(it, "title");
-    const link = tag(it, "link");
-    if (!titolo || !/^https:\/\/(www\.)?quotidianosanita\.it\//.test(link)) continue;
-    const d = Date.parse(tag(it, "pubDate"));
-    out.push({ titolo, link, data: isNaN(d) ? null : new Date(d).toISOString(), categoria: tag(it, "category") || null });
-    if (out.length >= MAX) break;
+    let link = tag(it, "link");
+    if (!link) { const h = it.match(/<link[^>]*href="([^"]+)"/i); link = h ? h[1].replace(/&amp;/g, "&") : ""; }
+    if (!titolo || !fonte.dominio.test(link)) continue;
+    const testo = titolo + " " + tag(it, "description") + " " + tag(it, "summary") + " " + tag(it, "category");
+    if (fonte.filtra && !utile(testo)) continue;
+    const d = Date.parse(tag(it, "pubDate") || tag(it, "published") || tag(it, "updated") || tag(it, "dc:date"));
+    out.push({ titolo, link, data: isNaN(d) ? null : new Date(d).toISOString(), categoria: tag(it, "category") || null, fonte: fonte.nome });
   }
   return out;
 }
 
-export async function onRequest({ request, ctx }) {
-  const cache = caches.default;
-  const key = new Request(new URL("/api/notizie?v=1", request.url).toString());
-  const hit = await cache.match(key);
-  if (hit) return hit;
+// Alterna le fonti (più recenti prima) fino a MAX notizie
+export function unisci(liste) {
+  const ordinate = liste.map((l) => [...l].sort((a, b) => (b.data || "").localeCompare(a.data || "")));
+  const out = [];
+  for (let i = 0; out.length < MAX && ordinate.some((l) => l[i]); i++)
+    for (const l of ordinate) if (l[i] && out.length < MAX) out.push(l[i]);
+  return out;
+}
 
-  let notizie = [];
-  for (const url of FONTI) {
+async function leggi(fonte) {
+  for (const url of fonte.feed) {
     try {
       const r = await fetch(url, {
-        headers: { "user-agent": "Mozilla/5.0 (compatible; SitoFarmaciaTortorici/1.0)", accept: "application/rss+xml, application/xml, text/xml" },
+        headers: { "user-agent": "Mozilla/5.0 (compatible; SitoFarmaciaTortorici/1.0)", accept: "application/rss+xml, application/atom+xml, application/xml, text/xml" },
         cf: { cacheTtl: TTL, cacheEverything: true },
       });
       if (!r.ok) continue;
-      notizie = parseRss(await r.text());
-      if (notizie.length) break;
-    } catch (e) { /* prova la fonte successiva */ }
+      const n = parseFeed(await r.text(), fonte);
+      if (n.length) return n;
+    } catch (e) { /* prova l'indirizzo successivo */ }
   }
+  return [];
+}
 
-  const res = new Response(JSON.stringify({ fonte: "Quotidiano Sanità", aggiornato: new Date().toISOString(), notizie }), {
+export async function onRequest({ request, ctx }) {
+  const cache = caches.default;
+  const key = new Request(new URL("/api/notizie?v=2", request.url).toString());
+  const hit = await cache.match(key);
+  if (hit) return hit;
+
+  const notizie = unisci(await Promise.all(FONTI.map(leggi)));
+  const res = new Response(JSON.stringify({ fonti: FONTI.map((f) => f.nome), aggiornato: new Date().toISOString(), notizie }), {
     headers: {
       "content-type": "application/json; charset=utf-8",
       "cache-control": `public, max-age=${notizie.length ? TTL : 300}`,
