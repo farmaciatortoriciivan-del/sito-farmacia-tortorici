@@ -2,7 +2,7 @@
 // Il Worker scarica la pagina, ne estrae le righe che riguardano Trabia e le tiene in cache per 3 ore.
 // Le usa l'assistente; /api/turni mostra cosa è stato letto (utile per i controlli).
 import { CALENDARIO } from "./turni-trabia.js";
-const URL_TURNI = "https://www.ordinefarmacistipalermo.it/turni.provincia.asp";
+const URL_TURNI = "https://www.ordinefarmacistipalermo.it/turno.asp?c=48";
 const BASE = "https://www.ordinefarmacistipalermo.it/";
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36";
 const TTL = 3 * 3600;
@@ -65,27 +65,65 @@ export function leggiCartello(righe) {
   return { tipo: tipo.toLowerCase(), farmacia: righe[iF], indirizzo: ind, telefono: tel };
 }
 
-// Legge i cartelli ufficiali di Trabia per questa settimana e le 3 successive e li salva nel database.
+// Nuovo sistema dell'Ordine (turno.asp): un file per settimana in /newturni/html_pubblico/{codice}_{anno}_{settimana}.html
+const titolo = (t) => t.toLowerCase().replace(/(^|[\s'(-])([a-zà-ù])/g, (m, a, b) => a + b.toUpperCase()).replace(/\bSrl\b/g, "srl").replace(/\bSnc\b/g, "snc").replace(/\bSas\b/g, "sas");
+const pulisci = (h) => decode(h.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
+
+export function leggiSettimana(html) {
+  const blocchi = html.split(/<h4[^>]*class=['"]tipoturno['"][^>]*>/i).slice(1);
+  return blocchi.map((b) => {
+    const tipo = pulisci(b.split(/<\/h4>/i)[0]);
+    const prendi = (cl) => { const m = b.match(new RegExp("<div[^>]*class=['\"]" + cl + "['\"][^>]*>([\\s\\S]*?)</div>", "i")); return m ? pulisci(m[1]) : ""; };
+    const sett = prendi("settimana").match(/(\d{2})\/(\d{2})\/(\d{4}).*?(\d{2})\/(\d{2})\/(\d{4})/);
+    const nome = prendi("ragsoc");
+    if (!nome) return null;
+    return {
+      tipo: tipo.toLowerCase(),
+      farmacia: "Farmacia " + titolo(nome),
+      indirizzo: titolo(prendi("Indirizzo")).replace(/ - /, ", ").replace(/' /g, "'"),
+      telefono: prendi("tel"),
+      dal: sett ? `${sett[3]}-${sett[2]}-${sett[1]}` : null,
+      al: sett ? `${sett[6]}-${sett[5]}-${sett[4]}` : null,
+    };
+  }).filter(Boolean);
+}
+
+async function codiceTrabia() {
+  try {
+    const dj = await (await fetch(BASE + "dati.js", { headers: { "user-agent": UA } })).text();
+    const m = dj.match(/zona\s*:\s*["']TRABIA["'][^}]*codice\s*:\s*["']([^"']+)["']|codice\s*:\s*["']([^"']+)["'][^}]*zona\s*:\s*["']TRABIA["']/i);
+    if (m) return m[1] || m[2];
+  } catch (e) {}
+  return "48";
+}
+
+// Legge i turni di Trabia per questa settimana e le 3 successive e li salva nel database.
 export async function aggiornaTurni(env) {
-  try { await sondaTurno(env); } catch (e) {}
   const out = { fonte: URL_TURNI, letto: new Date().toISOString(), stato: "non letto", settimane: [] };
   try {
-    const lun = lunediDi(new Date());
+    const cod = await codiceTrabia();
+    out.codice = cod;
+    const lun = lunediDi(new Date(Date.now() + 2 * 3600e3));
     for (let k = 0; k < 4; k++) {
       const inizio = new Date(lun.getTime() + k * 7 * 864e5), fine = new Date(inizio.getTime() + 6 * 864e5);
       const { anno, w } = settimanaIso(inizio);
-      const url = `${BASE}public/cartelli-provincia/trabia/html/90019_${anno}_${w}.html`;
-      const r = await fetch(url, { headers: { "user-agent": UA, referer: URL_TURNI } });
-      const sett = { dal: iso(inizio), al: iso(fine), url, http: r.status, turno: null };
-      if (r.ok) {
+      const ww = String(w).padStart(2, "0");
+      const sett = { dal: iso(inizio), al: iso(fine), url: null, http: null, turni: [] };
+      for (const a of [...new Set([anno, inizio.getUTCFullYear(), fine.getUTCFullYear()])]) {
+        const url = `${BASE}newturni/html_pubblico/${cod}_${a}_${ww}.html`;
+        const r = await fetch(url, { headers: { "user-agent": UA, referer: URL_TURNI } });
+        sett.url = url; sett.http = r.status;
+        if (!r.ok) { await r.arrayBuffer(); continue; }
         const buf = await r.arrayBuffer();
         let h = new TextDecoder("utf-8").decode(buf);
-        if (h.includes("�")) h = new TextDecoder("windows-1252").decode(buf);
-        sett.turno = leggiCartello(testoDaHtml(h));
-      } else await r.arrayBuffer();
+        if (h.includes("\uFFFD")) h = new TextDecoder("windows-1252").decode(buf);
+        sett.turni = leggiSettimana(h).map((t) => ({ ...t, dal: t.dal || sett.dal, al: t.al || sett.al }));
+        if (sett.turni.length) break;
+      }
+      sett.turno = sett.turni[0] || null;
       out.settimane.push(sett);
     }
-    out.stato = out.settimane.some((s) => s.turno) ? "ok" : "turni non pubblicati sul sito ufficiale";
+    out.stato = out.settimane.some((s) => s.turni.length) ? "ok" : "turni non pubblicati sul sito ufficiale";
   } catch (e) { out.stato = "errore: " + (e && e.message); }
   try {
     await env.DB.prepare("INSERT INTO turni_cache (id, dati, quando) VALUES (1, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando")
@@ -101,7 +139,7 @@ export async function tabellaTurni(env, ctx) {
   for (const c of CALENDARIO) if (c.al >= oggi) righe.push({ ...c, fonte: "calendario" });
   if (!righe.length) {
     const d = await turniTrabia(env, ctx);
-    for (const s of d.settimane || []) if (s.turno && s.al >= oggi) righe.push({ dal: s.dal, al: s.al, ...s.turno, fonte: "ordine" });
+    for (const s of d.settimane || []) for (const t of s.turni || (s.turno ? [s.turno] : [])) if ((t.al || s.al) >= oggi) righe.push({ dal: s.dal, al: s.al, ...t, fonte: "ordine" });
   }
   return righe.sort((a, b) => a.dal.localeCompare(b.dal)).slice(0, 4);
 }
@@ -121,30 +159,3 @@ export async function onRequestGet({ env, ctx }) {
   return new Response(JSON.stringify(d, null, 1), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 }
 
-// Diagnostica temporanea: salva il contenuto grezzo di turno.asp per studiarne il formato.
-export async function sondaTurno(env) {
-  let prove = [["GET", BASE + "dati.js", null]];
-  try {
-    const dj = await (await fetch(BASE + "dati.js", { headers: { "user-agent": UA } })).text();
-    const m = dj.match(/zona\s*:\s*["']TRABIA["'][^}]*codice\s*:\s*["']([^"']+)["']|codice\s*:\s*["']([^"']+)["'][^}]*zona\s*:\s*["']TRABIA["']/i);
-    const cod = m ? (m[1] || m[2]) : "90019";
-    for (const w of ["45", "46", "47"]) prove.push(["GET", BASE + "newturni/html_pubblico/" + cod + "_2026_" + w + ".html", null]);
-  } catch (e) {}
-  const out = [];
-  for (const [m, u, b] of prove) {
-    try {
-      const r = await fetch(u, { method: m, body: b, headers: { "user-agent": UA, referer: BASE + "turno.asp", ...(b ? { "content-type": "application/x-www-form-urlencoded" } : {}) } });
-      const buf = await r.arrayBuffer();
-      let h = new TextDecoder("utf-8").decode(buf);
-      if (h.includes("�")) h = new TextDecoder("windows-1252").decode(buf);
-      out.push({ m, u, b, http: r.status, finale: r.url, html: h.slice(0, 20000) });
-    } catch (e) { out.push({ m, u, b, errore: String(e && e.message) }); }
-  }
-  const q = "INSERT INTO sonda (id, dati, quando) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando";
-  const t = new Date().toISOString();
-  try { await env.DB.prepare(q).bind(8, "inizio " + out.map((o) => o.http || o.errore).join(","), t).run(); } catch (e) {}
-  for (let i = 0; i < out.length; i++) {
-    try { await env.DB.prepare(q).bind(10 + i, JSON.stringify(out[i]), t).run(); }
-    catch (e) { try { await env.DB.prepare(q).bind(20 + i, "errore " + String(e && e.message), t).run(); } catch (e2) {} }
-  }
-}

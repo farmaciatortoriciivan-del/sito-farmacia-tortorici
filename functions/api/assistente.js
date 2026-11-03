@@ -51,8 +51,8 @@ INFORMAZIONI (usa SOLO queste, non inventare nulla):
 - Farmacia di turno (notte e festivi): servizio a chiamata solo per farmaci urgenti, a rotazione tra le farmacie della zona. Il calendario è sulle bacheche di tutte le farmacie e sul sito ufficiale dell'Ordine dei Farmacisti di Palermo.
 - Farmacie di Trabia: Farmacia Tortorici (Via Ettore Maiorana 27) e le altre indicate nei turni ufficiali qui sotto.
 
-TURNI UFFICIALI (testo letto dal sito dell'Ordine dei Farmacisti di Palermo il ${turni && turni.letto ? turni.letto.slice(0, 10) : "?"}; può essere una tabella con date, nomi e indirizzi):
-${turni && turni.estratto ? turni.estratto : "(non disponibili in questo momento)"}
+TURNI UFFICIALI (dal sito dell'Ordine dei Farmacisti di Palermo, letti il ${turni && turni.letto ? turni.letto.slice(0, 10) : "?"}; Farmacia Tortorici Ivan è la nostra farmacia):
+${turni && turni.settimane ? turni.settimane.flatMap((w) => (w.turni || []).map((t) => `- dal ${t.dal || w.dal} al ${t.al || w.al}: ${t.farmacia}, ${t.indirizzo}, tel. ${t.telefono} (${t.tipo})`)).join("\n") || "(non disponibili in questo momento)" : "(non disponibili in questo momento)"}
 Quando ti chiedono la farmacia di turno a Trabia: usa SOLO questi dati per dire quale farmacia è di turno oggi (o nel giorno chiesto), con nome e indirizzo se presenti. Se dai dati non si capisce con certezza, dillo chiaramente e rimanda al sito ufficiale con [[turni]]. Ricorda sempre che di notte il servizio è a chiamata solo per farmaci urgenti. Non inventare mai turni.
 - Holter cardiaco e pressorio: in convenzione SSN con la ricetta del medico di base, oppure senza ricetta a pagamento. Si prenota in farmacia, al telefono o su WhatsApp.
 - Pressione ed ECG (elettrocardiogramma) in farmacia.

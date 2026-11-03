@@ -48,7 +48,7 @@
 
   var LINK = {
     whatsapp: WA, chiama: "tel:+390918146207",
-    turni: "https://www.ordinefarmacistipalermo.it/turni.provincia.asp",
+    turni: "https://www.ordinefarmacistipalermo.it/turno.asp?c=48",
     mappa: "https://www.google.com/maps/dir/?api=1&destination=Farmacia%20Tortorici%2C%20Via%20Ettore%20Maiorana%2027%2C%20Trabia",
     prenota: "index.html#prenota", canale: "https://whatsapp.com/channel/0029VbDXlZKFy72CVSyoRg3o",
     recensione: "recensioni.html#scrivi"

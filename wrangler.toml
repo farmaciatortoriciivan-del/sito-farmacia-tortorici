@@ -12,7 +12,7 @@ routes = [
 binding = "AI"
 
 [triggers]
-crons = ["* * * * *"]
+crons = ["17 */3 * * *"]
 
 [assets]
 directory = "./public"
