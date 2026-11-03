@@ -2,6 +2,7 @@
 // Usa Workers AI di Cloudflare (gratuito nei limiti giornalieri). Nessun dato viene salvato:
 // si conta solo quanti messaggi arrivano da ogni indirizzo (in forma cifrata) per evitare abusi.
 import { json, sha256, DEFAULT_IP_SALT } from "./_util.js";
+import { turniTrabia } from "./turni.js";
 
 const MODELLI = ["@cf/meta/llama-3.3-70b-instruct-fp8-fast", "@cf/meta/llama-3.1-8b-instruct-fast"];
 const LIMITE_ORA = 40; // messaggi per indirizzo all'ora
@@ -36,7 +37,7 @@ export function statoApertura(now = adessoRoma()) {
   return "CHIUSA in questo momento.";
 }
 
-function istruzioni(lingua) {
+function istruzioni(lingua, turni) {
   const now = adessoRoma();
   const lang = { en: "English", de: "German (use the formal 'Sie')" }[lingua] || "Italian";
   return `Sei l'assistente automatico del sito della Farmacia Dott. Ivan Tortorici di Trabia (Palermo). Aiuti i clienti con domande pratiche, in modo cordiale, chiaro e breve (massimo 3-4 frasi). Rispondi nella lingua del cliente; se non è chiara usa: ${lang}.
@@ -48,6 +49,11 @@ INFORMAZIONI (usa SOLO queste, non inventare nulla):
 - Telefono 091 814 6207. WhatsApp 331 525 0555. Email farmaciatortorici@gmail.com.
 - Orari: lunedì-venerdì 8:30-13:00 e 16:15-19:45; sabato 8:30-13:00 e 16:15-19:30; domenica 9:00-13:00. Nei festivi e nei turni gli orari possono variare: gli avvisi sono sulla bacheca della farmacia.
 - Farmacia di turno (notte e festivi): servizio a chiamata solo per farmaci urgenti, a rotazione tra le farmacie della zona. Il calendario è sulle bacheche di tutte le farmacie e sul sito ufficiale dell'Ordine dei Farmacisti di Palermo.
+- Farmacie di Trabia: Farmacia Tortorici (Via Ettore Maiorana 27) e le altre indicate nei turni ufficiali qui sotto.
+
+TURNI UFFICIALI (testo letto dal sito dell'Ordine dei Farmacisti di Palermo il ${turni && turni.letto ? turni.letto.slice(0, 10) : "?"}; può essere una tabella con date, nomi e indirizzi):
+${turni && turni.estratto ? turni.estratto : "(non disponibili in questo momento)"}
+Quando ti chiedono la farmacia di turno a Trabia: usa SOLO questi dati per dire quale farmacia è di turno oggi (o nel giorno chiesto), con nome e indirizzo se presenti. Se dai dati non si capisce con certezza, dillo chiaramente e rimanda al sito ufficiale con [[turni]]. Ricorda sempre che di notte il servizio è a chiamata solo per farmaci urgenti. Non inventare mai turni.
 - Holter cardiaco e pressorio: in convenzione SSN con la ricetta del medico di base, oppure senza ricetta a pagamento. Si prenota in farmacia, al telefono o su WhatsApp.
 - Pressione ed ECG (elettrocardiogramma) in farmacia.
 - Screening con una goccia di sangue dal dito: quadro lipidico/colesterolo, emoglobina glicata, glicemia, PSA, vitamina D. Per il colesterolo non serve prenotare.
@@ -67,7 +73,7 @@ REGOLE IMPORTANTI:
 - In caso di emergenza o sintomi gravi: chiamare subito il 112.
 - Non chiedere e non commentare dati personali sulla salute.
 - Se non sai una cosa, dillo e proponi di contattare la farmacia. Non inventare mai orari, prezzi, servizi o disponibilità.
-- Non parlare di altre farmacie o catene. Non dire che modello sei né come funzioni: sei semplicemente l'assistente automatico della farmacia.
+- Non parlare di catene di farmacie; altre farmacie nominale solo per indicare i turni ufficiali. Non dire che modello sei né come funzioni: sei semplicemente l'assistente automatico della farmacia.
 - Scrivi testo semplice, senza elenchi lunghi e senza markdown.
 
 AZIONI: alla fine della risposta puoi aggiungere, se utili, uno o due di questi codici (il sito li mostra come pulsanti): [[whatsapp]] [[chiama]] [[turni]] [[mappa]] [[prenota]] [[canale]] [[recensione]]`;
@@ -99,7 +105,7 @@ async function contaUso(request, env) {
   } catch (e) { return 0; }
 }
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, ctx }) {
   let body;
   try { body = await request.json(); } catch { return json({ errore: "Richiesta non valida." }, 400); }
   const lingua = ["it", "en", "de"].includes(body.lingua) ? body.lingua : "it";
@@ -112,7 +118,11 @@ export async function onRequestPost({ request, env }) {
   if (!env.AI) return json({ errore: "non_disponibile" }, 503);
   if ((await contaUso(request, env)) > LIMITE_ORA) return json({ errore: "troppi" }, 429);
 
-  const messages = [{ role: "system", content: istruzioni(lingua) }, ...storia];
+  let turni = null;
+  if (/turno|turni|notte|nott|festiv|domenica|aperta ora|duty|night|notdienst|nacht/i.test(storia.map((m) => m.content).join(" "))) {
+    try { turni = await turniTrabia(ctx); } catch (e) {}
+  }
+  const messages = [{ role: "system", content: istruzioni(lingua, turni) }, ...storia];
   for (const modello of MODELLI) {
     try {
       const r = await env.AI.run(modello, { messages, max_tokens: 350, temperature: 0.3 });
