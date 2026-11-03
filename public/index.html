@@ -48,7 +48,7 @@
 }
 </script>
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=14b">
 </head>
 <body>
 <a href="#main" class="skip">Vai al contenuto</a>
@@ -610,7 +610,10 @@ if ("IntersectionObserver" in window){
 (() => {
   const b = document.getElementById("hv-flip"); if (!b) return;
   const t = document.querySelector("#hv-hint span");
+  const c = b.querySelector(".hv-card");
+  c.addEventListener("animationend", () => c.classList.remove("gira"));
   b.addEventListener("click", () => {
+    c.classList.remove("gira"); void c.offsetWidth; c.classList.add("gira");
     const on = b.getAttribute("aria-pressed") !== "true";
     b.setAttribute("aria-pressed", on);
     b.setAttribute("aria-label", on ? "Mostra il fumetto del team" : "Mostra la foto vera del team");

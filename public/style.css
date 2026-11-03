@@ -551,17 +551,17 @@ footer .brand-name small{color:rgba(231,241,236,.6)}
 .trabia-img img{display:block;width:100%;height:auto}
 @media (max-width:820px){.trabia-grid{grid-template-columns:1fr;gap:24px}}
 
-/* v14: hero fumetto <-> foto vera */
-.hv-flip{position:relative;z-index:1;display:block;width:100%;padding:0;border:0;background:none;cursor:pointer;perspective:1600px;-webkit-tap-highlight-color:transparent;font:inherit}
-.hv-card{position:relative;display:block;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.4,.2,.2,1)}
-.hv-flip[aria-pressed="true"] .hv-card{transform:rotateY(180deg)}
-.hv-face{display:block;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.hv-back{position:absolute;inset:0;transform:rotateY(180deg)}
+/* v14: hero fumetto <-> foto vera (senza 3D: funziona anche su iPhone) */
+.hv-flip{position:relative;z-index:1;display:block;width:100%;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent;font:inherit}
+.hv-card{position:relative;display:block}
+.hv-face{display:block}
+.hv-back{position:absolute;inset:0;opacity:0;transition:opacity 0s .3s}
 .hv-back .hv-photo{height:100%}
+.hv-flip[aria-pressed="true"] .hv-back{opacity:1}
+.hv-card.gira{animation:hvgira .6s cubic-bezier(.4,.2,.2,1)}
+@keyframes hvgira{0%{transform:scaleX(1)}50%{transform:scaleX(0)}100%{transform:scaleX(1)}}
 .hv-flip:focus-visible{outline:3px solid var(--green-500);outline-offset:6px;border-radius:30px}
-.hv-hint{position:absolute;z-index:3;left:50%;top:18px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:8px;white-space:nowrap;background:rgba(18,40,32,.72);color:#fff;font-size:.82rem;font-weight:600;padding:8px 14px;border-radius:999px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);pointer-events:none}
+.hv-hint{position:absolute;z-index:3;left:20px;top:18px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;background:rgba(18,40,32,.72);color:#fff;font-size:.82rem;font-weight:600;padding:8px 14px;border-radius:999px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);pointer-events:none}
 .hv-hint svg{width:16px;height:16px}
-.hv-flip:hover .hv-hint svg{transform:rotate(-40deg);transition:transform .3s}
-@media (prefers-reduced-motion:reduce){.hv-card{transition:none}}
-.hv-hint{left:20px;transform:none}
 @media (max-width:560px){.hv-hint{left:50%;transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.hv-card.gira{animation:none}.hv-back{transition:none}}
