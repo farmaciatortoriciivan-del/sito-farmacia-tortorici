@@ -699,3 +699,18 @@ html[lang="de"] .menu a{padding-left:10px;padding-right:10px}
 /* v29: evidenzia il pulsante del canale */
 @keyframes evid{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}40%{box-shadow:0 0 0 10px rgba(37,211,102,.35)}}
 .btn.evidenzia{animation:evid 1.1s ease 2}
+
+/* v31: team come pulsante con elenco */
+.hv-team-w{position:absolute;z-index:5;left:50%;bottom:-22px;transform:translateX(-50%)}
+.hv-team-w .hv-team{position:static;transform:none;border:0;cursor:pointer;font:inherit;font-weight:600;font-size:.9rem;transition:filter .2s,transform .2s}
+.hv-team-w .hv-team:hover{filter:brightness(1.15)}
+.hv-team-w .hv-team:focus-visible{outline:3px solid #8fd19e;outline-offset:3px}
+.hv-chev{width:18px;height:18px;flex:none;transition:transform .3s}
+.hv-team[aria-expanded="true"] .hv-chev{transform:rotate(180deg)}
+.hv-lista{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);min-width:100%;margin:0;padding:10px;list-style:none;background:var(--green-900);color:#fff;border-radius:18px;box-shadow:var(--shadow);animation:hvApri .28s cubic-bezier(.2,.8,.2,1)}
+.hv-lista li{padding:9px 14px;border-radius:10px;font-weight:500;font-size:.92rem;white-space:nowrap;display:flex;align-items:center;gap:10px}
+.hv-lista li::before{content:"";width:7px;height:7px;border-radius:50%;background:#8fd19e;flex:none}
+.hv-lista li+li{border-top:1px solid rgba(255,255,255,.1)}
+@keyframes hvApri{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+@media (max-width:560px){.hv-team-w .hv-team{font-size:.8rem}}
+@media (prefers-reduced-motion:reduce){.hv-lista{animation:none}.hv-chev{transition:none}}
