@@ -147,7 +147,7 @@
   </div>
 </div>
 
-<!-- ============ EVENTO (si nasconde da solo dopo la data) ============ -->
+<!-- ============ EVENTO (dopo la data diventa "evento svolto" e va sotto il calendario) ============ -->
 <section id="evento" class="evento" data-fino="2026-11-06T21:00:00+01:00">
   <div class="wrap ev-grid">
     <figure class="ev-img reveal">
@@ -161,6 +161,7 @@
       <h2>Allenamento, nutrizione ed integrazione</h2>
       <p class="lead">Sei uno sportivo? Oppure vuoi curare la tua alimentazione per iniziare a fare sport? Questo incontro è per te.</p>
       <p>Il <strong>Dott. Valerio Papa</strong>, biologo nutrizionista ed Enervit nutrition specialist, ti darà strategie e consigli pratici per gestire al meglio l'energia, il recupero e la performance sportiva.</p>
+      <p><strong>La partecipazione è gratuita e non prevede vendita di prodotti.</strong></p>
       <ul class="ev-info">
         <li><b>Quando</b><span>Venerdì 6 novembre, dalle ore 18.00</span></li>
         <li><b>Dove</b><span>Ambulatorio medico accanto alla farmacia, Via Ettore Maiorana 26, Trabia</span></li>
@@ -707,11 +708,15 @@ if ("IntersectionObserver" in window){
   });
 })();
 
-// Evento: dopo la data si nasconde da solo e la "Novità" torna al calendario
+// Evento: finito l'evento, la locandina resta come "evento svolto" sotto il calendario 2027,
+// che torna in cima, e la "Novità" torna al calendario
 (() => {
   const ev = document.getElementById("evento"); if (!ev) return;
   if (Date.now() > Date.parse(ev.dataset.fino)) {
-    ev.remove();
+    const testo = ev.querySelector(".ev-grid > div:not(.ev-img)");
+    if (testo) testo.innerHTML = '<span class="eyebrow">Evento svolto</span><h2>Evento della Farmacia Tortorici svolto in data venerdì 6 novembre 2026</h2>';
+    const cal = document.getElementById("calendario");
+    if (cal) cal.after(ev);
     const n = document.getElementById("novita");
     if (n) { n.href = "#calendario"; n.innerHTML = "<b>Novità</b> Prenota il calendario 2027"; }
   }
