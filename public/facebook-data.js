@@ -1,4 +1,4 @@
-/* Generato automaticamente da Metricool (2026-11-03T13:27Z). Non modificare a mano. */
+/* Generato automaticamente da Metricool (2026-11-03T13:28Z). Non modificare a mano. */
 window.FB_POSTS = [
  {
   "data": "2026-11-01",

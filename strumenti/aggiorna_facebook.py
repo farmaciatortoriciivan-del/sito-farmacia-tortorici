@@ -10,7 +10,16 @@ import json, re, sys
 from datetime import datetime, timezone
 
 src, dst = sys.argv[1], sys.argv[2]
-fol_src = sys.argv[3] if len(sys.argv) > 3 else None
+import os
+# follower: terzo argomento, altrimenti strumenti/facebook-followers.json accanto allo script
+fol_src = sys.argv[3] if len(sys.argv) > 3 else os.path.join(os.path.dirname(os.path.abspath(__file__)), "facebook-followers.json")
+if not os.path.exists(fol_src):
+    fol_src = None
+# se non ci sono dati nuovi, conserva il numero di follower già pubblicato
+old_fol = None
+if os.path.exists(dst):
+    m = re.search(r"window\.FB_FOLLOWERS = (\{.*?\});", open(dst, encoding="utf-8").read())
+    old_fol = m.group(1) if m else None
 rows = json.load(open(src, encoding="utf-8"))
 
 posts = []
@@ -44,4 +53,7 @@ with open(dst, "w", encoding="utf-8") as f:
             f.write("window.FB_FOLLOWERS = ")
             json.dump({"numero": int(float(n)), "data": datetime.strptime(d, "%Y%m%d").strftime("%Y-%m-%d")}, f)
             f.write(";\n")
+            old_fol = None
+    if old_fol:
+        f.write("window.FB_FOLLOWERS = " + old_fol + ";\n")
 print(f"{len(posts)} post scritti in {dst}")
