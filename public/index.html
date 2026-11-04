@@ -49,8 +49,8 @@
 }
 </script>
 
-<script src="i18n.js?v=12"></script>
-<link rel="stylesheet" href="style.css?v=45">
+<script src="i18n.js?v=13"></script>
+<link rel="stylesheet" href="style.css?v=46">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body>
@@ -516,6 +516,26 @@
   </div>
 </section>
 
+<!-- ============ ETÀ D'ARGENTO (Auser, Alzheimer Italia, Senior Italia) ============ -->
+<section id="anziani" class="animali anziani" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Età d'argento</span>
+        <h2>Notizie e consigli per gli anziani e le loro famiglie</h2>
+      </div>
+      <p class="lead">Salute, prevenzione, invecchiamento attivo e sostegno a chi si prende cura di una persona anziana: gli ultimi articoli di associazioni nazionali, scelti per te e aggiornati in automatico.</p>
+    </div>
+    <ul class="an-list" id="az-list"></ul>
+    <div class="an-vet az-box">
+      <span class="an-vet-ic" aria-hidden="true">🤝</span>
+      <p><strong>In farmacia per te:</strong> assistenza a domicilio gratuita, misurazione della pressione, ECG e Holter.</p>
+      <a class="btn btn-wa" href="https://wa.me/393315250555?text=Buongiorno%2C%20vorrei%20informazioni%20sull%27assistenza%20a%20domicilio%3A%20" target="_blank" rel="noopener">Chiedi su WhatsApp</a>
+    </div>
+    <p class="news-src">Fonti: <a href="https://www.auser.it/" target="_blank" rel="noopener">Auser</a>, <a href="https://www.alzheimer.it/" target="_blank" rel="noopener">Federazione Alzheimer Italia</a> e <a href="https://www.senioritalia.it/" target="_blank" rel="noopener">Senior Italia</a>. Gli articoli si aprono sui siti delle associazioni.</p>
+  </div>
+</section>
+
 <!-- ============ RECENSIONI (anteprima) ============ -->
 <section id="recensioni" style="background:var(--sand-100)">
   <div class="wrap">
@@ -927,6 +947,23 @@ if ("IntersectionObserver" in window){
       ${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString("it-IT",{day:"numeric",month:"short"})}</time>` : ""}
       <span class="news-cat">${esc(x.fonte || "Quotidiano Sanità")}</span>
       <strong>${esc(x.titolo)}</strong><span class="news-go">Leggi →</span></a></li>`).join("");
+  }).catch(() => {});
+})();
+
+// Età d'argento: articoli per anziani e famiglie (letti dal nostro server, cache 1 ora)
+(() => {
+  const sec = document.getElementById("anziani"), ul = document.getElementById("az-list");
+  if (!sec || window.claude || !/^https?:$/.test(location.protocol)) return;
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const lg = window.LINGUA === "de" ? "de-DE" : window.LINGUA === "en" ? "en-GB" : "it-IT";
+  fetch("/api/anziani").then(r => r.ok ? r.json() : null).then(d => {
+    const a = d && Array.isArray(d.articoli) ? d.articoli.filter(x => /^https:\/\/(www\.)?(auser|alzheimer|senioritalia)\.it\//.test(x.link)) : [];
+    if (!a.length) return;
+    ul.innerHTML = a.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">
+      <span class="an-img az-img">${x.immagine && /^https:\/\//.test(x.immagine) ? `<img src="${esc(x.immagine)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<span aria-hidden="true">🌿</span></span>
+      <span class="an-txt">${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString(lg,{day:"numeric",month:"short"})} · ${esc(x.fonte || "")}</time>` : `<time>${esc(x.fonte || "")}</time>`}
+      <strong>${esc(x.titolo)}</strong><span class="news-go">Leggi →</span></span></a></li>`).join("");
+    sec.hidden = false;
   }).catch(() => {});
 })();
 

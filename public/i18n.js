@@ -125,6 +125,13 @@
     "Da tanti anni la Farmacia del Dott. Ivan Tortorici è un punto di riferimento per le famiglie di Trabia: consiglio professionale, servizi di prevenzione e un assortimento curato per ogni esigenza.": "For many years Dr. Ivan Tortorici's pharmacy has been a trusted point of reference for the families of Trabia: professional advice, prevention services and a carefully chosen range of products for every need.",
     "Chiama ora": "Call now",
     "Prenota su WhatsApp": "Book on WhatsApp",
+    "Età d'argento": "Silver age",
+    "Notizie e consigli per gli anziani e le loro famiglie": "News and tips for older people and their families",
+    "Salute, prevenzione, invecchiamento attivo e sostegno a chi si prende cura di una persona anziana: gli ultimi articoli di associazioni nazionali, scelti per te e aggiornati in automatico.": "Health, prevention, active ageing and support for those caring for an older person: the latest articles from national associations, chosen for you and updated automatically.",
+    "In farmacia per te:": "At the pharmacy for you:",
+    "assistenza a domicilio gratuita, misurazione della pressione, ECG e Holter.": "free home assistance, blood pressure checks, ECG and Holter monitoring.",
+    "Federazione Alzheimer Italia": "Federazione Alzheimer Italia",
+    ". Gli articoli si aprono sui siti delle associazioni.": ". Articles open on the associations' websites.",
     "Il video non parte o vedi un riquadro vuoto? Alcuni browser bloccano i contenuti di Facebook.": "Video not playing or just a blank box? Some browsers block Facebook content.",
     "Guarda qui": "Watch here",
     "Apri su Facebook": "Open on Facebook",
@@ -439,6 +446,13 @@
    "Da tanti anni la Farmacia del Dott. Ivan Tortorici è un punto di riferimento per le famiglie di Trabia: consiglio professionale, servizi di prevenzione e un assortimento curato per ogni esigenza.": "Seit vielen Jahren ist die Apotheke von Dr. Ivan Tortorici eine feste Anlaufstelle für die Familien in Trabia: fachkundige Beratung, Vorsorgeleistungen und ein sorgfältig ausgewähltes Sortiment für jeden Bedarf.",
    "Chiama ora": "Jetzt anrufen",
    "Prenota su WhatsApp": "Auf WhatsApp buchen",
+   "Età d'argento": "Silberne Jahre",
+   "Notizie e consigli per gli anziani e le loro famiglie": "Neuigkeiten und Tipps für ältere Menschen und ihre Familien",
+   "Salute, prevenzione, invecchiamento attivo e sostegno a chi si prende cura di una persona anziana: gli ultimi articoli di associazioni nazionali, scelti per te e aggiornati in automatico.": "Gesundheit, Vorsorge, aktives Altern und Unterstützung für pflegende Angehörige: die neuesten Artikel nationaler Verbände, für Sie ausgewählt und automatisch aktualisiert.",
+   "In farmacia per te:": "In der Apotheke für Sie:",
+   "assistenza a domicilio gratuita, misurazione della pressione, ECG e Holter.": "kostenlose Betreuung zu Hause, Blutdruckmessung, EKG und Holter.",
+   "Federazione Alzheimer Italia": "Federazione Alzheimer Italia",
+   ". Gli articoli si aprono sui siti delle associazioni.": ". Die Artikel öffnen sich auf den Websites der Verbände.",
    "Il video non parte o vedi un riquadro vuoto? Alcuni browser bloccano i contenuti di Facebook.": "Startet das Video nicht oder sehen Sie nur ein leeres Feld? Manche Browser blockieren Facebook-Inhalte.",
    "Guarda qui": "Hier ansehen",
    "Apri su Facebook": "Auf Facebook öffnen",
@@ -701,6 +715,13 @@
    "Le recensioni dei clienti della Farmacia Dott. Ivan Tortorici a Trabia (PA).": "Kundenbewertungen der Farmacia Dott. Ivan Tortorici in Trabia (PA)."
   };
   var SCN = {
+   "Età d'argento": "Età d'argentu",
+   "Notizie e consigli per gli anziani e le loro famiglie": "Nutizzî e cunsigghi pî anziani e li so famigghî",
+   "Salute, prevenzione, invecchiamento attivo e sostegno a chi si prende cura di una persona anziana: gli ultimi articoli di associazioni nazionali, scelti per te e aggiornati in automatico.": "Saluti, prevenzioni, invecchiamentu attivu e aiutu a cu si pigghia cura di na pirsuna anziana: l'ùrtimi artìculi di assuciazzioni nazziunali, scigghiuti pi tia e aggiurnati automaticamenti.",
+   "In farmacia per te:": "Nnâ farmacìa pi tia:",
+   "assistenza a domicilio gratuita, misurazione della pressione, ECG e Holter.": "assistenza a casa gratis, misura dâ prissioni, ECG e Holter.",
+   "Federazione Alzheimer Italia": "Federazione Alzheimer Italia",
+   ". Gli articoli si aprono sui siti delle associazioni.": ". L'artìculi si grapinu nnê siti di l'assuciazzioni.",
    "Il video non parte o vedi un riquadro vuoto? Alcuni browser bloccano i contenuti di Facebook.": "Lu video nun parti o vidi un quatratu vacanti? Certi browser bloccanu li cuntinuti di Facebook.",
    "Guarda qui": "Talìa ccà",
    "Apri su Facebook": "Grapi supra Facebook",
@@ -1045,7 +1066,7 @@
   }
 
   var ATTR = ["alt", "aria-label", "placeholder", "title"];
-  var SALTA = ".lang-dd,.ast,#meteo,#curiosita,script,style,#fb-feed .fb-post:not(.solo-foto) strong,#fb-feed .fb-body,#news-list strong,#an-list strong,blockquote,.rv-text,.r-text,q";
+  var SALTA = ".lang-dd,.ast,#meteo,#curiosita,script,style,#fb-feed .fb-post:not(.solo-foto) strong,#fb-feed .fb-body,#news-list strong,#an-list strong,#az-list strong,blockquote,.rv-text,.r-text,q";
 
   function nodo(n) {
     if (n.nodeType === 3) {
