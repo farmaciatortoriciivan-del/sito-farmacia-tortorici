@@ -971,7 +971,7 @@ if ("IntersectionObserver" in window){
     const a = d && Array.isArray(d.articoli) ? d.articoli.filter(x => /^https:\/\/(www\.)?(auser|alzheimer|senioritalia)\.it\//.test(x.link)) : [];
     if (!a.length) return;
     ul.innerHTML = a.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">
-      <span class="an-img az-img">${x.immagine && /^https:\/\//.test(x.immagine) ? `<img src="${esc(x.immagine)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<span aria-hidden="true">🌿</span></span>
+      <span class="an-img az-img">${x.immagine && /^https:\/\//.test(x.immagine) ? `<img src="/api/img?u=${encodeURIComponent(x.immagine)}" alt="" loading="lazy" onerror="this.remove()">` : ""}<span aria-hidden="true">🌿</span></span>
       <span class="an-txt">${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString(lg,{day:"numeric",month:"short"})} · ${esc(x.fonte || "")}</time>` : `<time>${esc(x.fonte || "")}</time>`}
       <strong>${esc(x.titolo)}</strong><span class="news-go">Leggi →</span></span></a></li>`).join("");
     sec.hidden = false;
@@ -988,7 +988,7 @@ if ("IntersectionObserver" in window){
     const a = d && Array.isArray(d.articoli) ? d.articoli.filter(x => /^https:\/\/(www\.)?(lazampa|lastampa)\.it\//.test(x.link)) : [];
     if (!a.length) return;
     ul.innerHTML = a.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">
-      <span class="an-img">${x.immagine && /^https:\/\//.test(x.immagine) ? `<img src="${esc(x.immagine)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<span aria-hidden="true">🐾</span></span>
+      <span class="an-img">${x.immagine && /^https:\/\//.test(x.immagine) ? `<img src="/api/img?u=${encodeURIComponent(x.immagine)}" alt="" loading="lazy" onerror="this.remove()">` : ""}<span aria-hidden="true">🐾</span></span>
       <span class="an-txt">${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString(lg,{day:"numeric",month:"short"})}</time>` : ""}
       <strong>${esc(x.titolo)}</strong><span class="news-go">Leggi →</span></span></a></li>`).join("");
     sec.hidden = false;
