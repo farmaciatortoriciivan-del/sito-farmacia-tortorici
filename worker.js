@@ -6,7 +6,6 @@ import * as notizie from "./functions/api/notizie.js";
 import * as assistente from "./functions/api/assistente.js";
 import * as turni from "./functions/api/turni.js";
 import * as meteo from "./functions/api/meteo.js";
-import { sonda } from "./functions/api/sonda.js";
 
 export default {
   async fetch(request, env, ctx) {
@@ -30,6 +29,5 @@ export default {
   // ogni 30 minuti: rilegge i turni ufficiali delle farmacie
   async scheduled(event, env, ctx) {
     ctx.waitUntil(turni.aggiornaTurni(env));
-    ctx.waitUntil(sonda(env));
   },
 };
