@@ -16,22 +16,45 @@
     location.href = location.pathname + "?lang=" + l + location.hash;
   }
 
+  var BANDIERE = {
+    it: '<svg viewBox="0 0 3 2" aria-hidden="true"><rect width="1" height="2" fill="#009246"/><rect x="1" width="1" height="2" fill="#fff"/><rect x="2" width="1" height="2" fill="#ce2b37"/></svg>',
+    en: '<svg viewBox="0 0 60 30" aria-hidden="true"><clipPath id="ukc_X"><path d="M30,15h30v15zv15h-30zh-30v-15zv-15h30z"/></clipPath><path d="M0,0v30h60v-30z" fill="#012169"/><path d="M0,0 60,30M60,0 0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 60,30M60,0 0,30" clip-path="url(#ukc_X)" stroke="#C8102E" stroke-width="4"/><path d="M30,0v30M0,15h60" stroke="#fff" stroke-width="10"/><path d="M30,0v30M0,15h60" stroke="#C8102E" stroke-width="6"/></svg>',
+    de: '<svg viewBox="0 0 5 3" aria-hidden="true"><rect width="5" height="1" fill="#000"/><rect y="1" width="5" height="1" fill="#dd0000"/><rect y="2" width="5" height="1" fill="#ffce00"/></svg>'
+  };
+  var nBand = 0;
+  function bandiera(l) { nBand++; return '<span class="lang-flag lang-flag-' + l + '">' + BANDIERE[l].replace(/ukc_X/g, "ukc" + nBand) + "</span>"; }
+
   function aggiungiPulsante() {
     var cta = document.querySelector(".nav-cta");
     if (!cta || document.getElementById("lang-btn")) return;
-    var b = document.createElement("select");
-    b.id = "lang-btn"; b.className = "lang-btn";
-    b.setAttribute("aria-label", "Lingua · Language · Sprache");
-    [["it", "IT", "Italiano"], ["en", "EN", "English"], ["de", "DE", "Deutsch"]].forEach(function (o) {
-      var op = document.createElement("option");
-      op.value = o[0]; op.textContent = o[1]; op.title = o[2]; op.setAttribute("lang", o[0]);
-      if (o[0] === lang) op.selected = true;
-      b.appendChild(op);
+    var LINGUE = [["it", "IT", "Italiano"], ["en", "EN", "English"], ["de", "DE", "Deutsch"]];
+    var w = document.createElement("div");
+    w.className = "lang-dd";
+    var cur = LINGUE.filter(function (o) { return o[0] === lang; })[0];
+    w.innerHTML =
+      '<button type="button" id="lang-btn" class="lang-btn lang-b-' + lang + '" aria-haspopup="listbox" aria-expanded="false" aria-label="Lingua · Language · Sprache">' +
+        bandiera(lang) + '<span class="lang-cod">' + cur[1] + '</span><svg class="lang-chev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+      "</button>" +
+      '<ul class="lang-menu" role="listbox" hidden>' + LINGUE.map(function (o) {
+        return '<li role="option" lang="' + o[0] + '" data-l="' + o[0] + '" tabindex="0" aria-selected="' + (o[0] === lang) + '" class="lang-op lang-op-' + o[0] + '">' +
+          bandiera(o[0]) + "<b>" + o[1] + "</b><span>" + o[2] + "</span>" + (o[0] === lang ? '<i aria-hidden="true">✓</i>' : "") + "</li>";
+      }).join("") + "</ul>";
+    var b = w.querySelector("button"), m = w.querySelector("ul");
+    function apri(x) { m.hidden = !x; b.setAttribute("aria-expanded", x); if (x) { var c = m.querySelector('[aria-selected="true"]'); if (c) c.focus(); } }
+    b.addEventListener("click", function (e) { e.stopPropagation(); apri(m.hidden); });
+    m.addEventListener("click", function (e) { var li = e.target.closest("li[data-l]"); if (!li) return; apri(false); if (li.dataset.l !== lang) cambia(li.dataset.l); });
+    m.addEventListener("keydown", function (e) {
+      var li = e.target.closest("li[data-l]"); if (!li) return;
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); li.click(); }
+      if (e.key === "ArrowDown" && li.nextElementSibling) { e.preventDefault(); li.nextElementSibling.focus(); }
+      if (e.key === "ArrowUp" && li.previousElementSibling) { e.preventDefault(); li.previousElementSibling.focus(); }
     });
-    b.onchange = function () { cambia(b.value); };
+    document.addEventListener("click", function (e) { if (!m.hidden && !w.contains(e.target)) apri(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !m.hidden) { apri(false); b.focus(); } });
     var burger = cta.querySelector(".burger");
-    cta.insertBefore(b, burger || null);
+    cta.insertBefore(w, burger || null);
   }
+
 
   if (lang === "it") {
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", aggiungiPulsante);
@@ -641,7 +664,7 @@
   var R = [
     [/^Oggi, (\S+)$/, function (_, g) { return L.oggi + (GIORNI[g] || g); }],
     [/^Aperto ora · chiude alle (\d\d)\.(\d\d)$/, function (_, h, m) { return L.aperto + ora(h, m); }],
-    [/^Chiuso ora · riapre (\S+) alle (\d\d)\.(\d\d)$/, function (_, g, h, m) { return L.riapre + (g === "domani" ? L.domani : L.il + (GIORNI[g] || g)) + L.alle + ora(h, m); }],
+    [/^Chiuso ora · riapre (\S+) alle (\d\d)\.(\d\d)$/, function (_, g, h, m) { return L.riapre + (g === "domani" ? L.domani : g === "oggi" ? (lang === "de" ? "heute" : "today") : L.il + (GIORNI[g] || g)) + L.alle + ora(h, m); }],
     [/^Chiuso ora$/, function () { return L.chiuso; }],
     [/^(\d+) recensioni Google$/, function (_, n) { return n + L.recG; }],
     [/^(\d+) recensioni su Google$/, function (_, n) { return n + L.recSuG; }],
@@ -661,7 +684,7 @@
   }
 
   var ATTR = ["alt", "aria-label", "placeholder", "title"];
-  var SALTA = ".ast,#meteo,#curiosita,script,style,#fb-feed .fb-post strong,#fb-feed .fb-body,#news-list strong,blockquote,.rv-text,.r-text,q";
+  var SALTA = ".lang-dd,.ast,#meteo,#curiosita,script,style,#fb-feed .fb-post strong,#fb-feed .fb-body,#news-list strong,blockquote,.rv-text,.r-text,q";
 
   function nodo(n) {
     if (n.nodeType === 3) {
