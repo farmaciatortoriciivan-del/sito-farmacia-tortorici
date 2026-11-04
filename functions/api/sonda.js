@@ -1,6 +1,6 @@
 // Diagnostica temporanea: controlla quali indirizzi di Kodami rispondono e con che formato.
 export async function sonda(env) {
-  const urls = ["https://www.fanpage.it/kodami/feed/", "https://www.fanpage.it/kodami/rss", "https://www.fanpage.it/feed/kodami/", "https://www.fanpage.it/rss/kodami", "https://www.fanpage.it/feed/", "https://www.fanpage.it/kodami/"];
+  const urls = ["https://news.google.com/rss/search?q=site:fanpage.it/kodami&hl=it&gl=IT&ceid=IT:it", "https://www.bing.com/news/search?q=site%3Afanpage.it%2Fkodami&format=rss", "https://www.lastampa.it/rss/la-zampa.xml", "https://www.lastampa.it/la-zampa/rss.xml", "https://www.lazampa.it/rss", "https://www.lastampa.it/la-zampa/"];
   const q = "INSERT INTO sonda (id, dati, quando) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando";
   const t = new Date().toISOString();
   for (let i = 0; i < urls.length; i++) {
