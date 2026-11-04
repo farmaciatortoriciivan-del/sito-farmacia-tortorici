@@ -49,7 +49,7 @@
 }
 </script>
 
-<script src="i18n.js?v=16"></script>
+<script src="i18n.js?v=17"></script>
 <link rel="stylesheet" href="style.css?v=48">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
@@ -545,7 +545,7 @@
         <span class="eyebrow">Recensioni</span>
         <h2>Cosa dicono di noi</h2>
       </div>
-      <p class="lead">Dalle recensioni su Google.</p>
+      <p class="lead">Le ultime recensioni lasciate sul nostro sito e su Google.</p>
     </div>
     <div class="reviews-grid" id="home-reviews"></div>
     <div class="reviews-cta reveal">
@@ -843,19 +843,29 @@ setInterval(render, 60000);
   box.addEventListener("click", e => { const b = e.target.closest(".fb-play"); if (b) apriVideo(b.dataset.post, b.dataset.link); });
 })();
 
-/* ===== RECENSIONI GOOGLE (reviews-data.js) ===== */
+/* ===== RECENSIONI: le ultime lasciate sul sito (approvate) + quelle di Google (reviews-data.js) ===== */
 (function(){
   const R = window.REVIEWS; if (!R) return;
-  const esc = t => t.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   document.querySelector(".rating-chip .score").textContent = R.media.toFixed(1).replace(".", ",");
   document.getElementById("chip-count").textContent = `${R.totale} recensioni Google`;
-  const pick = R.recensioni.filter(r => r.testo && r.stelle === 5 && r.testo.length > 60).slice(0, 3);
-  document.getElementById("home-reviews").innerHTML = pick.map(r => `
-      <figure class="review reveal">
-        <div class="rstars" aria-label="5 stelle su 5">★★★★★</div>
+  const google = R.recensioni.filter(r => r.testo && r.stelle === 5 && r.testo.length > 60).map(r => ({ ...r, fonte: "Google" }));
+  const box = document.getElementById("home-reviews");
+  const card = r => `
+      <figure class="review reveal in">
+        <div class="rstars" aria-label="${r.stelle} stelle su 5">${"★".repeat(r.stelle)}${"☆".repeat(5 - r.stelle)}</div>
         <blockquote>«${esc(r.testo)}»</blockquote>
-        <figcaption><span class="av">${esc(r.nome.trim()[0].toUpperCase())}</span><span><b>${esc(r.nome)}</b>Google · ${r.anno}</span></figcaption>
-      </figure>`).join("");
+        <figcaption><span class="av">${esc((r.nome.trim()[0] || "?").toUpperCase())}</span><span><b>${esc(r.nome)}</b>${r.fonte === "Sito" ? '<span class="src-sito">Recensione dal sito</span>' : "Google"} · ${r.anno}</span></figcaption>
+      </figure>`;
+  const mostra = sito => { box.innerHTML = [...sito, ...google].slice(0, 3).map(card).join(""); };
+  mostra([]);
+  if (!/^https?:$/.test(location.protocol)) return;
+  fetch("/api/recensioni").then(r => r.ok ? r.json() : []).then(d => {
+    const sito = (Array.isArray(d) ? d : []).filter(r => r && r.nome && r.testo && r.stelle >= 4 && r.testo.length >= 25)
+      .sort((a, b) => String(b.data).localeCompare(String(a.data))).slice(0, 2)
+      .map(r => ({ nome: r.nome, stelle: r.stelle, testo: r.testo, anno: new Date(r.data).getFullYear(), fonte: "Sito" }));
+    if (sito.length) mostra(sito);
+  }).catch(() => {});
 })();
 
 document.getElementById("year").textContent = new Date().getFullYear();

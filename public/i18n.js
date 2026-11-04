@@ -94,6 +94,7 @@
   setTimeout(function () { document.documentElement.classList.remove("i18n-wait"); }, 1500);
 
   var EN = {
+    "Le ultime recensioni lasciate sul nostro sito e su Google.": "The latest reviews left on our website and on Google.",
     // --- intestazione, menu, piè di pagina (tutte le pagine)
     "Vai al contenuto": "Skip to content",
     "Trabia · dal cuore del paese": "Trabia · in the heart of town",
@@ -419,6 +420,7 @@
   };
 
   var DE = {
+   "Le ultime recensioni lasciate sul nostro sito e su Google.": "Die neuesten Bewertungen auf unserer Website und bei Google.",
    "Vai al contenuto": "Zum Inhalt springen",
    "Trabia · dal cuore del paese": "Trabia · im Herzen des Ortes",
    "Chi siamo": "Über uns",
@@ -721,6 +723,7 @@
    "Le recensioni dei clienti della Farmacia Dott. Ivan Tortorici a Trabia (PA).": "Kundenbewertungen der Farmacia Dott. Ivan Tortorici in Trabia (PA)."
   };
   var SCN = {
+   "Le ultime recensioni lasciate sul nostro sito e su Google.": "L'ùrtimi ricinsioni lassati nnô nostru situ e supra Google.",
    "Farmacasa – servizio a domicilio della Farmacia Tortorici, tel. 091 814 6207": "Farmacasa – sirvizziu a casa dâ Farmacia Tortorici, tel. 091 814 6207",
    "Età d'argento": "Età d'argentu",
    "Notizie e consigli per gli anziani e le loro famiglie": "Nutizzî e cunsigghi pî anziani e li so famigghî",
@@ -1023,6 +1026,7 @@
    "Le recensioni dei clienti della Farmacia Dott. Ivan Tortorici a Trabia (PA).": "Li ricinsioni dî clienti dâ Farmacia Dott. Ivan Tortorici a Trabbia (PA)."
   };
   var ES = {
+   "Le ultime recensioni lasciate sul nostro sito e su Google.": "Las últimas opiniones dejadas en nuestra web y en Google.",
    "Vai al contenuto": "Ir al contenido",
    "Trabia · dal cuore del paese": "Trabia · corazón del pueblo",
    "Chi siamo": "Quiénes somos",
@@ -1326,6 +1330,7 @@
    "in": "en"
   };
   var ZH = {
+   "Le ultime recensioni lasciate sul nostro sito e su Google.": "顾客在我们网站和谷歌上留下的最新评价。",
    "Vai al contenuto": "跳到主要内容",
    "Trabia · dal cuore del paese": "特拉比亚 · 小镇的中心",
    "Chi siamo": "关于我们",
