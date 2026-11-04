@@ -62,7 +62,7 @@
     if (lang === "scn") return;
     try { if (localStorage.getItem("ft-invito-scn")) return; } catch (e) {}
     var testi = {
-      it: ["Sei sicilianu? 😄", "Prova il sito in lingua siciliana!"],
+      it: ["Sì sicilianu? 😄", "Prova il sito in lingua siciliana!"],
       en: ["Learn some Sicilian! 🍋", "Try our website in Sicilianu."],
       de: ["Sizilianisch lernen? 🍋", "Probieren Sie unsere Seite auf Sicilianu!"]
     }[lang];
