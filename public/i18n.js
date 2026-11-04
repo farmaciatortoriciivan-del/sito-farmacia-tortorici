@@ -125,6 +125,7 @@
     "Da tanti anni la Farmacia del Dott. Ivan Tortorici è un punto di riferimento per le famiglie di Trabia: consiglio professionale, servizi di prevenzione e un assortimento curato per ogni esigenza.": "For many years Dr. Ivan Tortorici's pharmacy has been a trusted point of reference for the families of Trabia: professional advice, prevention services and a carefully chosen range of products for every need.",
     "Chiama ora": "Call now",
     "Prenota su WhatsApp": "Book on WhatsApp",
+    "Il video non parte o vedi un riquadro vuoto? Alcuni browser bloccano i contenuti di Facebook.": "Video not playing or just a blank box? Some browsers block Facebook content.",
     "Guarda qui": "Watch here",
     "Apri su Facebook": "Open on Facebook",
     "Per vedere il video qui serve il tuo consenso ai contenuti di Facebook, che usano cookie di terze parti.": "To watch the video here we need your consent to Facebook content, which uses third-party cookies.",
@@ -438,6 +439,7 @@
    "Da tanti anni la Farmacia del Dott. Ivan Tortorici è un punto di riferimento per le famiglie di Trabia: consiglio professionale, servizi di prevenzione e un assortimento curato per ogni esigenza.": "Seit vielen Jahren ist die Apotheke von Dr. Ivan Tortorici eine feste Anlaufstelle für die Familien in Trabia: fachkundige Beratung, Vorsorgeleistungen und ein sorgfältig ausgewähltes Sortiment für jeden Bedarf.",
    "Chiama ora": "Jetzt anrufen",
    "Prenota su WhatsApp": "Auf WhatsApp buchen",
+   "Il video non parte o vedi un riquadro vuoto? Alcuni browser bloccano i contenuti di Facebook.": "Startet das Video nicht oder sehen Sie nur ein leeres Feld? Manche Browser blockieren Facebook-Inhalte.",
    "Guarda qui": "Hier ansehen",
    "Apri su Facebook": "Auf Facebook öffnen",
    "Per vedere il video qui serve il tuo consenso ai contenuti di Facebook, che usano cookie di terze parti.": "Um das Video hier anzusehen, benötigen wir Ihre Zustimmung zu Facebook-Inhalten, die Cookies von Drittanbietern verwenden.",
@@ -699,6 +701,7 @@
    "Le recensioni dei clienti della Farmacia Dott. Ivan Tortorici a Trabia (PA).": "Kundenbewertungen der Farmacia Dott. Ivan Tortorici in Trabia (PA)."
   };
   var SCN = {
+   "Il video non parte o vedi un riquadro vuoto? Alcuni browser bloccano i contenuti di Facebook.": "Lu video nun parti o vidi un quatratu vacanti? Certi browser bloccanu li cuntinuti di Facebook.",
    "Guarda qui": "Talìa ccà",
    "Apri su Facebook": "Grapi supra Facebook",
    "Per vedere il video qui serve il tuo consenso ai contenuti di Facebook, che usano cookie di terze parti.": "Pi vìdiri lu video ccà servi lu to cunsensu ê cuntinuti di Facebook, ca ùsanu cookie di àutri.",

@@ -49,8 +49,8 @@
 }
 </script>
 
-<script src="i18n.js?v=11"></script>
-<link rel="stylesheet" href="style.css?v=44">
+<script src="i18n.js?v=12"></script>
+<link rel="stylesheet" href="style.css?v=45">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body>
@@ -808,7 +808,8 @@ setInterval(render, 60000);
     const mostra = () => {
       const src = "https://www.facebook.com/plugins/post.php?href=" + encodeURIComponent(post) + "&show_text=false&width=500";
       body.innerHTML = `<iframe src="${esc(src)}" title="Video dalla nostra pagina Facebook" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
-        <a class="fb-dlg-link" href="${esc(link)}" target="_blank" rel="noopener">Apri su Facebook →</a>`;
+        <p class="fb-dlg-help">Il video non parte o vedi un riquadro vuoto? Alcuni browser bloccano i contenuti di Facebook.</p>
+        <a class="btn btn-primary fb-dlg-link" href="${esc(link)}" target="_blank" rel="noopener">Guarda su Facebook →</a>`;
     };
     if (window.Consenso && window.Consenso.esterni()) mostra();
     else {
