@@ -806,7 +806,9 @@ setInterval(render, 60000);
     }
     const body = dlg.querySelector(".fb-dlg-body");
     const mostra = () => {
-      const src = "https://www.facebook.com/plugins/post.php?href=" + encodeURIComponent(post) + "&show_text=false&width=500";
+      // lettore video di Facebook (si guarda qui, senza aprire Facebook); per i video condivisi usa il link del video
+      const href = /facebook\.com\/(share\/v|reel|watch|[^/]+\/videos)\//.test(link) ? link : post;
+      const src = "https://www.facebook.com/plugins/video.php?href=" + encodeURIComponent(href) + "&show_text=false&width=500&autoplay=true&allowfullscreen=true";
       body.innerHTML = `<iframe src="${esc(src)}" title="Video dalla nostra pagina Facebook" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
         <p class="fb-dlg-help">Il video non parte o vedi un riquadro vuoto? Alcuni browser bloccano i contenuti di Facebook.</p>
         <a class="btn btn-primary fb-dlg-link" href="${esc(link)}" target="_blank" rel="noopener">Guarda su Facebook →</a>`;
