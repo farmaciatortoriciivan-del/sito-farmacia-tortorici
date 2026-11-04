@@ -69,7 +69,7 @@ async function feed(f) {
 
 export async function onRequest({ request, env, ctx }) {
   const cache = caches.default;
-  const key = new Request(new URL("/api/anziani?v=2", request.url).toString());
+  const key = new Request(new URL("/api/anziani?v=3", request.url).toString());
   const hit = await cache.match(key);
   if (hit) return hit;
 
@@ -79,7 +79,7 @@ export async function onRequest({ request, env, ctx }) {
   // al massimo 2 articoli per fonte, così la rubrica resta varia
   const conta = {};
   articoli = articoli.filter((a) => (conta[a.fonte] = (conta[a.fonte] || 0) + 1) <= 2).slice(0, MAX).map(({ sommario, ...a }) => a);
-  await Promise.all(articoli.map(async (a) => { if (!a.immagine) a.immagine = await anteprima(a.link); }));
+  await Promise.all(articoli.map(async (a) => { a.immagine = (await anteprima(a.link)) || a.immagine; }));
 
   const res = new Response(JSON.stringify({ fonti: FONTI.map((f) => f.nome), aggiornato: new Date().toISOString(), articoli }), {
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": `public, max-age=${articoli.length ? TTL : 300}` },
