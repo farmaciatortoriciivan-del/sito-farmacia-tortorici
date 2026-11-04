@@ -50,7 +50,7 @@
 </script>
 
 <script src="i18n.js"></script>
-<link rel="stylesheet" href="style.css?v=37">
+<link rel="stylesheet" href="style.css?v=38">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body>
@@ -91,6 +91,7 @@
   <div class="wrap hero-grid">
     <div class="reveal">
       <a class="novita" id="novita" href="#evento"><b>Venerdì 6/11</b> Incontro su sport e nutrizione</a><br>
+      <a class="novita novita-rosa" id="novita2" href="#glicata"><b>Mercoledì 11/11</b> Emoglobina glicata gratis</a><br id="novita2-br">
       <div class="status" id="status"><span class="dot" id="status-dot"></span><span id="status-text">Controllo orari…</span></div>
       <h1>La tua salute,<br>in <em>buone mani</em>.</h1>
       <p class="lead">Da tanti anni la Farmacia del Dott. Ivan Tortorici è un punto di riferimento per le famiglie di Trabia: consiglio professionale, servizi di prevenzione e un assortimento curato per ogni esigenza.</p>
@@ -833,9 +834,7 @@ if ("IntersectionObserver" in window){
     const cal = document.getElementById("calendario");
     if (cal) cal.after(ev);
     const n = document.getElementById("novita");
-    const gl = document.getElementById("glicata");
-    if (n && gl && Date.now() <= Date.parse(gl.dataset.fino)) { n.href = "#glicata"; n.innerHTML = "<b>Mercoledì 11/11</b> Emoglobina glicata gratis"; }
-    else if (n) { n.href = "#calendario"; n.innerHTML = "<b>Novità</b> Prenota il calendario 2027"; }
+    if (n) { n.href = "#calendario"; n.innerHTML = "<b>Novità</b> Prenota il calendario 2027"; }
   }
 })();
 // Emoglobina glicata: finita la giornata, resta come "evento svolto" subito sotto il calendario 2027
@@ -847,6 +846,8 @@ if ("IntersectionObserver" in window){
     const b = gl.querySelector(".gl-badge"); if (b) b.remove();
     const cal = document.getElementById("calendario");
     if (cal) cal.after(gl);
+    const n2 = document.getElementById("novita2"); if (n2) n2.remove();
+    const br2 = document.getElementById("novita2-br"); if (br2) br2.remove();
   }
 })();
 
