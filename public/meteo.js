@@ -39,6 +39,39 @@
       pol: { grass: "delle graminacee", olive: "dell'olivo", birch: "della betulla", alder: "dell'ontano", mugwort: "dell'artemisia", ragweed: "dell'ambrosia" },
       giorni: ["dom", "lun", "mar", "mer", "gio", "ven", "sab"]
     },
+    scn: {
+      eyebrow: "Tempu e saluti", titolo: "Chi tempu fa a Trabbia",
+      lead: "Lu tempu dî prossimi jorna, cu quarchi cunsigghiu supra comu vistìrisi e comu tèniri bona la saluti.",
+      adesso: "Ora", percepita: "comu si senti", umidita: "umidità", vento: "ventu", uv: "UV", pioggia: "chiuvuta",
+      oggi: "Oji", domani: "Dumani",
+      vestiti: "Comu vistìrisi oji", salute: "Saluti: l'accorgimenti d'oji",
+      fonte: "Tempu pi Trabbia di Open-Meteo, aggiurnatu ogni 30 minuti. Cunsigghi ginirali: pi un cunsigghiu fattu pi tia addumanna ô farmacista.",
+      cod: { 0: "Serenu", 1: "Quasi serenu", 2: "Mezzu nuvulusu", 3: "Nuvulusu", 45: "Negghia", 51: "Stizziddìa", 61: "Chiovi", 65: "Chiovi forti", 71: "Nivi", 80: "Acquazzuni", 95: "Timpurali" },
+      v: {
+        caldo: "Robba lèggia e chiara, di cuttuni o linu, cappeddu e occhiali dû suli.",
+        tiepido: "Robba lèggia: maglietta o cammisa a manichi curti.",
+        mite: "Manichi longhi lèggi; na felpa o un golfinu pâ sira.",
+        fresco: "Giacchetta lèggia o maglioni: megghiu vistìrisi a strati.",
+        freddo: "Cappottu o giacconi, sciarpa e quarchi cosa pi cummigghiari la testa.",
+        strati: "Granni diffirenza tra jornu e sira ({d}°): vestiti a strati.",
+        ombrello: "Pò chiòviri ({p}%): pìgghiati lu paracqua o l'impirmiàbbili.",
+        vento: "Ventu forti (finu a {v} km/h): megghiu na giacca contru lu ventu."
+      },
+      s: {
+        uvAlto: "Raggi UV àuti (ìndici {u}): crema dû suli SPF 50, nun stari ô suli tra li 11 e li 16, prutiggi picciriddi e anziani.",
+        uvMedio: "Raggi UV mudirati (ìndici {u}): si stai fora assai, usa na crema dû suli SPF 30.",
+        caldo: "Càudu forti: vivi acqua spissu puru senza siti, mancia frutta e virdura e nun nesciri nta l'uri cchiù càudi. Cu pigghia farmaci pi la prissioni o pô cori addumannassi ô farmacista.",
+        freddo: "Friddu: prutiggi nasu e gula e attentu ê sbalzi di timpiratura tra dintra e fora.",
+        influenza: "È tempu di raffriddori e nfruenza: làvati spissu li manu e arìa li stanzi.",
+        umido: "Umidità àuta: cu havi duluri ê junturi o prubblemi di rispiru la pò sèntiri cchiù assai.",
+        ventoSecco: "Cu lu ventu l'occhi s'asciùcanu fàcili: li làcrimi artificiali ponnu aiutari.",
+        pollini: "Pòllini {n} ca àumentanu: cu soffri d'allergìa tinissi a purtata di manu li farmaci ca ci cunsigghiau lu mèdicu e addumannassi ô farmacista.",
+        aria: "Ària nun bona: cu soffri d'asma o di prubblemi di rispiru nun si stancassi troppu fora.",
+        base: "Vivi armenu 1,5-2 litri d'acqua ô jornu e fatti na passiata a l'ària aperta."
+      },
+      pol: { grass: "dî graminaceî", olive: "di l'àulivu", birch: "dâ bètula", alder: "di l'àlanu", mugwort: "di l'erba bianca", ragweed: "di l'ambrosia" },
+      giorni: ["dum", "lun", "mar", "mer", "jov", "ven", "sàb"]
+    },
     en: {
       eyebrow: "Weather & health", titolo: "Weather in Trabia",
       lead: "The forecast for the next few days, with some tips on what to wear and how to look after your health.",

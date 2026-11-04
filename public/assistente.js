@@ -19,6 +19,18 @@
       nuova: "Nuova conversazione", questa: "Questa settimana", prossima: "Prossima settimana",
       az: { whatsapp: "Scrivici su WhatsApp", chiama: "Chiama 091 814 6207", turni: "Farmacie di turno", mappa: "Come arrivare", prenota: "Prenota", canale: "Segui il canale", recensione: "Lascia una recensione" }
     },
+    scn: {
+      apri: "Hai na dumanna? Addumanna a Valeriana", corto: "Addumanna a Valeriana", titolo: "Valeriana", sotto: "Assistenti dâ Farmacia Tortorici · rispunni sùbbitu",
+      benv: "Ciao! 👋", benv2: "Comu ti putemu aiutari oji?", oggi: "Oji", scrive: "sta scrivennu…", bollaT: "Hai bisognu d'aiutu?",
+      ciao: "Ciao! 👋 Sugnu Valeriana, l'assistenti dâ Farmacia Tortorici. Ti pozzu aiutari cu orari, sirvizzi, prinotazzioni, farmacìi di turnu e nichi cunsigghi pî disturbi di tutti li jorna. Chi ti servi?",
+      bolla: "Ciao! Ti pozzu aiutari? 👋", chiudi: "Chiui", invia: "Manna", scrivi: "Scrivi la to dumanna…",
+      nota: "Valeriana duna sulu cunsigghi ginirali: pi la to saluti addumanna sempri ô farmacista.",
+      rapide: ["Siti aperti ora?", "Rimedi pô malu di gola?", "Farmacìa di turnu", "Comu prinotu l'Holter?"],
+      errore: "Ora nun arrinesciu a rispunniri. Scrivìnni supra WhatsApp o chiàmani: t'aiutamu nuàutri.",
+      troppi: "Scrivisti assai missaggi nta picca tempu. Prova arreri tra un pocu, o scrivìnni supra WhatsApp.",
+      nuova: "Nova cunvirsazzioni", questa: "Sta simana", prossima: "La simana chi veni",
+      az: { whatsapp: "Scrivìnni supra WhatsApp", chiama: "Chiama 091 814 6207", turni: "Farmacìi di turnu", mappa: "Comu arrivari", prenota: "Prinota", canale: "Segui lu canali", recensione: "Lassa na ricinsioni" }
+    },
     en: {
       apri: "Got a question? Ask Valeriana", corto: "Ask Valeriana", titolo: "Valeriana", sotto: "Farmacia Tortorici's assistant · instant replies",
       benv: "Hi there! 👋", benv2: "How can we help you today?", oggi: "Today", scrive: "typing…", bollaT: "Need any help?",

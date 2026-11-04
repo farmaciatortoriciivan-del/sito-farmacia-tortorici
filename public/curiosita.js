@@ -139,11 +139,12 @@
 
   var S = {
     it: { eyebrow: "Lo sapevi?", titolo: "Farmacisti geniali", lead: "Ogni giorno una scoperta o un'invenzione nata dal lavoro di un farmacista. Alcune ti sorprenderanno!", oggi: "La curiosità di oggi", altra: "Scoprine un'altra", anno: "Anno" },
+    scn: { eyebrow: "U sapivi?", titolo: "Farmacisti giniali", lead: "Ogni jornu na scuperta o n'invinzioni nasciuta dô travagghiu di un farmacista. Quarchiduna t'ammaravigghia!", oggi: "La curiusità d'oji", altra: "Scoprinni n'àutra", anno: "Annu" },
     en: { eyebrow: "Did you know?", titolo: "Brilliant pharmacists", lead: "Every day a discovery or invention that came from a pharmacist's work. Some will surprise you!", oggi: "Today's fun fact", altra: "Show me another", anno: "Year" },
     de: { eyebrow: "Wussten Sie schon?", titolo: "Geniale Apotheker", lead: "Jeden Tag eine Entdeckung oder Erfindung aus der Arbeit eines Apothekers. Manche werden Sie überraschen!", oggi: "Die Kuriosität des Tages", altra: "Noch eine zeigen", anno: "Jahr" }
   }[L] || null;
   if (!S) return;
-  var k = { it: 2, en: 4, de: 6 }[L];
+  var k = { it: 2, scn: 2, en: 4, de: 6 }[L];
 
   var g = Math.floor((Date.now() + 3600e3) / 864e5);
   var i = g % C.length, oggi = i;
@@ -160,7 +161,7 @@
     if (anima) { card.classList.remove("cu-gira"); void card.offsetWidth; card.classList.add("cu-gira"); }
   }
   var AN = { "1700s": { it: "Settecento", en: "1700s", de: "18. Jh." }, "1790s": { it: "fine Settecento", en: "1790s", de: "um 1795" }, "1890s": { it: "fine Ottocento", en: "1890s", de: "um 1895" } };
-  function annoTxt(a) { return AN[a] ? AN[a][L] : a; }
+  function annoTxt(a) { return AN[a] ? (AN[a][L] || AN[a].it) : a; }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (x) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[x]; }); }
 
   box.querySelector(".cu-eyebrow").textContent = S.eyebrow;

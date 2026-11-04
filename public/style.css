@@ -830,3 +830,7 @@ button.lang-btn{display:inline-flex;align-items:center;gap:7px;padding:0 10px 0 
 .lang-dd .lang-btn:hover{border-color:transparent;box-shadow:0 4px 14px rgba(0,0,0,.12)}
 @media (max-width:400px){.lang-cod{display:none}button.lang-btn{min-width:0}}
 @media (max-width:480px){.turni-actions .btn{white-space:normal;text-align:center;max-width:100%}}
+.lang-b-scn{--lang-bordo:linear-gradient(135deg,#d21034 0 50%,#fcdd09 50%)}
+.lang-op-scn::after{background:linear-gradient(90deg,#d21034 0 50%,#fcdd09 50%)}
+.lang-op-scn:hover,.lang-op-scn:focus{background:linear-gradient(90deg,rgba(210,16,52,.12),rgba(252,221,9,.2))}
+.novita b{white-space:nowrap}
