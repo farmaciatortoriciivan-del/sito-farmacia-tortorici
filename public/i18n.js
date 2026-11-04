@@ -54,6 +54,28 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !m.hidden) { apri(false); b.focus(); } });
     var burger = cta.querySelector(".burger");
     cta.insertBefore(w, burger || null);
+    invito(w, b, apri);
+  }
+
+  // Invito simpatico a provare il siciliano: freccina lampeggiante sotto il selettore lingua
+  function invito(w, b, apri) {
+    if (lang === "scn") return;
+    try { if (localStorage.getItem("ft-invito-scn")) return; } catch (e) {}
+    var testi = {
+      it: ["Sei sicilianu? 😄", "Prova il sito in lingua siciliana!"],
+      en: ["Learn some Sicilian! 🍋", "Try our website in Sicilianu."],
+      de: ["Sizilianisch lernen? 🍋", "Probieren Sie unsere Seite auf Sicilianu!"]
+    }[lang];
+    var d = document.createElement("div");
+    d.className = "lang-invito";
+    d.innerHTML = '<span class="lang-freccia" aria-hidden="true"></span>' +
+      '<button type="button" class="lang-inv-vai">' + bandiera("scn") + '<span><b>' + testi[0] + "</b>" + testi[1] + "</span></button>" +
+      '<button type="button" class="lang-inv-x" aria-label="Chiudi">×</button>';
+    function via(ricorda) { d.remove(); if (ricorda) { try { localStorage.setItem("ft-invito-scn", "1"); } catch (e) {} } }
+    d.querySelector(".lang-inv-vai").addEventListener("click", function () { via(true); cambia("scn"); });
+    d.querySelector(".lang-inv-x").addEventListener("click", function (e) { e.stopPropagation(); via(true); });
+    b.addEventListener("click", function () { via(false); });
+    w.appendChild(d);
   }
 
 

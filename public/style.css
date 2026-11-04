@@ -851,3 +851,15 @@ button.lang-btn{display:inline-flex;align-items:center;gap:7px;padding:0 10px 0 
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .an-img{background:linear-gradient(135deg,#3a2c1e,#2a2016)}}
 @media (max-width:1000px){.an-list{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.an-list{grid-template-columns:1fr}}
+
+/* v42: invito a provare il siciliano */
+.lang-invito{position:absolute;right:-6px;top:calc(100% + 14px);z-index:110;display:flex;align-items:flex-start;gap:4px;width:max-content;max-width:min(250px,calc(100vw - 24px));padding:10px 8px 10px 12px;background:linear-gradient(135deg,#fff,#fff7d6);color:#3b2410;border:1.5px solid #f2c94c;border-radius:16px;box-shadow:0 14px 30px rgba(0,0,0,.18);animation:invEntra .5s cubic-bezier(.2,.8,.2,1) .8s both}
+.lang-freccia{position:absolute;right:22px;top:-26px;width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:14px solid #d21034;animation:freccia 1s ease-in-out infinite}
+.lang-freccia::after{content:"";position:absolute;left:-3px;top:12px;width:6px;height:9px;background:#d21034;border-radius:0 0 2px 2px}
+.lang-inv-vai{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;font:inherit;text-align:left;color:inherit;cursor:pointer;font-size:.86rem;line-height:1.35}
+.lang-inv-vai b{display:block;font-size:.95rem}
+.lang-inv-vai .lang-flag{width:26px;height:18px}
+.lang-inv-x{background:none;border:0;font-size:1.2rem;line-height:1;color:#8a6a40;cursor:pointer;padding:0 4px}
+@keyframes freccia{0%,100%{opacity:1;transform:translateY(0)}50%{opacity:.25;transform:translateY(-5px)}}
+@keyframes invEntra{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.lang-freccia,.lang-invito{animation:none}}
