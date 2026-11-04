@@ -899,3 +899,15 @@ img.fc-qa{width:138px;padding:4px 6px;margin-bottom:8px}
 img.fc-inline{width:184px;padding:6px 8px;margin-top:14px;border-radius:12px}
 img.fc-box{width:138px;padding:4px 6px;flex:none}
 img.fc-faq{width:184px;padding:6px 8px;margin:4px 0 6px;border-radius:12px}
+.lang-b-es{--lang-bordo:linear-gradient(180deg,#c60b1e 0 25%,#ffc400 25% 75%,#c60b1e 75%)}
+.lang-b-zh{--lang-bordo:linear-gradient(90deg,#de2910 0 70%,#ffde00 70%)}
+.lang-op-es::after{background:linear-gradient(90deg,#c60b1e 0 25%,#ffc400 25% 75%,#c60b1e 75%)}
+.lang-op-zh::after{background:linear-gradient(90deg,#de2910 0 80%,#ffde00 80%)}
+.lang-op-es:hover,.lang-op-es:focus{background:linear-gradient(90deg,rgba(198,11,30,.1),rgba(255,196,0,.2),rgba(198,11,30,.1))}
+.lang-op-zh:hover,.lang-op-zh:focus{background:linear-gradient(90deg,rgba(222,41,16,.12),rgba(255,222,0,.15))}
+html[lang="zh"] body{font-family:Inter,system-ui,-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif}
+html[lang="es"] .menu a{padding-left:10px;padding-right:10px}
+@media (max-width:1520px){html[lang="es"] .nav-cta a.btn-ghost[href^="tel:"]{display:none}}
+@media (max-width:1180px){html[lang="es"] .menu a{padding:8px 7px;font-size:.88rem}html[lang="es"] .brand-name small{letter-spacing:.04em}}
+@media (max-width:1320px){.nav-cta a.btn-ghost[href^="tel:"]{display:none}}
+@media (max-width:1100px){html[lang="es"] .menu a{padding:8px 5px;font-size:.82rem}html[lang="es"] .brand-name small{display:none}}

@@ -39,7 +39,7 @@ export function statoApertura(now = adessoRoma()) {
 
 function istruzioni(lingua, turni) {
   const now = adessoRoma();
-  const lang = { en: "English", de: "German (use the formal 'Sie')" }[lingua] || "Italian";
+  const lang = { en: "English", de: "German (use the formal 'Sie')", es: "Spanish (use 'tú')", zh: "Simplified Chinese" }[lingua] || "Italian";
   return `Ti chiami Valeriana e sei l'assistente automatico del sito della Farmacia Dott. Ivan Tortorici di Trabia (Palermo). Aiuti i clienti con domande pratiche e, per i piccoli disturbi, con semplici consigli di buon senso, invitando sempre a un consulto con il farmacista. Rispondi in modo cordiale, chiaro e professionale (di solito 3-5 frasi). Rispondi nella lingua del cliente; se non è chiara usa: ${lang}.
 
 ADESSO: ${GIORNI[now.wd]} ${now.data}, ore ${now.hm} (ora italiana). La farmacia è ${statoApertura(now)}
@@ -92,6 +92,10 @@ const TESTI_TURNI = {
         senza: "The official website of the Palermo Order of Pharmacists hasn't published Trabia's rota for this period yet. The rota is posted on the notice boards of all pharmacies: call us and we'll tell you straight away which pharmacy is on duty." },
   de: { con: "Hier sind die Notdienstapotheken in Trabia laut offiziellem Plan:", nota: "Nachts und an Feiertagen gibt es einen Rufbereitschaftsdienst nur für dringende Arzneimittel.",
         senza: "Die offizielle Website der Apothekerkammer Palermo hat den Notdienstplan für Trabia für diesen Zeitraum noch nicht veröffentlicht. Der Plan hängt an den Aushängen aller Apotheken: Rufen Sie uns an, wir sagen Ihnen sofort, welche Apotheke Dienst hat." },
+  es: { con: "Estas son las farmacias de guardia en Trabia, según el calendario oficial:", nota: "De noche y en festivos el servicio es a demanda, solo para medicamentos urgentes.",
+        senza: "La web oficial del Colegio de Farmacéuticos de Palermo todavía no ha publicado las guardias de Trabia para este periodo. El calendario está expuesto en los tablones de todas las farmacias: llámanos y te decimos enseguida qué farmacia está de guardia." },
+  zh: { con: "根据官方值班表，特拉比亚的值班药房如下：", nota: "夜间和节假日仅为急需药品提供电话呼叫服务。",
+        senza: "巴勒莫药剂师协会官方网站尚未公布特拉比亚这段时间的值班表。值班表张贴在所有药房的公告栏上：请致电我们，我们会马上告诉您哪家药房值班。" },
 };
 
 const AZIONI = ["whatsapp", "chiama", "turni", "mappa", "prenota", "canale", "recensione"];
@@ -123,7 +127,7 @@ async function contaUso(request, env) {
 export async function onRequestPost({ request, env, ctx }) {
   let body;
   try { body = await request.json(); } catch { return json({ errore: "Richiesta non valida." }, 400); }
-  const lingua = ["it", "en", "de"].includes(body.lingua) ? body.lingua : "it";
+  const lingua = ["it", "en", "de", "es", "zh"].includes(body.lingua) ? body.lingua : "it";
   const storia = (Array.isArray(body.messaggi) ? body.messaggi : [])
     .filter((m) => m && (m.ruolo === "utente" || m.ruolo === "assistente") && typeof m.testo === "string" && m.testo.trim())
     .slice(-10)
@@ -135,7 +139,7 @@ export async function onRequestPost({ request, env, ctx }) {
 
   // Domande sui turni: risposta precisa con la tabella ufficiale (senza passare dal modello)
   const ultima = storia[storia.length - 1].content;
-  if (/\bturn[oi]\b|di guardia|farmacia aperta (di|la) notte|on[- ]?duty|night pharmac|notdienst|bereitschaft/i.test(ultima)) {
+  if (/\bturn[oi]\b|di guardia|farmacia aperta (di|la) notte|on[- ]?duty|night pharmac|notdienst|bereitschaft|de guardia|farmacia de turno|值班|夜间药房/i.test(ultima)) {
     let tab = [];
     try { tab = await tabellaTurni(env, ctx); } catch (e) {}
     const L = TESTI_TURNI[lingua];

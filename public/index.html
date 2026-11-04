@@ -49,8 +49,8 @@
 }
 </script>
 
-<script src="i18n.js?v=14"></script>
-<link rel="stylesheet" href="style.css?v=47">
+<script src="i18n.js?v=16"></script>
+<link rel="stylesheet" href="style.css?v=48">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body>
@@ -956,7 +956,7 @@ if ("IntersectionObserver" in window){
   const sec = document.getElementById("anziani"), ul = document.getElementById("az-list");
   if (!sec || window.claude || !/^https?:$/.test(location.protocol)) return;
   const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  const lg = window.LINGUA === "de" ? "de-DE" : window.LINGUA === "en" ? "en-GB" : "it-IT";
+  const lg = { de: "de-DE", en: "en-GB", es: "es-ES", zh: "zh-CN" }[window.LINGUA] || "it-IT";
   fetch("/api/anziani").then(r => r.ok ? r.json() : null).then(d => {
     const a = d && Array.isArray(d.articoli) ? d.articoli.filter(x => /^https:\/\/(www\.)?(auser|alzheimer|senioritalia)\.it\//.test(x.link)) : [];
     if (!a.length) return;
@@ -973,7 +973,7 @@ if ("IntersectionObserver" in window){
   const sec = document.getElementById("animali"), ul = document.getElementById("an-list");
   if (!sec || window.claude || !/^https?:$/.test(location.protocol)) return;
   const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  const lg = window.LINGUA === "de" ? "de-DE" : window.LINGUA === "en" ? "en-GB" : "it-IT";
+  const lg = { de: "de-DE", en: "en-GB", es: "es-ES", zh: "zh-CN" }[window.LINGUA] || "it-IT";
   fetch("/api/animali").then(r => r.ok ? r.json() : null).then(d => {
     const a = d && Array.isArray(d.articoli) ? d.articoli.filter(x => /^https:\/\/(www\.)?(lazampa|lastampa)\.it\//.test(x.link)) : [];
     if (!a.length) return;
@@ -1002,8 +1002,8 @@ document.getElementById("vai-canale").addEventListener("click", function (e) {
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !l.hidden) { set(false); b.focus(); } });
 })();
 </script>
-<script src="meteo.js?v=2" defer></script>
-<script src="curiosita.js?v=2" defer></script>
-<script src="assistente.js?v=7" defer></script>
+<script src="meteo.js?v=3" defer></script>
+<script src="curiosita.js?v=3" defer></script>
+<script src="assistente.js?v=8" defer></script>
 </body>
 </html>

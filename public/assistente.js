@@ -31,6 +31,30 @@
       nuova: "Nova cunvirsazzioni", questa: "Sta simana", prossima: "La simana chi veni",
       az: { whatsapp: "Scrivìnni supra WhatsApp", chiama: "Chiama 091 814 6207", turni: "Farmacìi di turnu", mappa: "Comu arrivari", prenota: "Prinota", canale: "Segui lu canali", recensione: "Lassa na ricinsioni" }
     },
+    es: {
+      apri: "¿Tienes una pregunta? Pregunta a Valeriana", corto: "Pregunta a Valeriana", titolo: "Valeriana", sotto: "Asistente de la Farmacia Tortorici · responde al momento",
+      benv: "¡Hola! 👋", benv2: "¿Cómo podemos ayudarte hoy?", oggi: "Hoy", scrive: "escribiendo…", bollaT: "¿Necesitas ayuda?",
+      ciao: "¡Hola! 👋 Soy Valeriana, la asistente de la Farmacia Tortorici. Puedo ayudarte con horarios, servicios, reservas, farmacias de guardia y pequeños consejos para las molestias de cada día. ¿Qué necesitas?",
+      bolla: "¡Hola! ¿Te ayudo? 👋", chiudi: "Cerrar", invia: "Enviar", scrivi: "Escribe tu pregunta…",
+      nota: "Valeriana solo da consejos generales: para tu salud consulta siempre al farmacéutico.",
+      rapide: ["¿Estáis abiertos ahora?", "¿Remedios para el dolor de garganta?", "Farmacia de guardia", "¿Cómo reservo el Holter?"],
+      errore: "Ahora no puedo responder. Escríbenos por WhatsApp o llámanos: te ayudamos nosotros.",
+      troppi: "Has enviado muchos mensajes en poco tiempo. Inténtalo más tarde o escríbenos por WhatsApp.",
+      nuova: "Nueva conversación", questa: "Esta semana", prossima: "La semana que viene",
+      az: { whatsapp: "Escríbenos por WhatsApp", chiama: "Llama al +39 091 814 6207", turni: "Farmacias de guardia", mappa: "Cómo llegar", prenota: "Reservar", canale: "Sigue el canal", recensione: "Deja una opinión" }
+    },
+    zh: {
+      apri: "有问题吗？问问 Valeriana", corto: "问问 Valeriana", titolo: "Valeriana", sotto: "Farmacia Tortorici 助手 · 即时回复",
+      benv: "您好！👋", benv2: "今天我们能为您做些什么？", oggi: "今天", scrive: "正在输入…", bollaT: "需要帮助吗？",
+      ciao: "您好！👋 我是 Valeriana，Farmacia Tortorici 的助手。我可以帮您了解营业时间、服务、预约、值班药房，以及日常小不适的简单建议。您需要什么？",
+      bolla: "您好！需要帮忙吗？👋", chiudi: "关闭", invia: "发送", scrivi: "请输入您的问题…",
+      nota: "Valeriana 只提供一般性建议：有关健康问题请务必咨询药剂师。",
+      rapide: ["现在营业吗？", "喉咙痛有什么缓解办法？", "值班药房", "如何预约 Holter？"],
+      errore: "我暂时无法回复。请通过 WhatsApp 联系我们或致电：我们会帮助您。",
+      troppi: "您在短时间内发送了很多消息。请稍后再试，或通过 WhatsApp 联系我们。",
+      nuova: "新对话", questa: "本周", prossima: "下周",
+      az: { whatsapp: "通过 WhatsApp 联系我们", chiama: "致电 +39 091 814 6207", turni: "值班药房", mappa: "路线", prenota: "预约", canale: "关注频道", recensione: "留下评价" }
+    },
     en: {
       apri: "Got a question? Ask Valeriana", corto: "Ask Valeriana", titolo: "Valeriana", sotto: "Farmacia Tortorici's assistant · instant replies",
       benv: "Hi there! 👋", benv2: "How can we help you today?", oggi: "Today", scrive: "typing…", bollaT: "Need any help?",
@@ -144,7 +168,7 @@
   function tabellaHtml(tab) {
     if (!tab || !tab.length) return "";
     var oggi = new Date().toISOString().slice(0, 10);
-    var fmt = function (d) { return new Date(d + "T12:00:00").toLocaleDateString(LANG === "de" ? "de-DE" : LANG === "en" ? "en-GB" : "it-IT", { day: "numeric", month: "short" }); };
+    var fmt = function (d) { return new Date(d + "T12:00:00").toLocaleDateString(LANG === "de" ? "de-DE" : LANG === "en" ? "en-GB" : LANG === "es" ? "es-ES" : LANG === "zh" ? "zh-CN" : "it-IT", { day: "numeric", month: "short" }); };
     return '<div class="ast-tab">' + tab.map(function (r, i) {
       var ora = r.dal <= oggi && r.al >= oggi;
       var prossimoLun = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10);

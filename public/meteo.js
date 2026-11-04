@@ -72,6 +72,72 @@
       pol: { grass: "dî graminaceî", olive: "di l'àulivu", birch: "dâ bètula", alder: "di l'àlanu", mugwort: "di l'erba bianca", ragweed: "di l'ambrosia" },
       giorni: ["dum", "lun", "mar", "mer", "jov", "ven", "sàb"]
     },
+    es: {
+      eyebrow: "Tiempo y salud", titolo: "Qué tiempo hace en Trabia",
+      lead: "El pronóstico de los próximos días, con algunos consejos sobre cómo vestirse y cómo cuidar la salud.",
+      adesso: "Ahora", percepita: "sensación", umidita: "humedad", vento: "viento", uv: "UV", pioggia: "lluvia",
+      oggi: "Hoy", domani: "Mañana",
+      vestiti: "Cómo vestirse hoy", salute: "Salud: precauciones de hoy",
+      fonte: "Pronóstico para Trabia de Open-Meteo, actualizado cada 30 minutos. Consejos generales: para un consejo personalizado pregunta al farmacéutico.",
+      cod: { 0: "Despejado", 1: "Poco nuboso", 2: "Parcialmente nuboso", 3: "Nublado", 45: "Niebla", 51: "Llovizna", 61: "Lluvia", 65: "Lluvia fuerte", 71: "Nieve", 80: "Chubascos", 95: "Tormenta" },
+      v: {
+        caldo: "Ropa ligera y clara, de algodón o lino, sombrero y gafas de sol.",
+        tiepido: "Ropa ligera: camiseta o camisa de manga corta.",
+        mite: "Manga larga ligera; una sudadera o una chaqueta de punto para la noche.",
+        fresco: "Chaqueta ligera o jersey: mejor vestirse por capas.",
+        freddo: "Abrigo, bufanda y algo para cubrir la cabeza.",
+        strati: "Mucha diferencia entre el día y la noche ({d}°): vístete por capas.",
+        ombrello: "Probable lluvia ({p}%): lleva paraguas o chubasquero.",
+        vento: "Viento fuerte (hasta {v} km/h): mejor una chaqueta cortavientos."
+      },
+      s: {
+        uvAlto: "Rayos UV altos (índice {u}): protector solar FPS 50, evita el sol entre las 11 y las 16, protege a niños y mayores.",
+        uvMedio: "Rayos UV moderados (índice {u}): si estás mucho tiempo al aire libre usa protector solar FPS 30.",
+        caldo: "Calor intenso: bebe agua a menudo aunque no tengas sed, come fruta y verdura y evita las horas de más calor. Si tomas medicamentos para la tensión o el corazón, consulta al farmacéutico.",
+        freddo: "Temperaturas bajas: protege nariz y garganta y cuidado con los cambios de temperatura entre dentro y fuera.",
+        influenza: "Es temporada de resfriados y gripe: lávate las manos a menudo y ventila las habitaciones.",
+        umido: "Humedad alta: las personas con dolores articulares o problemas respiratorios pueden notarla más.",
+        ventoSecco: "Con el viento los ojos se secan fácilmente: las lágrimas artificiales pueden ayudar.",
+        pollini: "Polen de {n} en aumento: si tienes alergia, ten a mano los medicamentos que te indicó el médico y pregunta al farmacéutico.",
+        aria: "Mala calidad del aire: las personas con asma o problemas respiratorios deben limitar el esfuerzo al aire libre.",
+        base: "Bebe al menos 1,5-2 litros de agua al día y da un paseo al aire libre."
+      },
+      pol: { grass: "gramíneas", olive: "olivo", birch: "abedul", alder: "aliso", mugwort: "artemisa", ragweed: "ambrosía" },
+      giorni: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"]
+    },
+    zh: {
+      eyebrow: "天气与健康", titolo: "特拉比亚天气",
+      lead: "未来几天的天气预报，并附上穿衣和健康防护的小建议。",
+      adesso: "现在", percepita: "体感", umidita: "湿度", vento: "风速", uv: "紫外线", pioggia: "降雨",
+      oggi: "今天", domani: "明天",
+      vestiti: "今日穿衣建议", salute: "健康：今日注意事项",
+      fonte: "特拉比亚天气预报来自 Open-Meteo，每 30 分钟更新。以上为一般性建议，个性化建议请咨询药剂师。",
+      cod: { 0: "晴", 1: "晴间少云", 2: "多云", 3: "阴", 45: "雾", 51: "毛毛雨", 61: "雨", 65: "大雨", 71: "雪", 80: "阵雨", 95: "雷雨" },
+      v: {
+        caldo: "穿浅色轻薄的棉麻衣物，戴帽子和太阳镜。",
+        tiepido: "穿轻薄衣物：T 恤或短袖衬衫。",
+        mite: "穿轻薄长袖；晚上加一件卫衣或开衫。",
+        fresco: "穿薄外套或毛衣：最好分层穿。",
+        freddo: "穿大衣或厚外套，戴围巾，注意头部保暖。",
+        strati: "早晚温差大（{d}°）：建议分层穿衣。",
+        ombrello: "可能下雨（{p}%）：请带伞或雨衣。",
+        vento: "风力较大（最高 {v} km/h）：建议穿防风外套。"
+      },
+      s: {
+        uvAlto: "紫外线强（指数 {u}）：涂 SPF 50 防晒霜，11 点至 16 点避免日晒，注意保护儿童和老人。",
+        uvMedio: "紫外线中等（指数 {u}）：长时间在户外请使用 SPF 30 防晒霜。",
+        caldo: "天气炎热：即使不渴也要经常喝水，多吃水果蔬菜，避开最热的时段。服用降压药或心脏药物的人请咨询药剂师。",
+        freddo: "气温较低：注意保护鼻子和喉咙，小心室内外温差。",
+        influenza: "正值感冒和流感季节：勤洗手，常开窗通风。",
+        umido: "湿度较高：关节疼痛或有呼吸问题的人可能感觉更明显。",
+        ventoSecco: "有风时眼睛容易干涩：人工泪液可以帮助缓解。",
+        pollini: "{n}花粉浓度上升：过敏人士请随身携带医生建议的药物，并咨询药剂师。",
+        aria: "空气质量较差：哮喘或有呼吸问题的人请减少户外剧烈活动。",
+        base: "每天至少喝 1.5–2 升水，并到户外散散步。"
+      },
+      pol: { grass: "禾本科", olive: "橄榄", birch: "桦树", alder: "桤木", mugwort: "艾草", ragweed: "豚草" },
+      giorni: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
+    },
     en: {
       eyebrow: "Weather & health", titolo: "Weather in Trabia",
       lead: "The forecast for the next few days, with some tips on what to wear and how to look after your health.",
@@ -154,7 +220,7 @@
     return { 0: "☀️", 1: "🌤️", 2: "⛅", 3: "☁️", 45: "🌫️", 51: "🌦️", 61: "🌧️", 65: "🌧️", 71: "❄️", 80: "🌦️", 95: "⛈️" }[g];
   }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
-  function n(x) { return L === "en" ? String(x) : String(x).replace(".", ","); }
+  function n(x) { return (L === "en" || L === "zh") ? String(x) : String(x).replace(".", ","); }
   function f(s, o) { return s.replace(/\{(\w)\}/g, function (_, k) { return o[k]; }); }
 
   function consigli(d, x) {
