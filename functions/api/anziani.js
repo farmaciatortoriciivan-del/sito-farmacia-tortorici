@@ -46,9 +46,9 @@ async function scegli(env, articoli) {
   if (env && env.AI && articoli.length) {
     try {
       const elenco = articoli.map((a, i) => `${i + 1}. [${a.fonte}] ${a.titolo}${a.sommario ? " — " + a.sommario : ""}`).join("\n");
-      const r = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
+      const r = await env.AI.run("@cf/meta/llama-3.3-70b-instruct-fp8-fast", {
         messages: [
-          { role: "system", content: "Sei il redattore del sito di una farmacia di paese. Scegli SOLO gli articoli utili o interessanti per le persone anziane e per chi se ne prende cura: salute, prevenzione, memoria e demenza, invecchiamento attivo, consigli pratici, servizi e diritti per gli anziani, solitudine e compagnia, sostegno ai familiari. ESCLUDI notizie interne delle associazioni (assemblee, nomine, bilanci, tesseramenti, raccolte fondi, 5x1000), bandi e concorsi, politica, eventi lontani dalla Sicilia senza utilità pratica, pubblicità. Nel dubbio escludi. Rispondi solo con un array JSON dei numeri scelti, per esempio [1,4]. Se nessuno va bene rispondi []." },
+          { role: "system", content: "Sei il redattore del sito di una farmacia di paese. Scegli SOLO gli articoli utili o interessanti per le persone anziane e per chi se ne prende cura: salute, prevenzione, memoria e demenza, invecchiamento attivo, consigli pratici, servizi e diritti per gli anziani, solitudine e compagnia, sostegno ai familiari. ESCLUDI notizie interne delle associazioni (assemblee, nomine, bilanci, tesseramenti, raccolte fondi, 5x1000, premi o riconoscimenti a volontari e dirigenti, persone citate in libri o enciclopedie, attività di singole sedi locali lontane dalla Sicilia), bandi e concorsi, politica, eventi lontani dalla Sicilia senza utilità pratica, pubblicità. Nel dubbio escludi. Rispondi solo con un array JSON dei numeri scelti, per esempio [1,4]. Se nessuno va bene rispondi []." },
           { role: "user", content: elenco },
         ],
         max_tokens: 60, temperature: 0,
@@ -69,7 +69,7 @@ async function feed(f) {
 
 export async function onRequest({ request, env, ctx }) {
   const cache = caches.default;
-  const key = new Request(new URL("/api/anziani?v=1", request.url).toString());
+  const key = new Request(new URL("/api/anziani?v=2", request.url).toString());
   const hit = await cache.match(key);
   if (hit) return hit;
 
@@ -79,10 +79,24 @@ export async function onRequest({ request, env, ctx }) {
   // al massimo 2 articoli per fonte, così la rubrica resta varia
   const conta = {};
   articoli = articoli.filter((a) => (conta[a.fonte] = (conta[a.fonte] || 0) + 1) <= 2).slice(0, MAX).map(({ sommario, ...a }) => a);
+  await Promise.all(articoli.map(async (a) => { if (!a.immagine) a.immagine = await anteprima(a.link); }));
 
   const res = new Response(JSON.stringify({ fonti: FONTI.map((f) => f.nome), aggiornato: new Date().toISOString(), articoli }), {
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": `public, max-age=${articoli.length ? TTL : 300}` },
   });
   if (articoli.length) ctx.waitUntil(cache.put(key, res.clone()));
   return res;
+}
+
+// Immagine di anteprima: se il feed non la dà, la prendiamo dalla pagina dell'articolo (og:image)
+export async function anteprima(link) {
+  try {
+    const r = await fetch(link, { headers: { "user-agent": "Mozilla/5.0 (compatible; SitoFarmaciaTortorici/1.0)", accept: "text/html" }, cf: { cacheTtl: 86400 } });
+    if (!r.ok) return null;
+    const h = (await r.text()).slice(0, 200000);
+    const m = h.match(/<meta[^>]+(?:property|name)=["'](?:og:image|twitter:image)(?::src)?["'][^>]*content=["']([^"']+)["']/i)
+      || h.match(/<meta[^>]+content=["']([^"']+)["'][^>]*(?:property|name)=["'](?:og:image|twitter:image)["']/i);
+    const u = m ? m[1].replace(/&amp;/g, "&") : null;
+    return u && /^https:\/\//.test(u) ? u : null;
+  } catch (e) { return null; }
 }

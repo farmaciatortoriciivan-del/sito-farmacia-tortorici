@@ -2,6 +2,7 @@
 // Il Worker legge il feed, tiene solo gli articoli utili a chi ha un animale da compagnia
 // e restituisce titolo, data, immagine e link: gli articoli si leggono sul sito della testata.
 import { CATENE } from "./notizie.js";
+import { anteprima } from "./anziani.js";
 
 const FEED = "https://www.lazampa.it/rss";
 const TTL = 3600;
@@ -40,7 +41,7 @@ async function scegli(env, articoli) {
   if (env && env.AI && articoli.length) {
     try {
       const elenco = articoli.map((a, i) => `${i + 1}. ${a.titolo}${a.sommario ? " — " + a.sommario : ""}`).join("\n");
-      const r = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
+      const r = await env.AI.run("@cf/meta/llama-3.3-70b-instruct-fp8-fast", {
         messages: [
           { role: "system", content: "Sei il redattore del sito di una farmacia di paese con reparto veterinario. Scegli SOLO gli articoli utili o piacevoli per chi ha un animale da compagnia (cane, gatto, coniglio, uccellini, pesci...): salute, cura, prevenzione, parassiti, alimentazione, comportamento, consigli pratici, stagioni e animali, curiosità serene. ESCLUDI cronaca nera, maltrattamenti, animali morti o feriti, aggressioni, caccia, processi, politica e leggi, animali selvatici o esotici senza consigli per chi ha un animale in casa, pubblicità di negozi o catene. Nel dubbio escludi. Rispondi solo con un array JSON dei numeri scelti, per esempio [1,4]. Se nessuno va bene rispondi []." },
           { role: "user", content: elenco },
@@ -56,7 +57,7 @@ async function scegli(env, articoli) {
 
 export async function onRequest({ request, env, ctx }) {
   const cache = caches.default;
-  const key = new Request(new URL("/api/animali?v=1", request.url).toString());
+  const key = new Request(new URL("/api/animali?v=2", request.url).toString());
   const hit = await cache.match(key);
   if (hit) return hit;
 
@@ -66,6 +67,7 @@ export async function onRequest({ request, env, ctx }) {
     if (r.ok) articoli = await scegli(env, leggi(await r.text()).slice(0, 20));
   } catch (e) {}
   articoli = articoli.sort((a, b) => (b.data || "").localeCompare(a.data || "")).slice(0, MAX).map(({ sommario, ...a }) => a);
+  await Promise.all(articoli.map(async (a) => { if (!a.immagine) a.immagine = await anteprima(a.link); }));
 
   const res = new Response(JSON.stringify({ fonte: "La Zampa", aggiornato: new Date().toISOString(), articoli }), {
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": `public, max-age=${articoli.length ? TTL : 300}` },
