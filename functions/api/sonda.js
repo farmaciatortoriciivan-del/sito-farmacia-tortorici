@@ -1,6 +1,6 @@
 // Diagnostica temporanea: controlla i feed di 50&Più e del Ministero della Salute.
 export async function sonda(env) {
-  const urls = ["https://www.50epiu.it/feed/", "https://www.50epiu.it/", "https://www.salute.gov.it/new/it/rss", "https://www.salute.gov.it/new/it/feed", "https://www.salute.gov.it/portale/rss/rssNotizie.jsp", "https://www.salute.gov.it/new/it/"];
+  const urls = ["https://www.senioritalia.it/feed/", "https://www.auser.it/feed/", "https://www.alzheimer.it/feed/", "https://www.epicentro.iss.it/rss/news.xml", "https://www.iss.it/rss", "https://www.50epiu.it/feed"];
   const q = "INSERT INTO sonda (id, dati, quando) VALUES (?, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando";
   const t = new Date().toISOString();
   for (let i = 0; i < urls.length; i++) {
