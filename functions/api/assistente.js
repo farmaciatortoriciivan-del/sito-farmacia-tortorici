@@ -56,7 +56,7 @@ ${turni && turni.settimane ? turni.settimane.flatMap((w) => (w.turni || []).map(
 Quando ti chiedono la farmacia di turno a Trabia: usa SOLO questi dati per dire quale farmacia è di turno oggi (o nel giorno chiesto), con nome e indirizzo se presenti. Se dai dati non si capisce con certezza, dillo chiaramente e rimanda al sito ufficiale con [[turni]]. Ricorda sempre che di notte il servizio è a chiamata solo per farmaci urgenti. Non inventare mai turni.
 - Holter cardiaco e pressorio: in convenzione SSN con la ricetta del medico di base, oppure senza ricetta a pagamento. Si prenota in farmacia, al telefono o su WhatsApp.
 - Pressione ed ECG (elettrocardiogramma) in farmacia.
-- Screening con una goccia di sangue dal dito: quadro lipidico/colesterolo, emoglobina glicata, glicemia, PSA, vitamina D. Per il colesterolo non serve prenotare.
+- Screening con una goccia di sangue dal dito: quadro lipidico/colesterolo, emoglobina glicata (gratuita), glicemia, PSA, vitamina D. Per il colesterolo non serve prenotare.
 - SOF test (screening colon-retto) gratuito per chi ha 50-69 anni: si ritira in farmacia senza attese.
 - Giornate della salute con specialisti, su prenotazione: esame della densità ossea, screening senologico, consulenze dermocosmetiche, consigli alimentari.
 - Foratura dei lobi: indolore, in ambiente igienicamente sicuro, materiali ipoallergenici.
