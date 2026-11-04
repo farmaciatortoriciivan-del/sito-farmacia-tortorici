@@ -103,6 +103,13 @@
     "Da tanti anni la Farmacia del Dott. Ivan Tortorici è un punto di riferimento per le famiglie di Trabia: consiglio professionale, servizi di prevenzione e un assortimento curato per ogni esigenza.": "For many years Dr. Ivan Tortorici's pharmacy has been a trusted point of reference for the families of Trabia: professional advice, prevention services and a carefully chosen range of products for every need.",
     "Chiama ora": "Call now",
     "Prenota su WhatsApp": "Book on WhatsApp",
+    "Amici a quattro zampe": "Four-legged friends",
+    "Notizie e consigli per i tuoi animali": "News and tips for your pets",
+    "Gli ultimi articoli de La Zampa su salute, cura e benessere di cani, gatti e altri animali da compagnia, scelti per te e aggiornati in automatico.": "The latest articles from La Zampa on the health, care and wellbeing of dogs, cats and other pets, chosen for you and updated automatically.",
+    "Veterinaria in farmacia:": "Veterinary care at the pharmacy:",
+    "farmaci, alimenti e prodotti per la salute dei tuoi animali, anche su ricetta veterinaria.": "medicines, food and products for your pets' health, including on veterinary prescription.",
+    "Chiedi su WhatsApp": "Ask on WhatsApp",
+    "Fonte:": "Source:",
     "Iscriviti al canale": "Join the channel",
     "Assistenza a domicilio": "Home assistance",
     "Parcheggio facile": "Easy parking",
@@ -399,6 +406,13 @@
    "Da tanti anni la Farmacia del Dott. Ivan Tortorici è un punto di riferimento per le famiglie di Trabia: consiglio professionale, servizi di prevenzione e un assortimento curato per ogni esigenza.": "Seit vielen Jahren ist die Apotheke von Dr. Ivan Tortorici eine feste Anlaufstelle für die Familien in Trabia: fachkundige Beratung, Vorsorgeleistungen und ein sorgfältig ausgewähltes Sortiment für jeden Bedarf.",
    "Chiama ora": "Jetzt anrufen",
    "Prenota su WhatsApp": "Auf WhatsApp buchen",
+   "Amici a quattro zampe": "Vierbeinige Freunde",
+   "Notizie e consigli per i tuoi animali": "Neuigkeiten und Tipps für Ihre Tiere",
+   "Gli ultimi articoli de La Zampa su salute, cura e benessere di cani, gatti e altri animali da compagnia, scelti per te e aggiornati in automatico.": "Die neuesten Artikel von La Zampa über Gesundheit, Pflege und Wohlbefinden von Hunden, Katzen und anderen Haustieren – für Sie ausgewählt und automatisch aktualisiert.",
+   "Veterinaria in farmacia:": "Tiergesundheit in der Apotheke:",
+   "farmaci, alimenti e prodotti per la salute dei tuoi animali, anche su ricetta veterinaria.": "Arzneimittel, Futter und Produkte für die Gesundheit Ihrer Tiere, auch auf tierärztliches Rezept.",
+   "Chiedi su WhatsApp": "Auf WhatsApp fragen",
+   "Fonte:": "Quelle:",
    "Iscriviti al canale": "Dem Kanal beitreten",
    "Assistenza a domicilio": "Betreuung zu Hause",
    "Parcheggio facile": "Einfaches Parken",
@@ -643,6 +657,13 @@
    "Le recensioni dei clienti della Farmacia Dott. Ivan Tortorici a Trabia (PA).": "Kundenbewertungen der Farmacia Dott. Ivan Tortorici in Trabia (PA)."
   };
   var SCN = {
+   "Amici a quattro zampe": "Amici a quattru peri",
+   "Notizie e consigli per i tuoi animali": "Nutizzî e cunsigghi pî to armali",
+   "Gli ultimi articoli de La Zampa su salute, cura e benessere di cani, gatti e altri animali da compagnia, scelti per te e aggiornati in automatico.": "L'ùrtimi artìculi di La Zampa supra saluti, cura e benessiri di cani, gatti e àutri armali di casa, scigghiuti pi tia e aggiurnati automaticamenti.",
+   "Veterinaria in farmacia:": "Viterinaria nnâ farmacìa:",
+   "farmaci, alimenti e prodotti per la salute dei tuoi animali, anche su ricetta veterinaria.": "farmaci, alimenti e prudotti pi la saluti dî to armali, puru cu ricetta viterinaria.",
+   "Chiedi su WhatsApp": "Addumanna supra WhatsApp",
+   "Fonte:": "Funti:",
    "Vai al contenuto": "Vai ô cuntinutu",
    "Trabia · dal cuore del paese": "Trabbia · dô cori dû paisi",
    "Chi siamo": "Cu semu",
@@ -969,7 +990,7 @@
   }
 
   var ATTR = ["alt", "aria-label", "placeholder", "title"];
-  var SALTA = ".lang-dd,.ast,#meteo,#curiosita,script,style,#fb-feed .fb-post strong,#fb-feed .fb-body,#news-list strong,blockquote,.rv-text,.r-text,q";
+  var SALTA = ".lang-dd,.ast,#meteo,#curiosita,script,style,#fb-feed .fb-post strong,#fb-feed .fb-body,#news-list strong,#an-list strong,blockquote,.rv-text,.r-text,q";
 
   function nodo(n) {
     if (n.nodeType === 3) {

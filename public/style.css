@@ -834,3 +834,20 @@ button.lang-btn{display:inline-flex;align-items:center;gap:7px;padding:0 10px 0 
 .lang-op-scn::after{background:linear-gradient(90deg,#d21034 0 50%,#fcdd09 50%)}
 .lang-op-scn:hover,.lang-op-scn:focus{background:linear-gradient(90deg,rgba(210,16,52,.12),rgba(252,221,9,.2))}
 .novita b{white-space:nowrap}
+
+/* v41: amici a quattro zampe */
+.animali[hidden]{display:none}
+.an-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.an-list a{height:100%;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);text-decoration:none;color:var(--ink);transition:transform .2s}
+.an-list a:hover{transform:translateY(-3px)}
+.an-img{position:relative;display:grid;place-items:center;aspect-ratio:16/10;background:linear-gradient(135deg,#fff3e0,#ffe0c2);font-size:2.4rem}
+.an-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.an-txt{display:flex;flex-direction:column;gap:8px;padding:16px 18px 18px;flex:1}
+.an-txt time{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.an-txt strong{font-family:Fraunces,serif;font-size:1.04rem;line-height:1.3;color:var(--heading);flex:1}
+.an-vet{margin-top:22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:18px 22px;border-radius:20px;background:linear-gradient(135deg,rgba(224,164,58,.14),rgba(46,158,106,.12));border:1px solid var(--line)}
+.an-vet-ic{font-size:1.8rem}
+.an-vet p{margin:0;flex:1;min-width:220px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .an-img{background:linear-gradient(135deg,#3a2c1e,#2a2016)}}
+@media (max-width:1000px){.an-list{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.an-list{grid-template-columns:1fr}}

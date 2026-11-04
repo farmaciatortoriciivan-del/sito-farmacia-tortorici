@@ -6,6 +6,7 @@ import * as notizie from "./functions/api/notizie.js";
 import * as assistente from "./functions/api/assistente.js";
 import * as turni from "./functions/api/turni.js";
 import * as meteo from "./functions/api/meteo.js";
+import * as animali from "./functions/api/animali.js";
 
 export default {
   async fetch(request, env, ctx) {
@@ -19,6 +20,7 @@ export default {
     }
     if (pathname === "/api/admin/recensioni") return admin.onRequest(c);
     if (pathname === "/api/notizie") return notizie.onRequest(c);
+    if (pathname === "/api/animali") return animali.onRequest(c);
     if (pathname === "/api/meteo") return meteo.onRequest(c);
     if (pathname === "/api/turni") return turni.onRequestGet(c);
     if (pathname === "/api/assistente") return request.method === "POST" ? assistente.onRequestPost(c) : new Response("Metodo non consentito", { status: 405 });

@@ -49,8 +49,8 @@
 }
 </script>
 
-<script src="i18n.js?v=4"></script>
-<link rel="stylesheet" href="style.css?v=40">
+<script src="i18n.js?v=5"></script>
+<link rel="stylesheet" href="style.css?v=41">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body>
@@ -496,6 +496,26 @@
   </div>
 </section>
 
+<!-- ============ AMICI A QUATTRO ZAMPE (La Zampa - La Stampa) ============ -->
+<section id="animali" class="animali" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Amici a quattro zampe</span>
+        <h2>Notizie e consigli per i tuoi animali</h2>
+      </div>
+      <p class="lead">Gli ultimi articoli de La Zampa su salute, cura e benessere di cani, gatti e altri animali da compagnia, scelti per te e aggiornati in automatico.</p>
+    </div>
+    <ul class="an-list" id="an-list"></ul>
+    <div class="an-vet">
+      <span class="an-vet-ic" aria-hidden="true">🐾</span>
+      <p><strong>Veterinaria in farmacia:</strong> farmaci, alimenti e prodotti per la salute dei tuoi animali, anche su ricetta veterinaria.</p>
+      <a class="btn btn-wa" href="https://wa.me/393315250555?text=Buongiorno%2C%20vorrei%20un%20consiglio%20per%20il%20mio%20animale%3A%20" target="_blank" rel="noopener">Chiedi su WhatsApp</a>
+    </div>
+    <p class="news-src">Fonte: <a href="https://www.lazampa.it/" target="_blank" rel="noopener">La Zampa – La Stampa</a>. Gli articoli si aprono sul sito della testata.</p>
+  </div>
+</section>
+
 <!-- ============ RECENSIONI (anteprima) ============ -->
 <section id="recensioni" style="background:var(--sand-100)">
   <div class="wrap">
@@ -873,6 +893,23 @@ if ("IntersectionObserver" in window){
       ${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString("it-IT",{day:"numeric",month:"short"})}</time>` : ""}
       <span class="news-cat">${esc(x.fonte || "Quotidiano Sanità")}</span>
       <strong>${esc(x.titolo)}</strong><span class="news-go">Leggi →</span></a></li>`).join("");
+  }).catch(() => {});
+})();
+
+// Amici a quattro zampe: articoli de La Zampa (letti dal nostro server, cache 1 ora)
+(() => {
+  const sec = document.getElementById("animali"), ul = document.getElementById("an-list");
+  if (!sec || window.claude || !/^https?:$/.test(location.protocol)) return;
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const lg = window.LINGUA === "de" ? "de-DE" : window.LINGUA === "en" ? "en-GB" : "it-IT";
+  fetch("/api/animali").then(r => r.ok ? r.json() : null).then(d => {
+    const a = d && Array.isArray(d.articoli) ? d.articoli.filter(x => /^https:\/\/(www\.)?(lazampa|lastampa)\.it\//.test(x.link)) : [];
+    if (!a.length) return;
+    ul.innerHTML = a.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">
+      <span class="an-img">${x.immagine && /^https:\/\//.test(x.immagine) ? `<img src="${esc(x.immagine)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<span aria-hidden="true">🐾</span></span>
+      <span class="an-txt">${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString(lg,{day:"numeric",month:"short"})}</time>` : ""}
+      <strong>${esc(x.titolo)}</strong><span class="news-go">Leggi →</span></span></a></li>`).join("");
+    sec.hidden = false;
   }).catch(() => {});
 })();
 </script>
