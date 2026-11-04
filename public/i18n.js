@@ -125,6 +125,7 @@
     "Da tanti anni la Farmacia del Dott. Ivan Tortorici è un punto di riferimento per le famiglie di Trabia: consiglio professionale, servizi di prevenzione e un assortimento curato per ogni esigenza.": "For many years Dr. Ivan Tortorici's pharmacy has been a trusted point of reference for the families of Trabia: professional advice, prevention services and a carefully chosen range of products for every need.",
     "Chiama ora": "Call now",
     "Prenota su WhatsApp": "Book on WhatsApp",
+    "Farmacasa – servizio a domicilio della Farmacia Tortorici, tel. 091 814 6207": "Farmacasa – Farmacia Tortorici home service, tel. +39 091 814 6207",
     "Età d'argento": "Silver age",
     "Notizie e consigli per gli anziani e le loro famiglie": "News and tips for older people and their families",
     "Salute, prevenzione, invecchiamento attivo e sostegno a chi si prende cura di una persona anziana: gli ultimi articoli di associazioni nazionali, scelti per te e aggiornati in automatico.": "Health, prevention, active ageing and support for those caring for an older person: the latest articles from national associations, chosen for you and updated automatically.",
@@ -446,6 +447,7 @@
    "Da tanti anni la Farmacia del Dott. Ivan Tortorici è un punto di riferimento per le famiglie di Trabia: consiglio professionale, servizi di prevenzione e un assortimento curato per ogni esigenza.": "Seit vielen Jahren ist die Apotheke von Dr. Ivan Tortorici eine feste Anlaufstelle für die Familien in Trabia: fachkundige Beratung, Vorsorgeleistungen und ein sorgfältig ausgewähltes Sortiment für jeden Bedarf.",
    "Chiama ora": "Jetzt anrufen",
    "Prenota su WhatsApp": "Auf WhatsApp buchen",
+   "Farmacasa – servizio a domicilio della Farmacia Tortorici, tel. 091 814 6207": "Farmacasa – Lieferdienst der Farmacia Tortorici, Tel. +39 091 814 6207",
    "Età d'argento": "Silberne Jahre",
    "Notizie e consigli per gli anziani e le loro famiglie": "Neuigkeiten und Tipps für ältere Menschen und ihre Familien",
    "Salute, prevenzione, invecchiamento attivo e sostegno a chi si prende cura di una persona anziana: gli ultimi articoli di associazioni nazionali, scelti per te e aggiornati in automatico.": "Gesundheit, Vorsorge, aktives Altern und Unterstützung für pflegende Angehörige: die neuesten Artikel nationaler Verbände, für Sie ausgewählt und automatisch aktualisiert.",
@@ -715,6 +717,7 @@
    "Le recensioni dei clienti della Farmacia Dott. Ivan Tortorici a Trabia (PA).": "Kundenbewertungen der Farmacia Dott. Ivan Tortorici in Trabia (PA)."
   };
   var SCN = {
+   "Farmacasa – servizio a domicilio della Farmacia Tortorici, tel. 091 814 6207": "Farmacasa – sirvizziu a casa dâ Farmacia Tortorici, tel. 091 814 6207",
    "Età d'argento": "Età d'argentu",
    "Notizie e consigli per gli anziani e le loro famiglie": "Nutizzî e cunsigghi pî anziani e li so famigghî",
    "Salute, prevenzione, invecchiamento attivo e sostegno a chi si prende cura di una persona anziana: gli ultimi articoli di associazioni nazionali, scelti per te e aggiornati in automatico.": "Saluti, prevenzioni, invecchiamentu attivu e aiutu a cu si pigghia cura di na pirsuna anziana: l'ùrtimi artìculi di assuciazzioni nazziunali, scigghiuti pi tia e aggiurnati automaticamenti.",

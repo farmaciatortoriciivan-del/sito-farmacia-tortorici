@@ -890,3 +890,12 @@ button.lang-btn{display:inline-flex;align-items:center;gap:7px;padding:0 10px 0 
 .az-img{background:linear-gradient(135deg,#e8f4ec,#d4ebdd)}
 .az-box{background:linear-gradient(135deg,rgba(46,158,106,.12),rgba(31,111,79,.08))}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .az-img{background:linear-gradient(135deg,#1e3a2c,#16291f)}}
+
+/* v47: logo Farmacasa accanto all'assistenza a domicilio */
+img.fc{display:block;height:auto;background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+img.fc-xs{display:inline-block;width:51px;padding:2px 3px;border-radius:6px;margin-right:2px;vertical-align:middle;flex:none}
+img.fc-card{width:240px;max-width:100%;padding:8px 10px;margin-bottom:14px;border-radius:14px}
+img.fc-qa{width:138px;padding:4px 6px;margin-bottom:8px}
+img.fc-inline{width:184px;padding:6px 8px;margin-top:14px;border-radius:12px}
+img.fc-box{width:138px;padding:4px 6px;flex:none}
+img.fc-faq{width:184px;padding:6px 8px;margin:4px 0 6px;border-radius:12px}
