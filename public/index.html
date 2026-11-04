@@ -49,8 +49,8 @@
 }
 </script>
 
-<script src="i18n.js?v=10"></script>
-<link rel="stylesheet" href="style.css?v=43">
+<script src="i18n.js?v=11"></script>
+<link rel="stylesheet" href="style.css?v=44">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body>
@@ -701,7 +701,7 @@
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.4-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4C2.7 15.6 2.2 13.8 2.2 12 2.2 6.6 6.6 2.2 12 2.2c2.6 0 5.1 1 6.9 2.9 1.8 1.8 2.9 4.3 2.9 6.9 0 5.4-4.4 9.8-9.8 9.8zM20.5 3.5C18.2 1.2 15.2 0 12 0 5.4 0 0 5.4 0 12c0 2.1.6 4.2 1.6 6L0 24l6.2-1.6c1.8 1 3.8 1.5 5.8 1.5 6.6 0 12-5.4 12-12 0-3.2-1.2-6.2-3.5-8.4z"/></svg>
 </a>
 
-<script src="consent.js"></script>
+<script src="consent.js?v=2"></script>
 <script src="facebook-data.js"></script>
 <script src="reviews-data.js"></script>
 <script>
@@ -776,19 +776,49 @@ setInterval(render, 60000);
     if (body.length > 150) body = body.slice(0, 148).replace(/\s\S*$/, "") + "…";
     return { title: title.replace(/^[^\p{L}\p{N}]+/u, ""), body };
   }
-  const list = posts.filter(p => p.testo.length >= 60 || (p.immagine && p.testo.length < 60)).slice(0, 4);
+  // al massimo 2 post con sola foto, così restano visibili anche i post con testo e i video
+  let foto = 0;
+  const list = posts.filter(p => p.testo.length >= 60 || (p.immagine && p.testo.length < 60 && ++foto <= 2)).slice(0, 4);
   if (!list.length){ box.innerHTML = '<p class="fb-empty">Segui la nostra pagina Facebook per le ultime novità.</p>'; return; }
   const okImg = u => /^https:\/\/[a-z0-9.-]+\.fbcdn\.net\//i.test(u || "");
   box.innerHTML = list.map(p => { const v = p.tipo === "video"; const soloFoto = p.testo.length < 60;
     const { title, body } = soloFoto ? { title: p.testo || (p.tipo === "photo" ? "Nuova foto sulla nostra pagina" : "Nuovo post sulla nostra pagina"), body: "" } : split(p.testo);
     const img = okImg(p.immagine) ? `<span class="fb-thumb"><img src="${esc(p.immagine)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></span>` : "";
-    return `<a class="fb-post${img ? " has-img" : ""}${soloFoto ? " solo-foto" : ""}" href="${esc(p.link)}" target="_blank" rel="noopener">
+    const guarda = v && /^https:\/\/(www\.)?facebook\.com\/[^"<>\s]+$/.test(p.post || "") ? `<button type="button" class="fb-play" data-post="${esc(p.post)}" data-link="${esc(p.link)}"><span aria-hidden="true">▶</span> Guarda qui</button>` : "";
+    return `<div class="fb-cell">${guarda}<a class="fb-post${img ? " has-img" : ""}${soloFoto ? " solo-foto" : ""}${guarda ? " has-play" : ""}" href="${esc(p.link)}" target="_blank" rel="noopener">
       ${img}<span class="fb-tag ${v ? "is-video" : ""}">${v ? "▶ Video" : soloFoto && p.tipo === "photo" ? "📷 Foto" : "Post"}</span>
       <time>${fdate(p.data)}</time>
       <strong>${esc(title)}</strong>
       ${body ? `<span class="fb-body">${esc(body)}</span>` : ""}
       <span class="more">${v ? "Guarda il video" : soloFoto ? "Guarda su Facebook" : "Leggi su Facebook"} →</span>
-    </a>`; }).join("");
+    </a></div>`; }).join("");
+  // Video: si guardano sul sito con il lettore di Facebook, solo dopo il consenso ai cookie di terze parti
+  let dlg;
+  function apriVideo(post, link) {
+    if (!dlg) {
+      dlg = document.createElement("dialog");
+      dlg.className = "fb-dlg";
+      dlg.innerHTML = '<div class="fb-dlg-box"><button type="button" class="fb-dlg-x" aria-label="Chiudi il video">×</button><div class="fb-dlg-body"></div></div>';
+      document.body.appendChild(dlg);
+      dlg.querySelector(".fb-dlg-x").onclick = () => dlg.close();
+      dlg.addEventListener("click", e => { if (e.target === dlg) dlg.close(); });
+      dlg.addEventListener("close", () => { dlg.querySelector(".fb-dlg-body").innerHTML = ""; });
+    }
+    const body = dlg.querySelector(".fb-dlg-body");
+    const mostra = () => {
+      const src = "https://www.facebook.com/plugins/post.php?href=" + encodeURIComponent(post) + "&show_text=false&width=500";
+      body.innerHTML = `<iframe src="${esc(src)}" title="Video dalla nostra pagina Facebook" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
+        <a class="fb-dlg-link" href="${esc(link)}" target="_blank" rel="noopener">Apri su Facebook →</a>`;
+    };
+    if (window.Consenso && window.Consenso.esterni()) mostra();
+    else {
+      body.innerHTML = `<div class="fb-dlg-cons"><p>Per vedere il video qui serve il tuo consenso ai contenuti di Facebook, che usano cookie di terze parti.</p>
+        <div class="fb-dlg-act"><button type="button" class="btn btn-primary">Accetta e guarda</button><a class="btn btn-ghost" href="${esc(link)}" target="_blank" rel="noopener">Apri su Facebook</a></div></div>`;
+      body.querySelector("button").onclick = () => { if (window.Consenso) window.Consenso.accetta(); mostra(); };
+    }
+    if (dlg.showModal) dlg.showModal(); else dlg.setAttribute("open", "");
+  }
+  box.addEventListener("click", e => { const b = e.target.closest(".fb-play"); if (b) apriVideo(b.dataset.post, b.dataset.link); });
 })();
 
 /* ===== RECENSIONI GOOGLE (reviews-data.js) ===== */

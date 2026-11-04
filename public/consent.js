@@ -49,7 +49,7 @@
     banner.setAttribute("aria-label", "Preferenze cookie");
     banner.innerHTML =
       '<button type="button" class="cb-x" aria-label="Chiudi e rifiuta">×</button>' +
-      '<p><strong>Cookie</strong> Usiamo solo cookie tecnici. Con il tuo consenso mostriamo anche la mappa di Google, che usa cookie di terze parti. ' +
+      '<p><strong>Cookie</strong> Usiamo solo cookie tecnici. Con il tuo consenso mostriamo anche la mappa di Google e i video di Facebook, che usano cookie di terze parti. ' +
       '<a href="cookie.html">Cookie policy</a></p>' +
       '<div class="cb-actions"><button type="button" class="btn btn-ghost cb-no">Rifiuta</button>' +
       '<button type="button" class="btn btn-primary cb-si">Accetta</button></div>';

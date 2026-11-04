@@ -48,6 +48,7 @@ for r in rows:
         "testo": clean,
         "tipo": "video" if (kind == "video" or share) else kind,
         "link": share.group(0) if share else link,
+        "post": link,
     }
     if foto:
         p["immagine"] = foto

@@ -867,3 +867,18 @@ button.lang-btn{display:inline-flex;align-items:center;gap:7px;padding:0 10px 0 
 /* v43: anteprima immagine nei post Facebook */
 .fb-thumb{display:block;width:88px;height:88px;border-radius:14px;overflow:hidden;background:var(--sand-100);margin-bottom:4px;flex:none}
 .fb-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* v44: video Facebook guardabili sul sito */
+.fb-cell{position:relative;display:flex}
+.fb-cell>.fb-post{flex:1}
+.fb-play{position:absolute;top:16px;right:16px;z-index:2;border:0;border-radius:999px;background:#1877f2;color:#fff;font:inherit;font-weight:700;font-size:.85rem;padding:9px 14px;cursor:pointer;box-shadow:0 6px 16px rgba(24,119,242,.35);transition:transform .2s}
+.fb-play:hover{transform:scale(1.05)}
+.fb-dlg{border:0;padding:0;background:transparent;max-width:min(560px,94vw);width:100%}
+.fb-dlg::backdrop{background:rgba(10,20,15,.7)}
+.fb-dlg-box{position:relative;background:var(--card);border-radius:20px;padding:44px 14px 16px;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.fb-dlg-x{position:absolute;top:8px;right:10px;border:0;background:none;font-size:1.8rem;line-height:1;color:var(--muted);cursor:pointer}
+.fb-dlg iframe{display:block;width:100%;aspect-ratio:9/12;max-height:72vh;border:0;border-radius:12px;background:#000}
+.fb-dlg-link{display:inline-block;margin-top:10px;font-weight:600}
+.fb-dlg-cons{padding:8px 10px 6px}
+.fb-dlg-cons p{margin:0 0 16px}
+.fb-dlg-act{display:flex;gap:10px;flex-wrap:wrap}
