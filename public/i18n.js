@@ -128,6 +128,7 @@
     "Chiama e prenota": "Call to book",
     "Evento svolto": "Past event",
     "Evento della Farmacia Tortorici svolto in data venerdì 6 novembre 2026": "Farmacia Tortorici event held on Friday 6 November 2026",
+    "Evento della Farmacia Tortorici svolto in data mercoledì 11 novembre 2026": "Farmacia Tortorici event held on Wednesday 11 November 2026",
     "Locandina dell'incontro Enervit: Allenamento, nutrizione ed integrazione. Venerdì 6 novembre dalle ore 18.00 presso la Farmacia Tortorici. Relatore Dott. Valerio Papa": "Poster of the Enervit talk: Training, nutrition and supplements. Friday 6 November from 6 pm at Farmacia Tortorici. Speaker Dr. Valerio Papa",
 
     // --- calendario
@@ -421,6 +422,7 @@
    "Chiama e prenota": "Anrufen und anmelden",
    "Evento svolto": "Vergangene Veranstaltung",
    "Evento della Farmacia Tortorici svolto in data venerdì 6 novembre 2026": "Veranstaltung der Farmacia Tortorici am Freitag, 6. November 2026",
+   "Evento della Farmacia Tortorici svolto in data mercoledì 11 novembre 2026": "Veranstaltung der Farmacia Tortorici am Mittwoch, 11. November 2026",
    "Locandina dell'incontro Enervit: Allenamento, nutrizione ed integrazione. Venerdì 6 novembre dalle ore 18.00 presso la Farmacia Tortorici. Relatore Dott. Valerio Papa": "Plakat des Enervit-Vortrags: Training, Ernährung und Nahrungsergänzung. Freitag, 6. November ab 18 Uhr in der Farmacia Tortorici. Referent Dr. Valerio Papa",
    "Novità · Calendario 2027": "Neu · Kalender 2027",
    "Il nostro calendario 2027 ti aspetta!": "Unser Kalender 2027 wartet auf Sie!",

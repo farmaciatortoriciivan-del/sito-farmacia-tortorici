@@ -826,10 +826,6 @@ if ("IntersectionObserver" in window){
 // Evento: finito l'evento, la locandina resta come "evento svolto" sotto il calendario 2027,
 // che torna in cima, e la "Novità" torna al calendario
 (() => {
-  const gl = document.getElementById("glicata");
-  if (gl && Date.now() > Date.parse(gl.dataset.fino)) gl.remove();
-})();
-(() => {
   const ev = document.getElementById("evento"); if (!ev) return;
   if (Date.now() > Date.parse(ev.dataset.fino)) {
     const testo = ev.querySelector(".ev-grid > div:not(.ev-img)");
@@ -840,6 +836,17 @@ if ("IntersectionObserver" in window){
     const gl = document.getElementById("glicata");
     if (n && gl && Date.now() <= Date.parse(gl.dataset.fino)) { n.href = "#glicata"; n.innerHTML = "<b>Mercoledì 11/11</b> Emoglobina glicata gratis"; }
     else if (n) { n.href = "#calendario"; n.innerHTML = "<b>Novità</b> Prenota il calendario 2027"; }
+  }
+})();
+// Emoglobina glicata: finita la giornata, resta come "evento svolto" subito sotto il calendario 2027
+(() => {
+  const gl = document.getElementById("glicata"); if (!gl) return;
+  if (Date.now() > Date.parse(gl.dataset.fino)) {
+    const testo = gl.querySelector(".ev-grid > div:not(.gl-img)");
+    if (testo) testo.innerHTML = '<span class="eyebrow">Evento svolto</span><h2>Evento della Farmacia Tortorici svolto in data mercoledì 11 novembre 2026</h2>';
+    const b = gl.querySelector(".gl-badge"); if (b) b.remove();
+    const cal = document.getElementById("calendario");
+    if (cal) cal.after(gl);
   }
 })();
 
