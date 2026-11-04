@@ -863,3 +863,7 @@ button.lang-btn{display:inline-flex;align-items:center;gap:7px;padding:0 10px 0 
 @keyframes freccia{0%,100%{opacity:1;transform:translateY(0)}50%{opacity:.25;transform:translateY(-5px)}}
 @keyframes invEntra{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.lang-freccia,.lang-invito{animation:none}}
+
+/* v43: anteprima immagine nei post Facebook */
+.fb-thumb{display:block;width:88px;height:88px;border-radius:14px;overflow:hidden;background:var(--sand-100);margin-bottom:4px;flex:none}
+.fb-thumb img{width:100%;height:100%;object-fit:cover;display:block}

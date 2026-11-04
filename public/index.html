@@ -49,8 +49,8 @@
 }
 </script>
 
-<script src="i18n.js?v=8"></script>
-<link rel="stylesheet" href="style.css?v=42">
+<script src="i18n.js?v=10"></script>
+<link rel="stylesheet" href="style.css?v=43">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body>
@@ -776,15 +776,18 @@ setInterval(render, 60000);
     if (body.length > 150) body = body.slice(0, 148).replace(/\s\S*$/, "") + "…";
     return { title: title.replace(/^[^\p{L}\p{N}]+/u, ""), body };
   }
-  const list = posts.filter(p => p.testo.length >= 60).slice(0, 4);
+  const list = posts.filter(p => p.testo.length >= 60 || (p.immagine && p.testo.length < 60)).slice(0, 4);
   if (!list.length){ box.innerHTML = '<p class="fb-empty">Segui la nostra pagina Facebook per le ultime novità.</p>'; return; }
-  box.innerHTML = list.map(p => { const { title, body } = split(p.testo); const v = p.tipo === "video";
-    return `<a class="fb-post" href="${p.link}" target="_blank" rel="noopener">
-      <span class="fb-tag ${v ? "is-video" : ""}">${v ? "▶ Video" : "Post"}</span>
+  const okImg = u => /^https:\/\/[a-z0-9.-]+\.fbcdn\.net\//i.test(u || "");
+  box.innerHTML = list.map(p => { const v = p.tipo === "video"; const soloFoto = p.testo.length < 60;
+    const { title, body } = soloFoto ? { title: p.testo || (p.tipo === "photo" ? "Nuova foto sulla nostra pagina" : "Nuovo post sulla nostra pagina"), body: "" } : split(p.testo);
+    const img = okImg(p.immagine) ? `<span class="fb-thumb"><img src="${esc(p.immagine)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.remove()"></span>` : "";
+    return `<a class="fb-post${img ? " has-img" : ""}${soloFoto ? " solo-foto" : ""}" href="${esc(p.link)}" target="_blank" rel="noopener">
+      ${img}<span class="fb-tag ${v ? "is-video" : ""}">${v ? "▶ Video" : soloFoto && p.tipo === "photo" ? "📷 Foto" : "Post"}</span>
       <time>${fdate(p.data)}</time>
       <strong>${esc(title)}</strong>
       ${body ? `<span class="fb-body">${esc(body)}</span>` : ""}
-      <span class="more">${v ? "Guarda il video" : "Leggi su Facebook"} →</span>
+      <span class="more">${v ? "Guarda il video" : soloFoto ? "Guarda su Facebook" : "Leggi su Facebook"} →</span>
     </a>`; }).join("");
 })();
 

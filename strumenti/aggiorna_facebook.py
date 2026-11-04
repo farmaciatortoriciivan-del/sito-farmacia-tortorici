@@ -22,21 +22,36 @@ if os.path.exists(dst):
     old_fol = m.group(1) if m else None
 rows = json.load(open(src, encoding="utf-8"))
 
+from urllib.parse import urlparse, parse_qs
+
+def immagine(u):
+    """Anteprima del post: l'indirizzo originale di Facebook (fbcdn) dentro il link di Metricool."""
+    if not u:
+        return None
+    tg = parse_qs(urlparse(u).query).get("tg")
+    u = tg[0] if tg else u
+    host = urlparse(u).netloc
+    return u if u.startswith("https://") and host.endswith(".fbcdn.net") else None
+
 posts = []
 for r in rows:
-    date, text, _img, link, kind = r[0], (r[1] or "").strip(), r[2], r[3], r[4]
-    if not text:
-        continue
+    date, text, img, link, kind = r[0], (r[1] or "").strip(), r[2], r[3], r[4]
     # togli hashtag finali e link di condivisione dal testo mostrato
     clean = re.sub(r"https?://\S+", "", text)
     clean = re.sub(r"(\s*#\w+)+\s*#?\s*$", "", clean).strip()
     share = re.search(r"https://www\.facebook\.com/share/v/\S+", text)
-    posts.append({
+    foto = immagine(img)
+    if not clean and not foto:
+        continue  # niente testo e niente immagine: non c'è nulla da mostrare
+    p = {
         "data": datetime.strptime(date, "%Y%m%d%H%M%S").strftime("%Y-%m-%d"),
         "testo": clean,
         "tipo": "video" if (kind == "video" or share) else kind,
         "link": share.group(0) if share else link,
-    })
+    }
+    if foto:
+        p["immagine"] = foto
+    posts.append(p)
 
 posts.sort(key=lambda p: p["data"], reverse=True)
 stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
