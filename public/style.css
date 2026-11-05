@@ -742,6 +742,7 @@ html[lang="de"] .menu a{padding-left:10px;padding-right:10px}
 .mt-giorni li{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px 10px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px}
 .mt-giorni li.mt-g-oggi{border-color:var(--green-600,#1f6f4f);box-shadow:0 0 0 2px rgba(31,111,79,.18)}
 .mt-g-n{font-weight:700;text-transform:capitalize;color:var(--heading,var(--ink))}
+.mt-g-data{font-size:.82rem;color:var(--muted);margin-top:-4px}
 .mt-g-ic{font-size:2rem;line-height:1.1}
 .mt-g-d{font-size:.8rem;color:var(--muted);min-height:2.4em;display:flex;align-items:center}
 .mt-g-t{font-size:1rem}.mt-g-t b{font-size:1.15rem}

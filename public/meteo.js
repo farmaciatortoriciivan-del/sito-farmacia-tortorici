@@ -37,7 +37,9 @@
         base: "Bevi almeno 1,5-2 litri di acqua al giorno e fai una passeggiata all'aria aperta."
       },
       pol: { grass: "delle graminacee", olive: "dell'olivo", birch: "della betulla", alder: "dell'ontano", mugwort: "dell'artemisia", ragweed: "dell'ambrosia" },
-      giorni: ["dom", "lun", "mar", "mer", "gio", "ven", "sab"]
+      giorni: ["dom", "lun", "mar", "mer", "gio", "ven", "sab"],
+      aggiornato: "Aggiornato",
+      mesi: ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"]
     },
     scn: {
       eyebrow: "Tempu e saluti", titolo: "Chi tempu fa a Trabbia",
@@ -70,7 +72,9 @@
         base: "Vivi armenu 1,5-2 litri d'acqua ô jornu e fatti na passiata a l'ària aperta."
       },
       pol: { grass: "dî graminaceî", olive: "di l'àulivu", birch: "dâ bètula", alder: "di l'àlanu", mugwort: "di l'erba bianca", ragweed: "di l'ambrosia" },
-      giorni: ["dum", "lun", "mar", "mer", "jov", "ven", "sàb"]
+      giorni: ["dum", "lun", "mar", "mer", "jov", "ven", "sàb"],
+      aggiornato: "Aggiurnatu",
+      mesi: ["jin", "fri", "mar", "apr", "maj", "giu", "lug", "aus", "sit", "utt", "nuv", "dic"]
     },
     es: {
       eyebrow: "Tiempo y salud", titolo: "Qué tiempo hace en Trabia",
@@ -103,7 +107,9 @@
         base: "Bebe al menos 1,5-2 litros de agua al día y da un paseo al aire libre."
       },
       pol: { grass: "gramíneas", olive: "olivo", birch: "abedul", alder: "aliso", mugwort: "artemisa", ragweed: "ambrosía" },
-      giorni: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"]
+      giorni: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
+      aggiornato: "Actualizado",
+      mesi: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
     },
     zh: {
       eyebrow: "天气与健康", titolo: "特拉比亚天气",
@@ -136,7 +142,8 @@
         base: "每天至少喝 1.5–2 升水，并到户外散散步。"
       },
       pol: { grass: "禾本科", olive: "橄榄", birch: "桦树", alder: "桤木", mugwort: "艾草", ragweed: "豚草" },
-      giorni: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
+      giorni: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+      aggiornato: "更新于"
     },
     en: {
       eyebrow: "Weather & health", titolo: "Weather in Trabia",
@@ -169,7 +176,9 @@
         base: "Drink at least 1.5–2 litres of water a day and take a walk outdoors."
       },
       pol: { grass: "Grass", olive: "Olive", birch: "Birch", alder: "Alder", mugwort: "Mugwort", ragweed: "Ragweed" },
-      giorni: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+      giorni: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      aggiornato: "Updated",
+      mesi: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     },
     de: {
       eyebrow: "Wetter & Gesundheit", titolo: "Das Wetter in Trabia",
@@ -202,7 +211,9 @@
         base: "Trinken Sie mindestens 1,5–2 Liter Wasser am Tag und gehen Sie an der frischen Luft spazieren."
       },
       pol: { grass: "Gräser", olive: "Oliven", birch: "Birken", alder: "Erlen", mugwort: "Beifuß", ragweed: "Ambrosia" },
-      giorni: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+      giorni: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+      aggiornato: "Aktualisiert",
+      mesi: ["Jan.", "Feb.", "März", "Apr.", "Mai", "Juni", "Juli", "Aug.", "Sept.", "Okt.", "Nov.", "Dez."]
     }
   }[L] || null;
   if (!T) return;
@@ -246,10 +257,26 @@
     return { v: v.slice(0, 4), s: s.slice(0, 4) };
   }
 
+  // "5 nov" (in cinese "11月5日")
+  function dataBreve(iso) {
+    var p = iso.split("-"), g = +p[2], m = +p[1];
+    if (L === "zh") return m + "月" + g + "日";
+    return g + " " + T.mesi[m - 1];
+  }
+  // giorno e ora dell'ultimo aggiornamento, all'ora italiana: "gio 5 nov, 23:23"
+  function quando(isoUtc) {
+    try {
+      var o = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(isoUtc));
+      var v = {}; o.forEach(function (x) { v[x.type] = x.value; });
+      var iso = v.year + "-" + v.month + "-" + v.day;
+      return T.giorni[new Date(iso + "T12:00:00").getDay()] + " " + dataBreve(iso) + ", " + v.hour + ":" + v.minute;
+    } catch (e) { return ""; }
+  }
+
   function giornoNome(iso, i) {
     if (i === 0) return T.oggi; if (i === 1) return T.domani;
     var d = new Date(iso + "T12:00:00");
-    return T.giorni[d.getDay()] + " " + d.getDate();
+    return T.giorni[d.getDay()];
   }
 
   function mostra(x) {
@@ -257,7 +284,8 @@
     box.querySelector(".mt-eyebrow").textContent = T.eyebrow;
     box.querySelector(".mt-titolo").textContent = T.titolo;
     box.querySelector(".mt-lead").textContent = T.lead;
-    box.querySelector(".mt-fonte").innerHTML = esc(T.fonte).replace("Open-Meteo", '<a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>');
+    var agg = x.aggiornato ? quando(x.aggiornato) : "";
+    box.querySelector(".mt-fonte").innerHTML = (agg ? "<b>" + esc(T.aggiornato) + ": " + esc(agg) + "</b> · " : "") + esc(T.fonte).replace("Open-Meteo", '<a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>');
     var ora = '<div class="mt-ora">' +
       '<div class="mt-ora-top"><span class="mt-ic-big" aria-hidden="true">' + icona(a.codice, a.giorno) + "</span>" +
       '<div><div class="mt-label">' + esc(T.adesso) + '</div><div class="mt-temp">' + a.temp + "°</div>" +
@@ -270,6 +298,7 @@
       "</ul></div>";
     var giorni = '<ol class="mt-giorni">' + x.giorni.map(function (d, i) {
       return '<li class="' + (i === 0 ? "mt-g-oggi" : "") + '"><span class="mt-g-n">' + esc(giornoNome(d.data, i)) + "</span>" +
+        '<span class="mt-g-data">' + esc(dataBreve(d.data)) + "</span>" +
         '<span class="mt-g-ic" aria-hidden="true">' + icona(d.codice, true) + "</span>" +
         '<span class="mt-g-d">' + esc(T.cod[gruppo(d.codice)]) + "</span>" +
         '<span class="mt-g-t"><b>' + d.max + "°</b> " + d.min + "°</span>" +
