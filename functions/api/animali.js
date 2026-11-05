@@ -57,7 +57,7 @@ async function scegli(env, articoli) {
 
 export async function onRequest({ request, env, ctx }) {
   const cache = caches.default;
-  const key = new Request(new URL("/api/animali?v=2", request.url).toString());
+  const key = new Request(new URL("/api/animali?v=3", request.url).toString());
   const hit = await cache.match(key);
   if (hit) return hit;
 
@@ -68,6 +68,8 @@ export async function onRequest({ request, env, ctx }) {
   } catch (e) {}
   articoli = articoli.sort((a, b) => (b.data || "").localeCompare(a.data || "")).slice(0, MAX).map(({ sommario, ...a }) => a);
   await Promise.all(articoli.map(async (a) => { if (!a.immagine) a.immagine = await anteprima(a.link); }));
+  // diagnostica temporanea: quali immagini arrivano
+  try { await env.DB.prepare("INSERT INTO sonda (id, dati, quando) VALUES (300, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando").bind(JSON.stringify(articoli.map((x) => [x.link, x.immagine])), new Date().toISOString()).run(); } catch (e) {}
 
   const res = new Response(JSON.stringify({ fonte: "La Zampa", aggiornato: new Date().toISOString(), articoli }), {
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": `public, max-age=${articoli.length ? TTL : 300}` },
