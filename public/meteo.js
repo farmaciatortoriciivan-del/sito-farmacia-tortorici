@@ -283,7 +283,18 @@
     box.hidden = false;
   }
 
-  fetch("/api/meteo").then(function (r) { return r.ok ? r.json() : null; }).then(function (x) {
-    if (x && x.giorni && x.giorni.length) mostra(x);
-  }).catch(function () {});
+  // Legge le previsioni all'apertura, poi ogni 30 minuti se la pagina resta aperta,
+  // e di nuovo quando si torna sulla pagina (es. il telefono riapre la scheda).
+  var ultimo = 0;
+  function carica() {
+    ultimo = Date.now();
+    fetch("/api/meteo", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (x) {
+      if (x && x.giorni && x.giorni.length) mostra(x);
+    }).catch(function () {});
+  }
+  function seVecchio() { if (Date.now() - ultimo > 10 * 60 * 1000) carica(); }
+  carica();
+  setInterval(function () { if (!document.hidden) carica(); }, 30 * 60 * 1000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) seVecchio(); });
+  window.addEventListener("pageshow", function (e) { if (e.persisted) seVecchio(); });
 })();

@@ -7,7 +7,7 @@ export async function onRequest({ request, ctx }) {
   const cache = caches.default;
   const key = new Request(new URL("/api/meteo?v=1", request.url).toString());
   const hit = await cache.match(key);
-  if (hit) return hit;
+  if (hit) return alBrowser(hit);
 
   const meteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&timezone=Europe%2FRome&forecast_days=5` +
     "&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day" +
@@ -67,5 +67,14 @@ export async function onRequest({ request, ctx }) {
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": `public, max-age=${TTL}` },
   });
   ctx.waitUntil(cache.put(key, res.clone()));
-  return res;
+  return alBrowser(res);
+}
+
+// Al browser i dati arrivano sempre "da non conservare": così il telefono non tiene
+// le previsioni vecchie (Cloudflare altrimenti gli diceva di tenerle per 4 ore).
+// La copia per 30 minuti resta solo nella cache del server.
+function alBrowser(r) {
+  const out = new Response(r.body, r);
+  out.headers.set("cache-control", "no-store");
+  return out;
 }
