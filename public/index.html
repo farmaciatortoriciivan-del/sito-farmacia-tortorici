@@ -1006,7 +1006,7 @@ if ("IntersectionObserver" in window){
   const lg = { de: "de-DE", en: "en-GB", es: "es-ES", zh: "zh-CN" }[window.LINGUA] || "it-IT";
   const T = { it: ["Fonti:", "Gli articoli si aprono sui siti delle riviste."], scn: ["Funti:", "L'articuli s'aprinu nnê siti dî rivisti."], en: ["Sources:", "Articles open on the magazines' websites."],
     de: ["Quellen:", "Die Artikel öffnen sich auf den Websites der Zeitschriften."], es: ["Fuentes:", "Los artículos se abren en las webs de las revistas."], zh: ["来源：", "文章将在杂志网站上打开。"] }[window.LINGUA || "it"] || ["Fonti:", ""];
-  const ok = /^https:\/\/(www\.)?(runnersworld\.com\/it|menshealth\.com\/it|runlovers\.it|correre\.it|therunningclub\.it|nonsolofitness\.it)\//;
+  const ok = /^https:\/\/(www\.)?(runnersworld\.com\/it|menshealth\.com\/it|runlovers\.it|correre\.it|therunningclub\.it)\//;
   fetch("/api/sportivi").then(r => r.ok ? r.json() : null).then(d => {
     const a = d && Array.isArray(d.articoli) ? d.articoli.filter(x => ok.test(x.link)) : [];
     if (!a.length) return;

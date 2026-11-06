@@ -11,7 +11,6 @@ export const FONTI = [
   { nome: "Runlovers", feed: "https://www.runlovers.it/feed/", dominio: /^https:\/\/(www\.)?runlovers\.it\//, sito: "https://www.runlovers.it/" },
   { nome: "Correre", feed: "https://www.correre.it/feed/", dominio: /^https:\/\/(www\.)?correre\.it\//, sito: "https://www.correre.it/" },
   { nome: "The Running Club", feed: "https://www.therunningclub.it/feed", dominio: /^https:\/\/(www\.)?therunningclub\.it\//, sito: "https://www.therunningclub.it/" },
-  { nome: "Non Solo Fitness", feed: "https://www.nonsolofitness.it/feed/", dominio: /^https:\/\/(www\.)?nonsolofitness\.it\//, sito: "https://www.nonsolofitness.it/" },
 ];
 // domini delle immagini delle riviste (da aggiungere anche in img.js)
 export const DOMINI_IMG = ["runnersworld.com", "menshealth.com", "hearstapps.com", "runlovers.it", "correre.it", "therunningclub.it", "nonsolofitness.it"];
@@ -46,17 +45,20 @@ function leggi(xml, fonte) {
   return out;
 }
 
-// Regola di riserva (senza AI): fuori risultati di gara, cronaca, mercato, pubblicità
-const ESCLUDI = /classific|risultat|vince|vittoria|record del mondo|campionat|mercato|calciomercato|squalific|doping|arrest|morto|morta|incidente|tragedi|politic|offert|sconto|black friday|codice promo|recensione|migliori scarpe|prova su strada|gadget|smartwatch/i;
+// Filtri applicati SEMPRE (anche dopo la scelta dell'AI):
+// fuori prodotti e recensioni, gare e campioni, cronaca, offerte; dentro solo temi di salute e attività fisica
+const ESCLUDI = /classific|risultat|\bvinc|vittori|record|campion|campionat|maratona di [A-Z]|mercato|squalific|doping|arrest|mort[oai]\b|incident|tragedi|politic|offert|scont|black friday|codice promo|recension|\bprova\b|test\b|scarp|sneaker|smartwatch|sportwatch|orologio|gps|cuffie|auricolari|abbigliament|giacca|nuova [A-Z]|nuovo [A-Z]|adidas|nike|asics|brooks|hoka|saucony|mizuno|joma|kiprun|garmin|coros|suunto|polar|expedition|hub\b|evento|iscrizion|studiare|lavoro|carriera|sesso|gossip|celebrit/i;
+const TEMI = /corr|runner|\bkm\b|programma|allen|eserciz|sport|attività fisica|camminat|palestra|fitness|muscol|recuper|idrat|acqua|aliment|nutri|dieta|proteine|carboidrat|integrator|vitamin|stretching|riscaldament|infortun|dolor|tendin|ginocchi|caviglia|schiena|crampi|sonno|cuore|pression|diabet|asma|respir|postur|squat|addominal|forza|resistenza|polifenol|benesser|salute/i;
+const adatto = (a) => TEMI.test(a.titolo + " " + a.sommario) && !ESCLUDI.test(a.titolo);
 
 async function scegli(env, articoli) {
-  articoli = articoli.filter((a) => !CATENE.test(a.titolo + " " + a.sommario));
+  articoli = articoli.filter((a) => !CATENE.test(a.titolo + " " + a.sommario) && adatto(a));
   if (env && env.AI && articoli.length) {
     try {
       const elenco = articoli.map((a, i) => `${i + 1}. [${a.fonte}] ${a.titolo}${a.sommario ? " — " + a.sommario : ""}`).join("\n");
       const r = await env.AI.run("@cf/meta/llama-3.3-70b-instruct-fp8-fast", {
         messages: [
-          { role: "system", content: "Sei il redattore del sito di una farmacia di paese. Scegli SOLO gli articoli utili a chi fa sport o attività fisica (anche principianti e persone non più giovani): salute, allenamento sicuro, alimentazione e idratazione, integratori usati con buon senso, prevenzione e cura degli infortuni, recupero, sonno, riscaldamento e stretching, sport in caso di malattie come diabete, pressione alta o asma. ESCLUDI risultati di gare e classifiche, cronaca sportiva, calciomercato, doping, prove e confronti di prodotti, offerte e sconti, pubblicità, gossip, diete estreme o promesse miracolose. Nel dubbio escludi. Rispondi solo con un array JSON dei numeri scelti, per esempio [1,4]. Se nessuno va bene rispondi []." },
+          { role: "system", content: "Sei il redattore del sito di una farmacia di paese. Scegli SOLO gli articoli che danno consigli pratici di salute a chi fa sport o attività fisica (anche principianti e persone non più giovani): salute, allenamento sicuro, alimentazione e idratazione, integratori usati con buon senso, prevenzione e cura degli infortuni, recupero, sonno, riscaldamento e stretching, sport in caso di malattie come diabete, pressione alta o asma. ESCLUDI articoli che non parlano di sport o attività fisica (studio, lavoro, invecchiamento in generale), racconti di gare, atleti famosi e loro allenamenti, risultati e classifiche, cronaca sportiva, eventi, scarpe, orologi e altri prodotti, calciomercato, doping, prove e confronti di prodotti, offerte e sconti, pubblicità, gossip, diete estreme o promesse miracolose. Nel dubbio escludi. Rispondi solo con un array JSON dei numeri scelti, per esempio [1,4]. Se nessuno va bene rispondi []." },
           { role: "user", content: elenco },
         ],
         max_tokens: 80, temperature: 0,
@@ -65,7 +67,7 @@ async function scegli(env, articoli) {
       if (m) { const s = new Set(JSON.parse(m[0])); return articoli.filter((_, i) => s.has(i + 1)); }
     } catch (e) { /* regola di riserva */ }
   }
-  return articoli.filter((a) => !ESCLUDI.test(a.titolo + " " + a.sommario));
+  return articoli;
 }
 
 async function feed(f) {
@@ -81,7 +83,7 @@ export async function onRequest({ request, env, ctx }) {
   const url = new URL(request.url);
   const diag = url.searchParams.get("diagnostica") === "1";
   const cache = caches.default;
-  const key = new Request(new URL("/api/sportivi?v=1", request.url).toString());
+  const key = new Request(new URL("/api/sportivi?v=2", request.url).toString());
   if (!diag) { const hit = await cache.match(key); if (hit) return hit; }
 
   const ris = await Promise.all(FONTI.map(feed));
