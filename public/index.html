@@ -50,7 +50,7 @@
 </script>
 
 <script src="i18n.js?v=17"></script>
-<link rel="stylesheet" href="style.css?v=55">
+<link rel="stylesheet" href="style.css?v=56">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body>
@@ -557,7 +557,7 @@
 </section>
 
 <!-- ============ SPORT E SALUTE ============ -->
-<section id="sportivi" class="animali sportivi" hidden>
+<section id="sportivi" class="animali sportivi">
   <div class="wrap">
     <div class="sec-head">
       <div>
@@ -566,13 +566,26 @@
       </div>
       <p class="lead">Allenamento, alimentazione, idratazione, prevenzione degli infortuni e recupero: gli ultimi articoli di riviste sportive, scelti per te e aggiornati in automatico.</p>
     </div>
-    <ul class="an-list" id="sp-list"></ul>
+    <ul class="an-list" id="sp-list" hidden></ul>
     <div class="an-vet sp-box">
       <span class="an-vet-ic" aria-hidden="true">🏃</span>
       <p><strong>In farmacia per chi fa sport:</strong> consigli su integratori e idratazione, prodotti per dolori muscolari e piccoli traumi, misurazione della pressione ed ECG.</p>
       <a class="btn btn-wa" href="https://wa.me/393315250555?text=Buongiorno%2C%20faccio%20sport%20e%20vorrei%20un%20consiglio%3A%20" target="_blank" rel="noopener">Chiedi su WhatsApp</a>
     </div>
     <p class="news-src" id="sp-fonti"></p>
+
+    <div class="tessera">
+      <div class="tessera-img">
+        <picture><source srcset="img/tessera-enervit-fronte.webp" type="image/webp"><img src="img/tessera-enervit-fronte.jpg" alt="Tessera raccolta punti Enervit della Farmacia Tortorici, fronte" width="900" height="590" loading="lazy"></picture>
+        <picture><source srcset="img/tessera-enervit-retro.webp" type="image/webp"><img src="img/tessera-enervit-retro.jpg" alt="Retro della tessera con 10 caselle per i timbri" width="900" height="568" loading="lazy"></picture>
+      </div>
+      <div class="tessera-txt">
+        <span class="tessera-tag">Raccolta punti</span>
+        <h3>La tessera Enervit dello sportivo</h3>
+        <p>Compri prodotti Enervit o EnerZona da noi? Chiedi in farmacia la tessera della raccolta punti: a ogni acquisto ricevi un timbro. Completa le 10 caselle e scopri il premio che ti aspetta.</p>
+        <a class="btn btn-wa" href="https://wa.me/393315250555?text=Buongiorno%2C%20vorrei%20informazioni%20sulla%20tessera%20raccolta%20punti%20Enervit.%20" target="_blank" rel="noopener">Chiedi su WhatsApp</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1029,6 +1042,7 @@ if ("IntersectionObserver" in window){
   fetch("/api/sportivi").then(r => r.ok ? r.json() : null).then(d => {
     const a = d && Array.isArray(d.articoli) ? d.articoli.filter(x => ok.test(x.link)) : [];
     if (!a.length) return;
+    ul.hidden = false;
     ul.innerHTML = a.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">
       <span class="an-img sp-img">${x.immagine && /^https:\/\//.test(x.immagine) ? `<img src="/api/img?u=${encodeURIComponent(x.immagine)}" alt="" loading="lazy" onerror="this.remove()">` : ""}<span aria-hidden="true">🏃</span></span>
       <span class="an-txt">${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString(lg,{day:"numeric",month:"short"})} · ${esc(x.fonte || "")}</time>` : `<time>${esc(x.fonte || "")}</time>`}
