@@ -18,3 +18,24 @@ CREATE TABLE IF NOT EXISTS assistente_uso (
   n INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (ora, ip_hash)
 );
+
+-- Statistiche di visita anonime (nessun IP salvato; "visitatore" è un'impronta che cambia ogni giorno)
+CREATE TABLE IF NOT EXISTS visite (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  giorno      TEXT    NOT NULL,   -- AAAA-MM-GG, ora italiana
+  ora         INTEGER NOT NULL,   -- 0-23
+  tipo        TEXT    NOT NULL,   -- pagina | sezione | azione
+  pagina      TEXT,
+  voce        TEXT,               -- sezione vista o azione (telefono, whatsapp, indicazioni...)
+  visitatore  TEXT    NOT NULL,
+  provenienza TEXT,
+  dispositivo TEXT,
+  citta       TEXT,
+  regione     TEXT,
+  paese       TEXT,
+  lat         REAL,               -- centro della città (approssimativo, dal collegamento internet)
+  lon         REAL,
+  lingua      TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_visite_giorno ON visite(giorno, tipo);
+CREATE TABLE IF NOT EXISTS stat_sale (giorno TEXT PRIMARY KEY, sale TEXT NOT NULL);

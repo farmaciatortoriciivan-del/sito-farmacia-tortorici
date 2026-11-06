@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Statistiche del sito · Farmacia Tortorici</title>
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="stylesheet" href="style.css?v=49">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  [hidden]{display:none!important}
+  .adm{max-width:1000px;margin:0 auto;padding:32px 16px 80px}
+  .adm header{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  .adm header img{width:44px;height:44px}
+  .adm h1{font-size:1.6rem;margin:0}
+  .adm header nav{margin-left:auto}
+  .login{background:var(--card);border-radius:20px;padding:24px;box-shadow:var(--shadow);display:grid;gap:14px;max-width:520px}
+  .login input{font:inherit;font-size:16px;padding:14px;border:1.5px solid var(--line);border-radius:12px;background:var(--sand-50);color:var(--ink)}
+  .msg{color:#c0392b;margin:0}
+  .periodo{display:flex;gap:8px;margin:0 0 18px;flex-wrap:wrap}
+  .periodo button{flex:1;min-width:110px;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);font:inherit;font-weight:600;color:var(--ink);cursor:pointer}
+  .periodo button[aria-pressed="true"]{background:var(--green-700);border-color:var(--green-700);color:#fff}
+  .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+  .kpi div{background:var(--card);border-radius:18px;padding:16px 18px;box-shadow:var(--shadow)}
+  .kpi b{display:block;font-size:2rem;line-height:1.1;color:var(--heading,var(--ink));font-variant-numeric:tabular-nums}
+  .kpi span{color:var(--muted);font-size:.9rem}
+  .box{background:var(--card);border-radius:20px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+  .box h2{font-size:1.15rem;margin:0 0 4px}
+  .box p.nota{color:var(--muted);font-size:.88rem;margin:0 0 14px}
+  .due{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .due .box{margin-bottom:0}
+  .due + .due, .due + .box{margin-top:16px}
+  #mappa{height:380px;border-radius:14px;margin-bottom:14px;z-index:0}
+  .barre{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .barre li{display:grid;grid-template-columns:minmax(110px,38%) 1fr auto;align-items:center;gap:10px;font-size:.93rem}
+  .barre .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .barre .b{height:12px;border-radius:0 4px 4px 0;background:var(--green-500,#2e9e6a);min-width:2px}
+  .barre .n{font-variant-numeric:tabular-nums;font-weight:600;min-width:2.5em;text-align:right}
+  .vuoto{color:var(--muted);text-align:center;padding:16px 0;margin:0}
+  .colonne{position:relative}
+  .colonne svg{display:block;width:100%;height:auto;overflow:visible}
+  .colonne rect.c{fill:var(--green-500,#2e9e6a)}
+  .colonne rect.h{fill:transparent;cursor:pointer}
+  .colonne rect.c.on{fill:var(--green-700,#1f6f4f)}
+  .colonne text{fill:var(--muted);font-size:11px;font-family:inherit}
+  .colonne line{stroke:var(--line)}
+  .tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--card);padding:6px 10px;border-radius:8px;font-size:.85rem;white-space:nowrap;transform:translate(-50%,-110%);display:none}
+  .info{font-size:.88rem;color:var(--muted);line-height:1.55}
+  @media (max-width:760px){.barre li{grid-template-columns:minmax(0,1.3fr) 1fr auto}.kpi{grid-template-columns:1fr 1fr}.due{grid-template-columns:1fr}.due .box{margin-bottom:0}}
+</style>
+</head>
+<body>
+<main class="adm">
+  <header>
+    <img src="img/logo-croce.png" alt="">
+    <div><h1>Statistiche del sito</h1><small style="color:var(--muted)">Farmacia Dott. Ivan Tortorici</small></div>
+    <nav><a href="admin.html">Recensioni →</a></nav>
+  </header>
+
+  <form class="login" id="login">
+    <label for="pw"><strong>Password</strong> (la stessa delle recensioni)</label>
+    <input type="password" id="pw" autocomplete="current-password" required>
+    <p class="msg" id="msg"></p>
+    <button class="btn btn-primary" style="justify-content:center;padding:14px">Entra</button>
+  </form>
+
+  <section id="app" hidden>
+    <div class="periodo" id="periodo">
+      <button type="button" data-g="1" aria-pressed="false">Oggi</button>
+      <button type="button" data-g="7" aria-pressed="false">7 giorni</button>
+      <button type="button" data-g="30" aria-pressed="true">30 giorni</button>
+      <button type="button" data-g="365" aria-pressed="false">12 mesi</button>
+    </div>
+
+    <div class="kpi">
+      <div><b id="k-vis">–</b><span>visitatori</span></div>
+      <div><b id="k-pag">–</b><span>pagine viste</span></div>
+      <div><b id="k-media">–</b><span>visitatori al giorno (media)</span></div>
+      <div><b id="k-cont">–</b><span>chiamate e WhatsApp dal sito</span></div>
+    </div>
+
+    <div class="box">
+      <h2>Visitatori giorno per giorno</h2>
+      <p class="nota">Passa il dito o il mouse su una colonna per vedere il numero.</p>
+      <div class="colonne" id="g-giorni"></div>
+    </div>
+
+    <div class="box">
+      <h2>Da dove si collegano</h2>
+      <p class="nota">Città ricavata dal collegamento internet: è approssimativa. Chi naviga col telefono risulta spesso nella città del suo gestore (di solito Palermo) anche se si trova a Trabia.</p>
+      <div id="mappa"></div>
+      <ul class="barre" id="l-citta"></ul>
+    </div>
+
+    <div class="due">
+      <div class="box"><h2>Come arrivano al sito</h2><p class="nota">"Diretto" = indirizzo scritto a mano, segnalibro o QR code.</p><ul class="barre" id="l-prov"></ul></div>
+      <div class="box"><h2>Con che cosa</h2><p class="nota">Visitatori per tipo di dispositivo.</p><ul class="barre" id="l-disp"></ul></div>
+    </div>
+    <div class="due">
+      <div class="box"><h2>Le parti più viste</h2><p class="nota">Visitatori che hanno guardato ogni sezione della pagina principale.</p><ul class="barre" id="l-sez"></ul></div>
+      <div class="box"><h2>Cosa toccano</h2><p class="nota">Tocchi su Chiama, WhatsApp, Indicazioni stradali…</p><ul class="barre" id="l-az"></ul>
+        <h2 style="margin-top:20px">Pagine</h2><ul class="barre" id="l-pag" style="margin-top:10px"></ul></div>
+    </div>
+    <div class="box">
+      <h2>A che ora</h2>
+      <p class="nota">Pagine viste per ora del giorno (ora italiana).</p>
+      <div class="colonne" id="g-ore"></div>
+    </div>
+
+    <p class="info">Le statistiche sono anonime: il sito non usa cookie, non salva l'indirizzo internet dei visitatori e non può sapere chi sono. Lo stesso visitatore viene riconosciuto solo all'interno della stessa giornata. I dati più vecchi di 13 mesi vengono cancellati da soli. Non vengono contati i motori di ricerca automatici né chi ha attivato "Non tracciare" nel browser.</p>
+    <p style="text-align:center;margin-top:24px"><button type="button" class="linkbtn" id="esci" style="color:var(--muted)">Esci</button></p>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = n => Number(n || 0).toLocaleString("it-IT");
+let pw = sessionStorage.getItem("ft-admin") || "", giorni = 30, mappa, strato;
+
+const SEZIONI = { evento: "Evento in evidenza", glicata: "Giornata emoglobina glicata", calendario: "Calendario giornate della salute",
+  "chi-siamo": "Chi siamo", servizi: "Servizi", prenota: "Prenota", canale: "Canale WhatsApp", facebook: "Post Facebook",
+  meteo: "Meteo e salute", curiosita: "Curiosità", attualita: "Notizie di salute", animali: "Animali", anziani: "Età d'argento",
+  recensioni: "Recensioni", faq: "Domande frequenti", orari: "Orari e contatti", turni: "Turni delle farmacie" };
+const AZIONI = { telefono: "📞 Chiama", whatsapp: "💬 WhatsApp", indicazioni: "📍 Indicazioni stradali", email: "✉️ Email", facebook: "Facebook" };
+const PAGINE = { "/": "Pagina principale", "/recensioni.html": "Recensioni", "/privacy.html": "Privacy", "/cookie.html": "Cookie" };
+const PAESI = { IT: "Italia", DE: "Germania", FR: "Francia", ES: "Spagna", GB: "Regno Unito", US: "Stati Uniti", CH: "Svizzera", BE: "Belgio", NL: "Paesi Bassi", CN: "Cina" };
+
+async function api(){
+  const r = await fetch("/api/admin/statistiche?giorni=" + giorni, { headers: { authorization: "Bearer " + pw } });
+  if (r.status === 401) throw new Error("Password errata.");
+  if (!r.ok) throw new Error("Errore del server, riprova.");
+  return r.json();
+}
+
+function barre(el, righe, nome){
+  if (!righe || !righe.length) { el.innerHTML = '<li><p class="vuoto">Ancora nessun dato.</p></li>'; return; }
+  const max = Math.max(...righe.map(r => r.n));
+  el.innerHTML = righe.map(r => `<li><span class="t" title="${esc(nome(r))}">${esc(nome(r))}</span><span class="b" style="width:${Math.max(1, r.n / max * 100)}%"></span><span class="n">${fmt(r.n)}</span></li>`).join("");
+}
+
+function colonne(el, dati, etichetta, tip){
+  if (!dati.length || !dati.some(d => d.v)) { el.innerHTML = '<p class="vuoto">Ancora nessun dato.</p>'; return; }
+  const W = 960, H = 200, top = 10, basso = 24, n = dati.length, passo = W / n, larg = Math.max(2, Math.min(28, passo - 2));
+  const max = Math.max(1, ...dati.map(d => d.v));
+  const ogni = Math.ceil(n / 12);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img"><line x1="0" x2="${W}" y1="${H - basso}" y2="${H - basso}"/>`;
+  dati.forEach((d, i) => {
+    const h = d.v ? Math.max(3, d.v / max * (H - top - basso)) : 0, x = i * passo + (passo - larg) / 2, y = H - basso - h;
+    if (h) s += `<path class="c" data-i="${i}" d="M${x},${H - basso}V${y + 4}q0,-4 4,-4h${larg - 8}q4,0 4,4V${H - basso}z" style="fill:var(--green-500,#2e9e6a)"/>`;
+    s += `<rect class="h" data-i="${i}" x="${i * passo}" y="0" width="${passo}" height="${H}"/>`;
+    if (i % ogni === 0) s += `<text x="${i * passo + passo / 2}" y="${H - 6}" text-anchor="middle">${esc(etichetta(d, i))}</text>`;
+  });
+  s += `<text x="0" y="${top + 2}">${fmt(max)}</text></svg><div class="tip"></div>`;
+  el.innerHTML = s;
+  const t = el.querySelector(".tip"), svg = el.querySelector("svg");
+  const mostra = e => {
+    const r = e.target.closest("rect.h"); if (!r) return;
+    const i = +r.dataset.i, b = svg.getBoundingClientRect(), k = b.width / W;
+    el.querySelectorAll("path.c").forEach(p => p.style.fill = p.dataset.i == i ? "var(--green-700,#1f6f4f)" : "var(--green-500,#2e9e6a)");
+    t.innerHTML = tip(dati[i]); t.style.display = "block";
+    t.style.left = ((i + .5) * passo * k) + "px"; t.style.top = (H - basso - (dati[i].v / max * (H - top - basso))) * k + "px";
+  };
+  svg.addEventListener("pointermove", mostra); svg.addEventListener("pointerdown", mostra);
+  svg.addEventListener("pointerleave", () => { t.style.display = "none"; el.querySelectorAll("path.c").forEach(p => p.style.fill = ""); });
+}
+
+const IT = { Milan: "Milano", Rome: "Roma", Turin: "Torino", Naples: "Napoli", Florence: "Firenze", Venice: "Venezia", Genoa: "Genova", Syracuse: "Siracusa",
+  Sicily: "Sicilia", Lombardy: "Lombardia", Lazio: "Lazio", Piedmont: "Piemonte", Campania: "Campania", Tuscany: "Toscana", Veneto: "Veneto", Calabria: "Calabria", Apulia: "Puglia", Sardinia: "Sardegna", "Emilia-Romagna": "Emilia-Romagna", Liguria: "Liguria" };
+const tr = t => IT[t] || t;
+const nomeCitta = r => r.citta ? tr(r.citta) + (r.paese && r.paese !== "IT" ? " (" + (PAESI[r.paese] || r.paese) + ")" : r.regione && r.regione !== "Sicily" ? " (" + tr(r.regione) + ")" : "") : "Sconosciuta";
+
+function disegnaMappa(citta){
+  if (!window.L) { $("mappa").hidden = true; return; }
+  if (!mappa) {
+    mappa = L.map("mappa", { scrollWheelZoom: false }).setView([38.0045, 13.6496], 8);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 13, attribution: "© OpenStreetMap" }).addTo(mappa);
+  }
+  if (strato) strato.remove();
+  const punti = citta.filter(c => c.lat != null && c.lon != null);
+  const max = Math.max(1, ...punti.map(c => c.n));
+  strato = L.layerGroup(punti.map(c => L.circleMarker([c.lat, c.lon], { radius: 6 + 18 * Math.sqrt(c.n / max), color: "#fff", weight: 2, fillColor: "#1f6f4f", fillOpacity: .75 })
+    .bindTooltip(`<b>${esc(nomeCitta(c))}</b><br>${fmt(c.n)} visitatori`))).addTo(mappa);
+  const vicini = punti.filter(c => Math.abs(c.lat - 38) < 1.5 && Math.abs(c.lon - 13.6) < 2.5);
+  if (vicini.length) mappa.fitBounds(L.latLngBounds(vicini.map(c => [c.lat, c.lon])).pad(.4), { maxZoom: 10 });
+  setTimeout(() => mappa.invalidateSize(), 50);
+}
+
+function giorniDelPeriodo(dal, n){
+  const out = [], d = new Date(dal + "T12:00:00");
+  for (let i = 0; i < n; i++) { out.push(d.toISOString().slice(0, 10)); d.setDate(d.getDate() + 1); }
+  return out;
+}
+
+async function carica(){
+  const x = await api();
+  $("login").hidden = true; $("app").hidden = false;
+  $("k-vis").textContent = fmt(x.totale.visitatori);
+  $("k-pag").textContent = fmt(x.totale.pagine);
+  $("k-media").textContent = fmt(Math.round((x.totale.visitatori || 0) / x.giorni));
+  $("k-cont").textContent = fmt(x.azioni.filter(a => a.nome === "telefono" || a.nome === "whatsapp").reduce((s, a) => s + a.n, 0));
+
+  const mappaG = Object.fromEntries(x.perGiorno.map(d => [d.giorno, d]));
+  if (x.giorni <= 31) {
+    const gg = giorniDelPeriodo(x.dal, x.giorni).map(g => ({ g, v: mappaG[g]?.visitatori || 0, p: mappaG[g]?.pagine || 0 }));
+    colonne($("g-giorni"), gg, d => { const t = new Date(d.g + "T12:00:00"); return t.getDate() + "/" + (t.getMonth() + 1); },
+      d => `<b>${new Date(d.g + "T12:00:00").toLocaleDateString("it-IT", { weekday: "short", day: "numeric", month: "short" })}</b>: ${fmt(d.v)} visitatori · ${fmt(d.p)} pagine`);
+  } else { // 12 mesi: per mese
+    const mesi = {};
+    x.perGiorno.forEach(d => { const m = d.giorno.slice(0, 7); (mesi[m] ||= { g: m, v: 0, p: 0 }); mesi[m].v += d.visitatori; mesi[m].p += d.pagine; });
+    const lista = []; const d = new Date(x.dal.slice(0, 7) + "-15T12:00:00");
+    for (let i = 0; i < 13; i++) { const m = d.toISOString().slice(0, 7); lista.push(mesi[m] || { g: m, v: 0, p: 0 }); d.setMonth(d.getMonth() + 1); }
+    const nm = g => new Date(g + "-15T12:00:00").toLocaleDateString("it-IT", { month: "short", year: "2-digit" });
+    colonne($("g-giorni"), lista, d => nm(d.g), d => `<b>${nm(d.g)}</b>: ${fmt(d.v)} visitatori · ${fmt(d.p)} pagine`);
+  }
+  $("g-giorni").previousElementSibling.previousElementSibling.textContent = x.giorni > 31 ? "Visitatori mese per mese" : "Visitatori giorno per giorno";
+
+  const ore = Array.from({ length: 24 }, (_, h) => ({ h, v: (x.ore.find(o => o.ora === h) || {}).n || 0 }));
+  colonne($("g-ore"), ore, d => d.h % 3 === 0 ? d.h + ":00" : "", d => `<b>${d.h}:00 – ${d.h}:59</b>: ${fmt(d.v)} pagine viste`);
+
+  disegnaMappa(x.citta);
+  barre($("l-citta"), x.citta.slice(0, 15), nomeCitta);
+  barre($("l-prov"), x.provenienza, r => r.nome);
+  barre($("l-disp"), x.dispositivi, r => r.nome);
+  barre($("l-sez"), x.sezioni, r => SEZIONI[r.nome] || r.nome);
+  barre($("l-az"), x.azioni, r => AZIONI[r.nome] || r.nome);
+  barre($("l-pag"), x.pagine, r => PAGINE[r.nome] || r.nome);
+}
+
+$("login").addEventListener("submit", async e => {
+  e.preventDefault(); pw = $("pw").value; $("msg").textContent = "";
+  try { await carica(); sessionStorage.setItem("ft-admin", pw); } catch (x) { $("msg").textContent = x.message; }
+});
+$("periodo").addEventListener("click", e => {
+  const b = e.target.closest("button[data-g]"); if (!b) return;
+  giorni = +b.dataset.g;
+  document.querySelectorAll("#periodo button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  carica().catch(x => alert(x.message));
+});
+$("esci").onclick = () => { sessionStorage.removeItem("ft-admin"); location.reload(); };
+if (pw) carica().catch(() => sessionStorage.removeItem("ft-admin"));
+</script>
+</body>
+</html>

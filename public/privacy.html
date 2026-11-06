@@ -58,6 +58,7 @@ Telefono <a href="tel:+390918146207">091 814 6207</a> · Email <a href="mailto:f
 <table>
 <tr><th>Dati</th><th>Finalità</th><th>Base giuridica</th><th>Conservazione</th></tr>
 <tr><td><strong>Dati di navigazione</strong> (indirizzo IP, data e ora, pagina richiesta, tipo di browser)</td><td>Far funzionare il sito e proteggerlo da abusi</td><td>Legittimo interesse (art. 6.1.f)</td><td>Pochi giorni, nei registri tecnici del fornitore di hosting</td></tr>
+<tr><td><strong>Statistiche di visita anonime</strong> (pagina e sezioni viste, provenienza della visita, tipo di dispositivo, città approssimativa ricavata dal collegamento; l'indirizzo IP <em>non</em> viene salvato, nessun cookie)</td><td>Capire quali contenuti del sito sono utili e migliorarli</td><td>Legittimo interesse (art. 6.1.f)</td><td>13 mesi; il visitatore non è riconoscibile oltre la singola giornata. Non raccolte se il browser invia "Do Not Track"</td></tr>
 <tr><td><strong>Recensioni</strong> inviate dal modulo (nome indicato, voto, testo)</td><td>Pubblicare l'opinione sul sito dopo la verifica dello staff</td><td>Consenso (art. 6.1.a), dato spuntando la casella del modulo</td><td>Finché la recensione resta pubblicata o fino alla revoca del consenso</td></tr>
 <tr><td><strong>Contenuti esterni</strong> (mappa Google)</td><td>Mostrare la mappa direttamente nella pagina</td><td>Consenso (art. 6.1.a), dato dal banner dei cookie</td><td>Secondo le policy di Google e Meta</td></tr>
 </table>
@@ -130,5 +131,6 @@ const burger = document.getElementById("burger"), menu = document.getElementById
 burger.addEventListener("click", () => { const o = menu.classList.toggle("open"); burger.setAttribute("aria-expanded", o); });
 </script>
 <script src="consent.js?v=2"></script>
+<script src="statistiche.js?v=1" defer></script>
 </body>
 </html>

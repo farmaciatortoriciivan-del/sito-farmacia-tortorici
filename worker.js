@@ -9,6 +9,8 @@ import * as meteo from "./functions/api/meteo.js";
 import * as animali from "./functions/api/animali.js";
 import * as anziani from "./functions/api/anziani.js";
 import * as img from "./functions/api/img.js";
+import * as visita from "./functions/api/visita.js";
+import * as statistiche from "./functions/api/admin/statistiche.js";
 
 export default {
   async fetch(request, env, ctx) {
@@ -21,6 +23,8 @@ export default {
       return new Response("Metodo non consentito", { status: 405 });
     }
     if (pathname === "/api/admin/recensioni") return admin.onRequest(c);
+    if (pathname === "/api/admin/statistiche") return statistiche.onRequest(c);
+    if (pathname === "/api/visita") return request.method === "POST" ? visita.onRequestPost(c) : new Response("Metodo non consentito", { status: 405 });
     if (pathname === "/api/notizie") return notizie.onRequest(c);
     if (pathname === "/api/animali") return animali.onRequest(c);
     if (pathname === "/api/anziani") return anziani.onRequest(c);
@@ -35,5 +39,6 @@ export default {
   // ogni 30 minuti: rilegge i turni ufficiali delle farmacie
   async scheduled(event, env, ctx) {
     ctx.waitUntil(turni.aggiornaTurni(env));
+    ctx.waitUntil(visita.pulisci(env).catch(() => {}));
   },
 };
