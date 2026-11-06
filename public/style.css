@@ -944,3 +944,6 @@ html[lang="es"] .menu a{padding-left:10px;padding-right:10px}
 .sp-img{background:linear-gradient(135deg,#e6f0fb,#d3e6f5)}
 .sp-box{background:linear-gradient(135deg,rgba(43,110,180,.12),rgba(46,158,106,.10))}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sp-img{background:linear-gradient(135deg,#1c2e3d,#16242f)}}
+
+/* pulsante dentro una scheda servizio */
+.svc .svc-btn{margin-top:16px;padding:10px 18px;font-size:.93rem}
