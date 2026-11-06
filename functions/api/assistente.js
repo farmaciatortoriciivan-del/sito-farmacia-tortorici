@@ -58,6 +58,8 @@ NUMERO PER IL TURNO DELLA FARMACIA TORTORICI: quando la Farmacia Tortorici è di
 - Holter cardiaco e pressorio: in convenzione SSN con la ricetta del medico di base, oppure senza ricetta a pagamento. Si prenota in farmacia, al telefono o su WhatsApp.
 - Pressione ed ECG (elettrocardiogramma) in farmacia.
 - Screening con una goccia di sangue dal dito: quadro lipidico/colesterolo, emoglobina glicata (gratuita), glicemia, PSA, vitamina D. Per il colesterolo non serve prenotare.
+- Bilancia multifunzione: peso e misurazione impedenziometrica per la stima della massa grassa, con lettura della saturazione di ossigeno e della pressione.
+- Bilancia per neonati: si può venire in farmacia a pesare il bambino.
 - SOF test (screening colon-retto) gratuito per chi ha 50-69 anni: si ritira in farmacia senza attese.
 - Giornate della salute con specialisti, su prenotazione: esame della densità ossea, screening senologico, consulenze dermocosmetiche, consigli alimentari.
 - Foratura dei lobi: indolore, in ambiente igienicamente sicuro, materiali ipoallergenici.
