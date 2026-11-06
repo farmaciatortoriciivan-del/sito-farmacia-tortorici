@@ -7,7 +7,6 @@ import { anteprima } from "./anziani.js";
 
 export const FONTI = [
   { nome: "Runner's World Italia", feed: "https://www.runnersworld.com/it/rss/all.xml/", dominio: /^https:\/\/www\.runnersworld\.com\/it\//, sito: "https://www.runnersworld.com/it/" },
-  { nome: "Men's Health Italia", feed: "https://www.menshealth.com/it/rss/all.xml/", dominio: /^https:\/\/www\.menshealth\.com\/it\//, sito: "https://www.menshealth.com/it/" },
   { nome: "Runlovers", feed: "https://www.runlovers.it/feed/", dominio: /^https:\/\/(www\.)?runlovers\.it\//, sito: "https://www.runlovers.it/" },
   { nome: "Correre", feed: "https://www.correre.it/feed/", dominio: /^https:\/\/(www\.)?correre\.it\//, sito: "https://www.correre.it/" },
   { nome: "The Running Club", feed: "https://www.therunningclub.it/feed", dominio: /^https:\/\/(www\.)?therunningclub\.it\//, sito: "https://www.therunningclub.it/" },
@@ -83,7 +82,7 @@ export async function onRequest({ request, env, ctx }) {
   const url = new URL(request.url);
   const diag = url.searchParams.get("diagnostica") === "1";
   const cache = caches.default;
-  const key = new Request(new URL("/api/sportivi?v=2", request.url).toString());
+  const key = new Request(new URL("/api/sportivi?v=3", request.url).toString());
   if (!diag) { const hit = await cache.match(key); if (hit) return hit; }
 
   const ris = await Promise.all(FONTI.map(feed));
