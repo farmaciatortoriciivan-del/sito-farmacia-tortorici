@@ -42,6 +42,13 @@
   out.className = "tv"; out.hidden = true; out.setAttribute("aria-live", "polite");
   box.appendChild(out);
 
+  // "3331299204" -> "333 129 9204", "091 8146207" -> "091 814 6207"
+  function bello(t) {
+    var d = String(t || "").split(/[-–\/]/)[0].replace(/[^\d]/g, "");
+    if (/^3\d{9}$/.test(d)) return d.slice(0, 3) + " " + d.slice(3, 6) + " " + d.slice(6);
+    if (/^0\d{8,10}$/.test(d)) { var k = /^0[26]|^091/.test(d) ? (d.charAt(1) === "9" ? 3 : 2) : 4; return d.slice(0, k) + " " + d.slice(k, k + 3) + " " + d.slice(k + 3); }
+    return String(t || "").split(/[-–\/]/)[0].trim();
+  }
   function esc(s) { return String(s || "").replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function km(a, b) {
     var R = 6371, r = Math.PI / 180, dLa = (b[0] - a[0]) * r, dLo = (b[1] - a[1]) * r;
@@ -63,13 +70,14 @@
     out.innerHTML = '<div class="tv-top"><h3>' + esc(T.titolo) + '</h3><button type="button" class="tv-x" aria-label="' + esc(T.chiudi) + '">×</button></div>' +
       '<p class="tv-nota">' + esc(pos ? T.con : T.senza) + "</p>" +
       '<ol class="tv-lista">' + f.slice(0, 8).map(function (x, i) {
-        var tel = String(x.telefono || "").replace(/[^\d+]/g, "");
+        var tel = String(x.telefono || "").split(/[-–\/]/)[0].replace(/[^\d+]/g, ""); // se ce ne sono due, il primo
         var dest = encodeURIComponent(x.farmacia + ", " + x.indirizzo);
         var d = x.dist == null ? "" : '<span class="tv-km">' + esc(T.km.replace("{d}", x.dist < 1 ? "1" : Math.round(x.dist))) + "</span>";
         return '<li class="' + (pos && i === 0 ? "tv-prima" : "") + '"><div><b>' + esc(x.farmacia) + "</b>" + d +
           '<small>' + esc(x.indirizzo) + (x.tipo ? " · " + esc(x.tipo) : "") + "</small></div>" +
           '<div class="tv-az">' + (tel ? '<a class="btn btn-light" href="tel:' + (tel.charAt(0) === "+" ? tel : "+39" + tel) + '">📞 ' + esc(T.chiama) + "</a>" : "") +
-          '<a class="btn btn-ghost" href="https://www.google.com/maps/dir/?api=1&destination=' + dest + '" target="_blank" rel="noopener">🧭 ' + esc(T.vai) + "</a></div></li>";
+          '<a class="btn btn-ghost" href="https://www.google.com/maps/dir/?api=1&destination=' + dest + '" target="_blank" rel="noopener">🧭 ' + esc(T.vai) + "</a>" +
+          (tel ? '<a class="tv-tel" href="tel:' + (tel.charAt(0) === "+" ? tel : "+39" + tel) + '">📞 ' + esc(bello(x.telefono)) + "</a>" : "") + "</div></li>";
       }).join("") + "</ol>" +
       '<p class="tv-priv">🔒 ' + esc(T.priv) + "</p>";
     out.querySelector(".tv-x").onclick = function () { out.hidden = true; btn.focus(); };

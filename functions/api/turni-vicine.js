@@ -1,7 +1,7 @@
 // Farmacie di turno OGGI a Trabia e nei paesi vicini (entro ~30 km), lette dal sito
 // dell'Ordine dei Farmacisti di Palermo come fa già turni.js per Trabia.
 // La posizione del visitatore NON arriva qui: la distanza la calcola il suo telefono.
-import { leggiSettimana, settimanaIso, lunediDi } from "./turni.js";
+import { leggiSettimana, settimanaIso, lunediDi, numeroTurno } from "./turni.js";
 import { CALENDARIO } from "./turni-trabia.js";
 
 const BASE = "https://www.ordinefarmacistipalermo.it/";
@@ -66,7 +66,7 @@ async function turniZona(z, oggi) {
 
 export async function aggiornaVicine(env) {
   const oggi = oggiRoma();
-  const out = { v: 2, aggiornato: new Date().toISOString(), oggi, farmacie: [], zone: [], stato: "ok" };
+  const out = { v: 3, aggiornato: new Date().toISOString(), oggi, farmacie: [], zone: [], stato: "ok" };
   try {
     const { http, zone } = await zoneVicine();
     out.datiJs = http;
@@ -87,7 +87,7 @@ export async function aggiornaVicine(env) {
   for (const c of CALENDARIO) if (c.dal <= oggi && oggi <= c.al) {
     const paese = paeseIn(c.indirizzo) || "trabia";
     out.farmacie = out.farmacie.filter((f) => f.paese !== "trabia" && f.paese !== "san nicola l'arena");
-    out.farmacie.unshift({ ...c, paese, lat: PAESI[paese][0], lon: PAESI[paese][1] });
+    out.farmacie.unshift({ ...numeroTurno(c), paese, lat: PAESI[paese][0], lon: PAESI[paese][1] });
   }
   // senza la posizione del visitatore l'elenco parte da Trabia
   out.farmacie.sort((a, b) => distanza(TRABIA, [a.lat, a.lon]) - distanza(TRABIA, [b.lat, b.lon]));
@@ -103,7 +103,7 @@ export async function onRequestGet({ env }) {
   let d = null;
   try {
     const r = await env.DB.prepare("SELECT dati, quando FROM turni_cache WHERE id = 2").first();
-    if (r) { const x = JSON.parse(r.dati); if (x.v === 2 && x.oggi === oggiRoma() && Date.now() - Date.parse(r.quando) < VALIDO_MS && x.farmacie.length) d = x; }
+    if (r) { const x = JSON.parse(r.dati); if (x.v === 3 && x.oggi === oggiRoma() && Date.now() - Date.parse(r.quando) < VALIDO_MS && x.farmacie.length) d = x; }
   } catch (e) {}
   if (!d) d = await aggiornaVicine(env);
   return new Response(JSON.stringify(d), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });

@@ -69,6 +69,10 @@ export function leggiCartello(righe) {
 const titolo = (t) => t.toLowerCase().replace(/(^|[\s'(-])([a-zà-ù])/g, (m, a, b) => a + b.toUpperCase()).replace(/\bSrl\b/g, "srl").replace(/\bSnc\b/g, "snc").replace(/\bSas\b/g, "sas");
 const pulisci = (h) => decode(h.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
 
+// Quando è di turno la Farmacia Tortorici, per il servizio di turno si chiama il cellulare
+export const TEL_TURNO_TORTORICI = "333 1299204";
+export const numeroTurno = (t) => (t && /tortorici/i.test(t.farmacia || "") ? { ...t, telefono: TEL_TURNO_TORTORICI } : t);
+
 export function leggiSettimana(html) {
   const blocchi = html.split(/<h4[^>]*class=['"]tipoturno['"][^>]*>/i).slice(1);
   return blocchi.map((b) => {
@@ -85,7 +89,7 @@ export function leggiSettimana(html) {
       dal: sett ? `${sett[3]}-${sett[2]}-${sett[1]}` : null,
       al: sett ? `${sett[6]}-${sett[5]}-${sett[4]}` : null,
     };
-  }).filter(Boolean);
+  }).filter(Boolean).map(numeroTurno);
 }
 
 async function codiceTrabia() {
@@ -136,7 +140,7 @@ export async function aggiornaTurni(env) {
 export async function tabellaTurni(env, ctx) {
   const oggi = iso(new Date());
   const righe = [];
-  for (const c of CALENDARIO) if (c.al >= oggi) righe.push({ ...c, fonte: "calendario" });
+  for (const c of CALENDARIO) if (c.al >= oggi) righe.push({ ...numeroTurno(c), fonte: "calendario" });
   if (!righe.length) {
     const d = await turniTrabia(env, ctx);
     for (const s of d.settimane || []) for (const t of s.turni || (s.turno ? [s.turno] : [])) if ((t.al || s.al) >= oggi) righe.push({ dal: s.dal, al: s.al, ...t, fonte: "ordine" });
@@ -148,7 +152,13 @@ export async function tabellaTurni(env, ctx) {
 export async function turniTrabia(env, ctx) {
   try {
     const r = await env.DB.prepare("SELECT dati, quando FROM turni_cache WHERE id = 1").first();
-    if (r && Date.now() - Date.parse(r.quando) < 6 * 3600 * 1000) { const d = JSON.parse(r.dati); if (d.settimane) return d; }
+    if (r && Date.now() - Date.parse(r.quando) < 6 * 3600 * 1000) {
+      const d = JSON.parse(r.dati);
+      if (d.settimane) {
+        d.settimane.forEach((w) => { w.turni = (w.turni || []).map(numeroTurno); w.turno = numeroTurno(w.turno); });
+        return d;
+      }
+    }
   } catch (e) {}
   return aggiornaTurni(env);
 }
