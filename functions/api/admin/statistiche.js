@@ -21,7 +21,8 @@ export async function onRequest({ request, env }) {
     q(`SELECT voce AS nome, COUNT(*) AS n FROM visite WHERE giorno >= ? AND tipo = 'azione' GROUP BY voce ORDER BY n DESC`),
     q(`SELECT ora, COUNT(*) AS n FROM visite WHERE giorno >= ? AND tipo = 'pagina' GROUP BY ora ORDER BY ora`),
     q(`SELECT pagina AS nome, COUNT(*) AS n FROM visite WHERE giorno >= ? AND tipo = 'pagina' GROUP BY pagina ORDER BY n DESC`),
+    q(`SELECT voce AS nome, COUNT(*) AS n FROM visite WHERE giorno >= ? AND tipo = 'paese' GROUP BY voce ORDER BY n DESC`),
   ]);
-  const [tot, perGiorno, citta, prov, disp, sezioni, azioni, ore, pagine] = r.map((x) => x.results);
-  return json({ giorni, dal, totale: tot[0], perGiorno, citta, provenienza: prov, dispositivi: disp, sezioni, azioni, ore, pagine });
+  const [tot, perGiorno, citta, prov, disp, sezioni, azioni, ore, pagine, paesi] = r.map((x) => x.results);
+  return json({ giorni, dal, totale: tot[0], perGiorno, citta, provenienza: prov, dispositivi: disp, sezioni, azioni, ore, pagine, paesi });
 }

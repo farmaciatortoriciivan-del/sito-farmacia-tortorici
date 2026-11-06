@@ -93,6 +93,12 @@
       <ul class="barre" id="l-citta"></ul>
     </div>
 
+    <div class="box">
+      <h2>Da quale paese dicono di venire</h2>
+      <p class="nota">Risposte alla domanda facoltativa sul sito. È il dato più affidabile sul paese, perché lo indicano i visitatori stessi.</p>
+      <ul class="barre" id="l-paesi"></ul>
+    </div>
+
     <div class="due">
       <div class="box"><h2>Come arrivano al sito</h2><p class="nota">"Diretto" = indirizzo scritto a mano, segnalibro o QR code.</p><ul class="barre" id="l-prov"></ul></div>
       <div class="box"><h2>Con che cosa</h2><p class="nota">Visitatori per tipo di dispositivo.</p><ul class="barre" id="l-disp"></ul></div>
@@ -124,7 +130,9 @@ const SEZIONI = { evento: "Evento in evidenza", glicata: "Giornata emoglobina gl
   "chi-siamo": "Chi siamo", servizi: "Servizi", prenota: "Prenota", canale: "Canale WhatsApp", facebook: "Post Facebook",
   meteo: "Meteo e salute", curiosita: "Curiosità", attualita: "Notizie di salute", animali: "Animali", anziani: "Età d'argento",
   recensioni: "Recensioni", faq: "Domande frequenti", orari: "Orari e contatti", turni: "Turni delle farmacie" };
-const AZIONI = { telefono: "📞 Chiama", whatsapp: "💬 WhatsApp", indicazioni: "📍 Indicazioni stradali", email: "✉️ Email", facebook: "Facebook" };
+const AZIONI = { telefono: "📞 Chiama", whatsapp: "💬 WhatsApp", indicazioni: "📍 Indicazioni stradali", email: "✉️ Email", facebook: "Facebook", vicina: "🔎 Cerca farmacia di turno più vicina" };
+const RISPOSTE = { trabia: "Trabia", "san-nicola": "San Nicola l'Arena", termini: "Termini Imerese", altavilla: "Altavilla Milicia", casteldaccia: "Casteldaccia",
+  bagheria: "Bagheria", caccamo: "Caccamo", palermo: "Palermo", sicilia: "Altro paese della Sicilia", italia: "Altra regione d'Italia", estero: "Dall'estero" };
 const PAGINE = { "/": "Pagina principale", "/recensioni.html": "Recensioni", "/privacy.html": "Privacy", "/cookie.html": "Cookie" };
 const PAESI = { IT: "Italia", DE: "Germania", FR: "Francia", ES: "Spagna", GB: "Regno Unito", US: "Stati Uniti", CH: "Svizzera", BE: "Belgio", NL: "Paesi Bassi", CN: "Cina" };
 
@@ -227,6 +235,7 @@ async function carica(){
   barre($("l-sez"), x.sezioni, r => SEZIONI[r.nome] || r.nome);
   barre($("l-az"), x.azioni, r => AZIONI[r.nome] || r.nome);
   barre($("l-pag"), x.pagine, r => PAGINE[r.nome] || r.nome);
+  barre($("l-paesi"), x.paesi, r => RISPOSTE[r.nome] || r.nome);
 }
 
 $("login").addEventListener("submit", async e => {

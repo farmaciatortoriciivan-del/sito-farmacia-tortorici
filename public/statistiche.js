@@ -12,6 +12,8 @@
     try { fetch("/api/visita", { method: "POST", body: s, keepalive: true }); } catch (e) {}
   }
 
+  window.ftStat = invia; // usato da altri script (es. farmacia di turno più vicina, domanda sul paese)
+
   var q = new URLSearchParams(location.search), ref = "";
   try { ref = document.referrer ? new URL(document.referrer).hostname : ""; } catch (e) {}
   invia({ tipo: "pagina", ref: ref, da: q.get("da") || q.get("utm_source") || "", lingua: window.LINGUA || document.documentElement.lang || "" });

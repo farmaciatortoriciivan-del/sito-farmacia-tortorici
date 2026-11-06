@@ -10,6 +10,7 @@ import * as animali from "./functions/api/animali.js";
 import * as anziani from "./functions/api/anziani.js";
 import * as img from "./functions/api/img.js";
 import * as visita from "./functions/api/visita.js";
+import * as vicine from "./functions/api/turni-vicine.js";
 import * as statistiche from "./functions/api/admin/statistiche.js";
 
 export default {
@@ -31,6 +32,7 @@ export default {
     if (pathname === "/api/img") return img.onRequest(c);
     if (pathname === "/api/meteo") return meteo.onRequest(c);
     if (pathname === "/api/turni") return turni.onRequestGet(c);
+    if (pathname === "/api/turni-vicine") return vicine.onRequestGet(c);
     if (pathname === "/api/assistente") return request.method === "POST" ? assistente.onRequestPost(c) : new Response("Metodo non consentito", { status: 405 });
     if (pathname.startsWith("/api/")) return new Response("Non trovato", { status: 404 });
 
@@ -40,5 +42,6 @@ export default {
   async scheduled(event, env, ctx) {
     ctx.waitUntil(turni.aggiornaTurni(env));
     ctx.waitUntil(visita.pulisci(env).catch(() => {}));
+    ctx.waitUntil(vicine.aggiornaVicine(env).catch(() => {}));
   },
 };

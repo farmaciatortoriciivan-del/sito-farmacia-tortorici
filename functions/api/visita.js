@@ -5,7 +5,9 @@ import { sha256 } from "./_util.js";
 
 const BOT = /bot|crawl|spider|slurp|facebookexternalhit|whatsapp\/|telegram|preview|monitor|curl|wget|python|headless|lighthouse|pingdom|uptime|scan/i;
 const PAGINE = new Set(["/", "/index.html", "/recensioni.html", "/privacy.html", "/cookie.html"]);
-const AZIONI = new Set(["telefono", "whatsapp", "indicazioni", "email", "facebook"]);
+const AZIONI = new Set(["telefono", "whatsapp", "indicazioni", "email", "facebook", "vicina"]);
+// risposte possibili alla domanda facoltativa "Da quale paese ci visiti?"
+export const RISPOSTE = ["trabia", "san-nicola", "termini", "altavilla", "casteldaccia", "bagheria", "caccamo", "palermo", "sicilia", "italia", "estero"];
 const vuota = () => new Response(null, { status: 204, headers: { "cache-control": "no-store" } });
 const corto = (s, n) => String(s || "").slice(0, n);
 
@@ -65,6 +67,7 @@ export async function onRequestPost({ request, env }) {
   let voce = null, prov = null;
   if (tipo === "sezione") { voce = corto(b.voce, 30).replace(/[^a-z0-9-]/gi, ""); if (!voce) return vuota(); }
   else if (tipo === "azione") { if (!AZIONI.has(b.voce)) return vuota(); voce = b.voce; }
+  else if (tipo === "paese") { if (!RISPOSTE.includes(b.voce)) return vuota(); voce = b.voce; }
   else if (tipo === "pagina") prov = provenienza(corto(b.ref, 100), b.da, new URL(request.url).hostname);
   else return vuota();
 
