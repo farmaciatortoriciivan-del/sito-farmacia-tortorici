@@ -2,7 +2,7 @@
 // Usa Workers AI di Cloudflare (gratuito nei limiti giornalieri). Nessun dato viene salvato:
 // si conta solo quanti messaggi arrivano da ogni indirizzo (in forma cifrata) per evitare abusi.
 import { json, sha256, DEFAULT_IP_SALT } from "./_util.js";
-import { turniTrabia, tabellaTurni } from "./turni.js";
+import { turniTrabia, tabellaTurni, TEL_TURNO_TORTORICI } from "./turni.js";
 
 const MODELLI = ["@cf/meta/llama-3.3-70b-instruct-fp8-fast", "@cf/meta/llama-3.1-8b-instruct-fast"];
 const LIMITE_ORA = 40; // messaggi per indirizzo all'ora
@@ -86,6 +86,15 @@ CONSIGLI SULLA SALUTE (con moderazione):
 AZIONI: alla fine della risposta puoi aggiungere, se utili, uno o due di questi codici (il sito li mostra come pulsanti): [[whatsapp]] [[chiama]] [[turni]] [[mappa]] [[prenota]] [[canale]] [[recensione]]`;
 }
 
+// riga aggiunta quando oggi è di turno la Farmacia Tortorici (numero: TEL_TURNO_TORTORICI in turni.js)
+const TEL_TURNO = {
+  it: "Oggi è di turno la Farmacia Tortorici: per il turno chiama il {n}.",
+  scn: "Oji è di turnu la Farmacìa Tortorici: pô turnu chiama ô {n}.",
+  en: "Farmacia Tortorici is on duty today: for the on-duty service call {n}.",
+  de: "Heute hat die Farmacia Tortorici Notdienst: für den Notdienst rufen Sie {n} an.",
+  es: "Hoy está de guardia la Farmacia Tortorici: para la guardia llama al {n}.",
+  zh: "今天 Tortorici 药房值班：值班服务请拨打 {n}。",
+};
 const TESTI_TURNI = {
   it: { con: "Ecco le farmacie di turno a Trabia, secondo il calendario ufficiale:", nota: "Di notte e nei festivi il servizio è a chiamata, solo per farmaci urgenti.",
         senza: "Il sito ufficiale dell'Ordine dei Farmacisti di Palermo non ha ancora pubblicato i turni di Trabia per questo periodo. Il calendario dei turni è esposto sulle bacheche di tutte le farmacie: chiamaci e ti diciamo subito quale farmacia è di turno." },
@@ -144,7 +153,11 @@ export async function onRequestPost({ request, env, ctx }) {
     let tab = [];
     try { tab = await tabellaTurni(env, ctx); } catch (e) {}
     const L = TESTI_TURNI[lingua];
-    if (tab.length) return json({ testo: L.con + "\n" + L.nota, azioni: ["turni", "chiama"], tabella: tab.map(({ dal, al, farmacia, indirizzo, telefono, tipo }) => ({ dal, al, farmacia, indirizzo, telefono, tipo })) });
+    // se oggi è di turno la Farmacia Tortorici, il numero da chiamare per il turno è il cellulare
+    const oggi = new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Rome" }).format(new Date());
+    const noi = tab.some((r) => /tortorici/i.test(r.farmacia || "") && r.dal <= oggi && oggi <= r.al);
+    const tel = noi ? "\n" + (TEL_TURNO[lingua] || TEL_TURNO.it).replace("{n}", TEL_TURNO_TORTORICI.replace(/(\d{3})(\d{4})$/, "$1 $2")) : "";
+    if (tab.length) return json({ testo: L.con + tel + "\n" + L.nota, azioni: noi ? ["turni"] : ["turni", "chiama"], tabella: tab.map(({ dal, al, farmacia, indirizzo, telefono, tipo }) => ({ dal, al, farmacia, indirizzo, telefono, tipo })) });
     return json({ testo: L.senza, azioni: ["chiama", "turni"] });
   }
 
