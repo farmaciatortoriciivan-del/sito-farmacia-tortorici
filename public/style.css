@@ -938,3 +938,9 @@ html[lang="es"] .menu a{padding-left:10px;padding-right:10px}
 .dadove-scelte button:hover{border-color:var(--green-700);color:var(--green-700)}
 .dadove-no{justify-self:start;background:none;border:0;padding:0;font:inherit;font-size:.88rem;color:var(--muted);text-decoration:underline;cursor:pointer}
 .dadove p.dadove-ok{color:var(--heading,var(--ink));font-weight:600;text-align:center}
+
+/* Sport e salute */
+.sportivi[hidden]{display:none}
+.sp-img{background:linear-gradient(135deg,#e6f0fb,#d3e6f5)}
+.sp-box{background:linear-gradient(135deg,rgba(43,110,180,.12),rgba(46,158,106,.10))}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sp-img{background:linear-gradient(135deg,#1c2e3d,#16242f)}}

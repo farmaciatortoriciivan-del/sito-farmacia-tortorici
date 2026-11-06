@@ -50,7 +50,7 @@
 </script>
 
 <script src="i18n.js?v=17"></script>
-<link rel="stylesheet" href="style.css?v=51">
+<link rel="stylesheet" href="style.css?v=52">
 <link rel="stylesheet" href="assistente.css?v=2">
 </head>
 <body>
@@ -537,6 +537,26 @@
   </div>
 </section>
 
+<!-- ============ SPORT E SALUTE ============ -->
+<section id="sportivi" class="animali sportivi" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Sport e salute</span>
+        <h2>Notizie e consigli per chi fa sport</h2>
+      </div>
+      <p class="lead">Allenamento, alimentazione, idratazione, prevenzione degli infortuni e recupero: gli ultimi articoli di riviste sportive, scelti per te e aggiornati in automatico.</p>
+    </div>
+    <ul class="an-list" id="sp-list"></ul>
+    <div class="an-vet sp-box">
+      <span class="an-vet-ic" aria-hidden="true">🏃</span>
+      <p><strong>In farmacia per chi fa sport:</strong> consigli su integratori e idratazione, prodotti per dolori muscolari e piccoli traumi, misurazione della pressione ed ECG.</p>
+      <a class="btn btn-wa" href="https://wa.me/393315250555?text=Buongiorno%2C%20faccio%20sport%20e%20vorrei%20un%20consiglio%3A%20" target="_blank" rel="noopener">Chiedi su WhatsApp</a>
+    </div>
+    <p class="news-src" id="sp-fonti"></p>
+  </div>
+</section>
+
 <!-- ============ RECENSIONI (anteprima) ============ -->
 <section id="recensioni" style="background:var(--sand-100)">
   <div class="wrap">
@@ -974,6 +994,28 @@ if ("IntersectionObserver" in window){
       <span class="an-img az-img">${x.immagine && /^https:\/\//.test(x.immagine) ? `<img src="/api/img?u=${encodeURIComponent(x.immagine)}" alt="" loading="lazy" onerror="this.remove()">` : ""}<span aria-hidden="true">🌿</span></span>
       <span class="an-txt">${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString(lg,{day:"numeric",month:"short"})} · ${esc(x.fonte || "")}</time>` : `<time>${esc(x.fonte || "")}</time>`}
       <strong>${esc(x.titolo)}</strong><span class="news-go">Leggi →</span></span></a></li>`).join("");
+    sec.hidden = false;
+  }).catch(() => {});
+})();
+
+// Sport e salute: articoli di riviste sportive (letti dal nostro server, cache 1 ora)
+(() => {
+  const sec = document.getElementById("sportivi"), ul = document.getElementById("sp-list"), fo = document.getElementById("sp-fonti");
+  if (!sec || window.claude || !/^https?:$/.test(location.protocol)) return;
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const lg = { de: "de-DE", en: "en-GB", es: "es-ES", zh: "zh-CN" }[window.LINGUA] || "it-IT";
+  const T = { it: ["Fonti:", "Gli articoli si aprono sui siti delle riviste."], scn: ["Funti:", "L'articuli s'aprinu nnê siti dî rivisti."], en: ["Sources:", "Articles open on the magazines' websites."],
+    de: ["Quellen:", "Die Artikel öffnen sich auf den Websites der Zeitschriften."], es: ["Fuentes:", "Los artículos se abren en las webs de las revistas."], zh: ["来源：", "文章将在杂志网站上打开。"] }[window.LINGUA || "it"] || ["Fonti:", ""];
+  const ok = /^https:\/\/(www\.)?(runnersworld\.com\/it|menshealth\.com\/it|runlovers\.it|correre\.it|therunningclub\.it|nonsolofitness\.it)\//;
+  fetch("/api/sportivi").then(r => r.ok ? r.json() : null).then(d => {
+    const a = d && Array.isArray(d.articoli) ? d.articoli.filter(x => ok.test(x.link)) : [];
+    if (!a.length) return;
+    ul.innerHTML = a.map(x => `<li><a href="${esc(x.link)}" target="_blank" rel="noopener">
+      <span class="an-img sp-img">${x.immagine && /^https:\/\//.test(x.immagine) ? `<img src="/api/img?u=${encodeURIComponent(x.immagine)}" alt="" loading="lazy" onerror="this.remove()">` : ""}<span aria-hidden="true">🏃</span></span>
+      <span class="an-txt">${x.data ? `<time datetime="${esc(x.data)}">${new Date(x.data).toLocaleDateString(lg,{day:"numeric",month:"short"})} · ${esc(x.fonte || "")}</time>` : `<time>${esc(x.fonte || "")}</time>`}
+      <strong>${esc(x.titolo)}</strong><span class="news-go">Leggi →</span></span></a></li>`).join("");
+    const usate = [...new Set(a.map(x => x.fonte))], siti = Object.fromEntries((d.fonti || []).map(f => [f.nome, f.sito]));
+    fo.innerHTML = esc(T[0]) + " " + usate.map(n => siti[n] ? `<a href="${esc(siti[n])}" target="_blank" rel="noopener">${esc(n)}</a>` : esc(n)).join(", ") + ". " + esc(T[1]);
     sec.hidden = false;
   }).catch(() => {});
 })();

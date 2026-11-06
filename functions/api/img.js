@@ -1,7 +1,7 @@
 // /api/img?u=<indirizzo immagine>: mostra le immagini di anteprima degli articoli passando dal nostro server.
 // Alcuni siti (per esempio Alzheimer Italia) non lasciano mostrare le loro immagini dentro altri siti.
 // Solo immagini dei siti delle rubriche, tenute in cache per 1 giorno.
-const AMMESSI = /^https:\/\/([a-z0-9-]+\.)*(alzheimer\.it|auser\.it|senioritalia\.it|lazampa\.it|lastampa\.it|lastampastatic\.it|gedidigital\.it|gedistatic\.it|repstatic\.it|kataweb\.it|gedi\.it|arcpublishing\.com|wp\.com)\//i;
+const AMMESSI = /^https:\/\/([a-z0-9-]+\.)*(alzheimer\.it|auser\.it|senioritalia\.it|lazampa\.it|lastampa\.it|lastampastatic\.it|gedidigital\.it|gedistatic\.it|repstatic\.it|kataweb\.it|gedi\.it|arcpublishing\.com|wp\.com|runnersworld\.com|menshealth\.com|hearstapps\.com|runlovers\.it|correre\.it|therunningclub\.it|nonsolofitness\.it)\//i;
 const TTL = 86400;
 
 export async function onRequest({ request, env, ctx }) {
