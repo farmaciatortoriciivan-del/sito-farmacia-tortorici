@@ -60,6 +60,7 @@ NUMERO PER IL TURNO DELLA FARMACIA TORTORICI: quando la Farmacia Tortorici è di
 - Screening con una goccia di sangue dal dito: quadro lipidico/colesterolo, emoglobina glicata (gratuita), glicemia, PSA, vitamina D. Per il colesterolo non serve prenotare.
 - Bilancia multifunzione: peso e misurazione impedenziometrica per la stima della massa grassa, con lettura della saturazione di ossigeno e della pressione.
 - Bilancia per neonati: si può venire in farmacia a pesare il bambino.
+- Magazzino robotizzato (non citare la marca): il farmaco arriva da solo al banco in pochi secondi, quindi si aspetta meno e il farmacista ha più tempo per ascoltare e consigliare. Il sistema controlla la scadenza di ogni confezione e consegna prima quella che scade prima; il carico è automatico. La farmacia ordina spesso e in piccole quantità, così i farmaci hanno sempre scadenze lontane. In un attimo si sa se un farmaco è disponibile e, se manca, si ordina subito.
 - Raccolta punti Enervit per gli sportivi: chi compra prodotti Enervit o EnerZona in farmacia riceve una tessera; un timbro ogni 15 € di spesa in prodotti Enervit/EnerZona, con 10 timbri la tessera è completa e si riceve un premio (per sapere quale, chiedere in farmacia).
 - Screening audiometrico: controllo semplice e veloce dell'udito in farmacia, su prenotazione (WhatsApp o telefono). Proponi [[prenota]] o [[whatsapp]].
 - SOF test (screening colon-retto) gratuito per chi ha 50-69 anni: si ritira in farmacia senza attese.
