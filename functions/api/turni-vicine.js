@@ -19,7 +19,12 @@ export const PAESI = {
   "collesano": [37.9180, 13.9380], "lascari": [38.0000, 13.9420], "misilmeri": [38.0330, 13.4500],
   "bolognetta": [37.9640, 13.4570], "marineo": [37.9510, 13.4170], "villafrati": [37.9100, 13.4860],
   "mezzojuso": [37.8640, 13.4660], "vicari": [37.8240, 13.5670], "roccapalumba": [37.8050, 13.6370],
+  "lercara friddi": [37.7470, 13.6040], "castronovo di sicilia": [37.6790, 13.6040], "gratteri": [37.9650, 13.9730],
+  "isnello": [37.9430, 14.0060], "porticello": [38.0880, 13.5420], "san giovanni li greci": [37.9070, 13.6650],
+  "campofelice di fitalia": [37.8270, 13.4850], "cefala diana": [37.9160, 13.4630], "godrano": [37.9030, 13.4290],
 };
+const TRABIA = [38.0040, 13.6500];
+const distanza = (a, b) => { const r = Math.PI / 180, x = Math.sin((b[0] - a[0]) * r / 2) ** 2 + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin((b[1] - a[1]) * r / 2) ** 2; return 12742 * Math.asin(Math.sqrt(x)); };
 const NOMI = Object.keys(PAESI).sort((a, b) => b.length - a.length); // prima i nomi più lunghi
 const norm = (s) => String(s || "").toLowerCase().replace(/[’`]/g, "'").replace(/\s+/g, " ");
 const paeseIn = (testo) => { const t = norm(testo); return NOMI.find((n) => t.includes(n)) || null; };
@@ -51,14 +56,17 @@ async function turniZona(z, oggi) {
   let h = new TextDecoder("utf-8").decode(buf);
   if (h.includes("�")) h = new TextDecoder("windows-1252").decode(buf);
   const fine = iso(new Date(lun.getTime() + 6 * 864e5));
+  const [aa, mm, gg] = oggi.split("-");
   const turni = leggiSettimana(h).map((t) => ({ ...t, dal: t.dal || iso(lun), al: t.al || fine }))
-    .filter((t) => t.dal <= oggi && oggi <= t.al);
+    .filter((t) => t.dal <= oggi && oggi <= t.al)
+    // alcuni turni valgono per un solo giorno, scritto nel titolo ("sabato 14/11/2026 - apertura diurna")
+    .filter((t) => { const d = String(t.tipo).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/); return !d || (+d[1] === +gg && +d[2] === +mm && d[3] === aa); });
   return { http: r.status, turni };
 }
 
 export async function aggiornaVicine(env) {
   const oggi = oggiRoma();
-  const out = { aggiornato: new Date().toISOString(), oggi, farmacie: [], zone: [], stato: "ok" };
+  const out = { v: 2, aggiornato: new Date().toISOString(), oggi, farmacie: [], zone: [], stato: "ok" };
   try {
     const { http, zone } = await zoneVicine();
     out.datiJs = http;
@@ -81,6 +89,8 @@ export async function aggiornaVicine(env) {
     out.farmacie = out.farmacie.filter((f) => f.paese !== "trabia" && f.paese !== "san nicola l'arena");
     out.farmacie.unshift({ ...c, paese, lat: PAESI[paese][0], lon: PAESI[paese][1] });
   }
+  // senza la posizione del visitatore l'elenco parte da Trabia
+  out.farmacie.sort((a, b) => distanza(TRABIA, [a.lat, a.lon]) - distanza(TRABIA, [b.lat, b.lon]));
   if (!out.farmacie.length && out.stato === "ok") out.stato = "nessun turno letto";
   try {
     await env.DB.prepare("INSERT INTO turni_cache (id, dati, quando) VALUES (2, ?, ?) ON CONFLICT(id) DO UPDATE SET dati = excluded.dati, quando = excluded.quando")
@@ -93,7 +103,7 @@ export async function onRequestGet({ env }) {
   let d = null;
   try {
     const r = await env.DB.prepare("SELECT dati, quando FROM turni_cache WHERE id = 2").first();
-    if (r) { const x = JSON.parse(r.dati); if (x.oggi === oggiRoma() && Date.now() - Date.parse(r.quando) < VALIDO_MS && x.farmacie.length) d = x; }
+    if (r) { const x = JSON.parse(r.dati); if (x.v === 2 && x.oggi === oggiRoma() && Date.now() - Date.parse(r.quando) < VALIDO_MS && x.farmacie.length) d = x; }
   } catch (e) {}
   if (!d) d = await aggiornaVicine(env);
   return new Response(JSON.stringify(d), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
