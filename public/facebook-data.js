@@ -1,5 +1,13 @@
-/* Generato automaticamente da Metricool (2026-11-06T05:49Z). Non modificare a mano. */
+/* Generato automaticamente da Metricool (2026-11-07T05:47Z). Non modificare a mano. */
 window.FB_POSTS = [
+ {
+  "data": "2026-11-06",
+  "testo": "*🩺 Controlla la tua salute in Farmacia Tortorici!*\n\nSai che tenere sotto controllo la glicemia è fondamentale per il tuo benessere?\n\nPresso la nostra Farmacia è disponibile il test dell’*emoglobina glicata*,l'esame chiave per valutare l'andamento della glicemia negli ultimi 3 mesi in modo rapido e sicuro.\n\n🎉 PROMOZIONE SPECIALE: Mercoledì 11 novembre 2026 il test verrà effettuato *GRATUITAMENTE* a tutti i clienti che ne faranno richiesta!\n\n⚠️ I posti sono limitati, la prenotazione è obbligatoria.\nPuoi prenotare il tuo appuntamento in modo semplice e veloce:\nEntrando nel sito \n\nfarmaciatortorici.com\n\nPrenditi cura di te, ti aspettiamo!",
+  "tipo": "video",
+  "link": "https://facebook.com/1821993283266877/posts/1827706892695516",
+  "post": "https://facebook.com/1821993283266877/posts/1827706892695516",
+  "immagine": "https://scontent-lhr6-1.xx.fbcdn.net/v/t15.5256-10/883669086_2030740064506913_5521226147236468790_n.jpg?stp=dst-jpg_s130x130_tt6&_nc_cat=108&ccb=1-7&_nc_sid=5fad0e&_nc_ohc=AhiwR3md84gQ7kNvwHOIbym&_nc_oc=AdrQDKPm6je3cSWfyv-Q-NOLZISq2yf6uduJM5eLznI0i8M9P95Me066mBzK5Qw_Hso&_nc_zt=23&_nc_ht=scontent-lhr6-1.xx&edm=AKIiGfEEAAAA&_nc_gid=rIhYWSpMUyOawJcjgcKiig&_nc_tpa=Q5bMBQKUvfGgfR6etbr6amvphqaitR7sXiDlmfcNMn43Uru53qHzvehUsTbb3fJvPvPNr7cRF75oReIF&oh=00_AQTzddd95-VaW3JgoENTaJYSzdpf_cytpNN0H7jk-Kzhzg&oe=6AF47D9C"
+ },
  {
   "data": "2026-11-05",
   "testo": "",
@@ -247,4 +255,4 @@ window.FB_POSTS = [
   "immagine": "https://scontent-lhr6-2.xx.fbcdn.net/v/t39.30808-6/800115052_1759437806189092_4943730860093016664_n.jpg?stp=dst-jpg_p130x130_tt6&_nc_cat=103&ccb=1-7&_nc_sid=833d8c&_nc_ohc=4Klr0M0AyhEQ7kNvwHNW5Ay&_nc_oc=AdpDXvlZzDQx16olYB0SrWxDs6N9P3KI40xTzPGHpIGIbiyCN0l6fuzixJop94B2ekw&_nc_zt=23&_nc_ht=scontent-lhr6-2.xx&edm=AKIiGfEEAAAA&_nc_gid=HStsvhHZyktiRC9gsPiILg&_nc_tpa=Q5bMBQKNJNgJXFiXTa_QV9-KWyF9VzHCGhMC51ilOtHUNpsZgm2h9SFtbcTI9tUvpf2qwK_MZ7WhaSWv&oh=00_AQQCsJgtcjmxIvEQH8tDxDxXB6xH3x2EurXPWknQ0M8_VA&oe=6AED7DFE"
  }
 ];
-window.FB_FOLLOWERS = {"numero": 1422, "data": "2026-11-05"};
+window.FB_FOLLOWERS = {"numero": 1424, "data": "2026-11-06"};
